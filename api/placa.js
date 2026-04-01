@@ -5,11 +5,11 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') { res.status(200).end(); return; }
 
   const { placa } = req.query;
-  if (!placa) { res.status(400).json({ error: 'Placa obrigatória' }); return; }
+  if (!placa) { res.status(400).json({ error: 'Placa obrigatoria' }); return; }
 
   try {
     const token = '41368a96a1a92ae80223685716740c68';
-    const url = `https://apiplacas.com.br/api/v1/placas/${placa}?token=${token}`;
+    const url = `https://wdapi2.com.br/consulta/${placa}/${token}`;
     const response = await fetch(url);
     const data = await response.json();
     res.status(200).json(data);
