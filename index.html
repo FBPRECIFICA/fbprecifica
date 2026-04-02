@@ -245,7 +245,7 @@
 
   <!-- TELA 2: MÃO DE OBRA -->
   <div class="screen" id="screen-maodeobra">
-    <div style="width:100%;max-width:480px">
+    <div style="width:100%;max-width:520px">
       <div style="text-align:center;margin-bottom:20px">
         <div class="logo" style="color:var(--text);font-family:'Barlow',sans-serif;font-size:28px;font-weight:800">FB<span style="color:var(--accent)">precifica</span></div>
         <div style="font-size:13px;color:var(--muted);margin-top:4px">Preço justo para o cliente e para o prestador de serviço</div>
@@ -261,9 +261,10 @@
 
         <div id="mo-escolha">
           <button class="btn btn-primary" onclick="moModo('sei')" style="margin-bottom:10px">Já sei meu valor/hora</button>
-          <button class="btn btn-secondary" onclick="moModo('calcular')">Me ajuda a calcular</button>
+          <button class="btn btn-secondary" onclick="moModo('calcular')">Me ajuda a calcular meu custo</button>
         </div>
 
+        <!-- MODO: JÁ SEI -->
         <div id="mo-sei" style="display:none">
           <label>Valor da hora de mão de obra (R$)</label>
           <div class="moeda-wrap">
@@ -274,31 +275,111 @@
           <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
         </div>
 
+        <!-- MODO: CALCULAR -->
         <div id="mo-calcular" style="display:none">
-          <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Informe seus custos mensais aproximados:</p>
-          <div class="calc-grid">
-            <div><label>Aluguel (R$)</label><input type="number" id="c-aluguel" placeholder="2000"/></div>
-            <div><label>Salários (R$)</label><input type="number" id="c-salarios" placeholder="5000"/></div>
-            <div><label>Energia/Água (R$)</label><input type="number" id="c-energia" placeholder="800"/></div>
-            <div><label>Outros (R$)</label><input type="number" id="c-outros" placeholder="500"/></div>
-            <div><label>Mecânicos</label><input type="number" id="c-mecanicos" placeholder="2" value="2"/></div>
-            <div><label>Horas/mês</label><input type="number" id="c-horas" placeholder="176" value="176"/></div>
-          </div>
-          <button class="btn btn-secondary" onclick="calcularMO()" style="margin:14px 0 0">Calcular valor sugerido</button>
-          <div id="calc-resultado" style="display:none">
-            <div class="calc-result">
-              <div class="calc-val" id="calc-val-display"></div>
-              <div class="calc-desc">valor sugerido por hora (custos × 250%)</div>
+
+          <!-- BLOCO 1: CUSTOS FIXOS -->
+          <div style="background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px">📋 Custos Fixos Mensais</div>
+            <div class="calc-grid">
+              <div><label>Aluguel (R$)</label><input type="number" id="c-aluguel" placeholder="0"/></div>
+              <div><label>Energia elétrica (R$)</label><input type="number" id="c-energia" placeholder="0"/></div>
+              <div><label>Água (R$)</label><input type="number" id="c-agua" placeholder="0"/></div>
+              <div><label>Internet / Telefone (R$)</label><input type="number" id="c-internet" placeholder="0"/></div>
+              <div><label>Sistemas / Contador (R$)</label><input type="number" id="c-sistemas" placeholder="0"/></div>
+              <div><label>Pró-labore sócios (R$)</label><input type="number" id="c-prolabore" placeholder="0"/></div>
+              <div><label>Impostos fixos (R$)</label><input type="number" id="c-impostos" placeholder="0"/></div>
+              <div><label>Outros fixos (R$)</label><input type="number" id="c-outros-fixos" placeholder="0"/></div>
             </div>
-            <button class="btn btn-primary" onclick="usarValorCalc()">Usar este valor →</button>
           </div>
-          <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
+
+          <!-- BLOCO 2: FUNCIONÁRIOS -->
+          <div style="background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px">👷 Funcionários (Produção)</div>
+            <label>Quantidade de funcionários</label>
+            <input type="number" id="c-func-qtd" placeholder="Ex: 3" min="1" oninput="gerarCamposSalarios(this.value)"/>
+            <div id="campos-salarios"></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:-8px">* Aplicamos fator 1,7 automaticamente sobre os salários para cobrir encargos e benefícios</div>
+          </div>
+
+          <!-- BLOCO 3: CUSTOS OPERACIONAIS -->
+          <div style="background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px">🔧 Custos Operacionais</div>
+            <div class="calc-grid">
+              <div><label>Ferramentas / reposição (R$)</label><input type="number" id="c-ferramentas" placeholder="0"/></div>
+              <div><label>Manutenção equipamentos (R$)</label><input type="number" id="c-equipamentos" placeholder="0"/></div>
+              <div><label>Insumos / EPIs / resíduos (R$)</label><input type="number" id="c-insumos" placeholder="0"/></div>
+            </div>
+          </div>
+
+          <!-- BLOCO 4: CUSTOS FINANCEIROS -->
+          <div style="background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px">💳 Custos Financeiros</div>
+            <div class="calc-grid">
+              <div><label>Juros / antecipações (R$)</label><input type="number" id="c-juros" placeholder="0"/></div>
+              <div><label>Outros financeiros (R$)</label><input type="number" id="c-financeiros" placeholder="0"/></div>
+            </div>
+          </div>
+
+          <!-- BLOCO 5: CAPACIDADE -->
+          <div style="background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px">⏱️ Capacidade Produtiva</div>
+            <div class="calc-grid">
+              <div><label>Funcionários produtivos</label><input type="number" id="c-func-prod" placeholder="Ex: 3"/></div>
+              <div><label>Horas trabalhadas/mês</label><input type="number" id="c-horas" placeholder="220" value="220"/></div>
+              <div><label>Produtividade (%)</label><input type="number" id="c-produtividade" placeholder="75" value="75" min="1" max="100"/></div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="calcularCustoCompleto()">Calcular meu custo/hora →</button>
+
+          <!-- RESULTADO DO CÁLCULO -->
+          <div id="resultado-custo" style="display:none;margin-top:20px">
+            <div style="background:var(--white);border:2px solid var(--accent);border-radius:16px;padding:20px;margin-bottom:16px">
+              <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Resumo do seu custo</div>
+              <div id="resumo-custos" style="font-size:13px;color:var(--text);line-height:2;margin-bottom:16px"></div>
+              <hr style="border:none;border-top:1px solid var(--border);margin:12px 0"/>
+              <div style="font-size:13px;color:var(--muted);margin-bottom:4px">Seu custo real por hora:</div>
+              <div id="valor-custo-hora" style="font-family:'Barlow',sans-serif;font-size:42px;font-weight:800;color:var(--accent);letter-spacing:-1px"></div>
+              <div id="detalhe-horas" style="font-size:12px;color:var(--muted);margin-top:4px"></div>
+            </div>
+
+            <!-- MARGEM -->
+            <div style="background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Qual margem de lucro você quer aplicar?</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Sugestões:</div>
+              <div style="display:flex;gap:8px;margin-bottom:12px">
+                <button class="btn btn-secondary" style="padding:10px;font-size:13px" onclick="aplicarMargem(50)">+50%</button>
+                <button class="btn btn-secondary" style="padding:10px;font-size:13px" onclick="aplicarMargem(100)">+100%</button>
+                <button class="btn btn-secondary" style="padding:10px;font-size:13px" onclick="aplicarMargem(200)">+200%</button>
+              </div>
+              <label>Ou digite sua margem (%):</label>
+              <input type="number" id="input-margem" placeholder="Ex: 80" oninput="calcularComMargem(this.value)"/>
+              <div id="resultado-margem" style="display:none;margin-top:8px">
+                <div style="font-size:12px;color:var(--muted)">Seu preço de venda da hora:</div>
+                <div id="valor-venda-hora" style="font-family:'Barlow',sans-serif;font-size:28px;font-weight:800;color:var(--success)"></div>
+              </div>
+            </div>
+
+            <!-- DIAGNÓSTICO -->
+            <div id="diagnostico-box" style="display:none;background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:16px">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">📊 Diagnóstico do seu negócio</div>
+              <div id="diagnostico-texto" style="font-size:13px;color:var(--text);line-height:1.6"></div>
+            </div>
+
+            <button class="btn btn-primary" onclick="usarValorCalculado()">Usar este valor e continuar →</button>
+            <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
+          </div>
+
+          <div id="mo-calcular-botao-voltar" style="margin-top:10px">
+            <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- TELA PRINCIPAL -->
+<!-- TELA PRINCIPAL -->
   <div class="main-screen" id="screen-main">
     <div class="navbar">
       <div class="navbar-logo">FB<span>precifica</span></div>
@@ -451,6 +532,115 @@ function irParaMaoDeObra() {
   state.nome = nome;
   state.setores = setores;
   showScreen('screen-maodeobra');
+}
+
+// ── GERAR CAMPOS SALÁRIOS ──
+function gerarCamposSalarios(qtd) {
+  const el = document.getElementById('campos-salarios');
+  el.innerHTML = '';
+  const n = parseInt(qtd) || 0;
+  for (let i = 1; i <= n; i++) {
+    el.innerHTML += '<div style="margin-bottom:10px"><label>Salário funcionário ' + i + ' (R$)</label><input type="number" id="salario-' + i + '" placeholder="0"/></div>';
+  }
+}
+
+// ── CALCULAR CUSTO COMPLETO ──
+function calcularCustoCompleto() {
+  // CUSTOS FIXOS
+  const aluguel = parseFloat(document.getElementById('c-aluguel').value)||0;
+  const energia = parseFloat(document.getElementById('c-energia').value)||0;
+  const agua = parseFloat(document.getElementById('c-agua').value)||0;
+  const internet = parseFloat(document.getElementById('c-internet').value)||0;
+  const sistemas = parseFloat(document.getElementById('c-sistemas').value)||0;
+  const prolabore = parseFloat(document.getElementById('c-prolabore').value)||0;
+  const impostos = parseFloat(document.getElementById('c-impostos').value)||0;
+  const outrosFixos = parseFloat(document.getElementById('c-outros-fixos').value)||0;
+  const totalFixos = aluguel + energia + agua + internet + sistemas + prolabore + impostos + outrosFixos;
+
+  // FUNCIONÁRIOS
+  const qtdFunc = parseInt(document.getElementById('c-func-qtd').value)||0;
+  let totalSalarios = 0;
+  for (let i = 1; i <= qtdFunc; i++) {
+    const s = parseFloat(document.getElementById('salario-' + i)?.value)||0;
+    totalSalarios += s;
+  }
+  const totalFuncionarios = totalSalarios * 1.7;
+
+  // OPERACIONAIS
+  const ferramentas = parseFloat(document.getElementById('c-ferramentas').value)||0;
+  const equipamentos = parseFloat(document.getElementById('c-equipamentos').value)||0;
+  const insumos = parseFloat(document.getElementById('c-insumos').value)||0;
+  const totalOperacional = ferramentas + equipamentos + insumos;
+
+  // FINANCEIROS
+  const juros = parseFloat(document.getElementById('c-juros').value)||0;
+  const financeiros = parseFloat(document.getElementById('c-financeiros').value)||0;
+  const totalFinanceiro = juros + financeiros;
+
+  // TOTAL
+  const totalMensal = totalFixos + totalFuncionarios + totalOperacional + totalFinanceiro;
+
+  // CAPACIDADE
+  const funcProd = parseFloat(document.getElementById('c-func-prod').value)||1;
+  const horasMes = parseFloat(document.getElementById('c-horas').value)||220;
+  const produtividade = parseFloat(document.getElementById('c-produtividade').value)||75;
+  const horasProdutivas = funcProd * horasMes * (produtividade/100);
+
+  if (horasProdutivas <= 0 || totalMensal <= 0) {
+    alert('Preencha ao menos os custos e a capacidade produtiva.');
+    return;
+  }
+
+  const custoHora = totalMensal / horasProdutivas;
+  state._custoHora = custoHora;
+  state._totalMensal = totalMensal;
+  state._horasProdutivas = horasProdutivas;
+
+  // Exibir resumo
+  document.getElementById('resumo-custos').innerHTML =
+    'Custos fixos: <strong>' + formatCurrency(totalFixos) + '</strong><br>' +
+    'Funcionários (c/ encargos): <strong>' + formatCurrency(totalFuncionarios) + '</strong><br>' +
+    'Custos operacionais: <strong>' + formatCurrency(totalOperacional) + '</strong><br>' +
+    'Custos financeiros: <strong>' + formatCurrency(totalFinanceiro) + '</strong><br>' +
+    '<strong>Total mensal: ' + formatCurrency(totalMensal) + '</strong>';
+
+  document.getElementById('valor-custo-hora').textContent = formatCurrency(custoHora);
+  document.getElementById('detalhe-horas').textContent =
+    formatCurrency(totalMensal) + ' ÷ ' + horasProdutivas.toFixed(0) + 'h produtivas/mês';
+
+  // Diagnóstico
+  let diag = '';
+  if (custoHora < 50) diag = '⚠️ Seu custo por hora está muito baixo. Verifique se todos os custos foram informados corretamente — pode haver itens esquecidos.';
+  else if (custoHora < 120) diag = '✅ Estrutura de custo saudável para o mercado. Com uma boa margem você terá preço competitivo e lucrativo.';
+  else if (custoHora < 200) diag = '📊 Custo elevado. Avalie oportunidades de redução de custos fixos ou aumento da produtividade da equipe.';
+  else diag = '🚨 Custo por hora muito alto. Revise seus custos fixos e a capacidade produtiva da equipe — pode haver ineficiências a corrigir.';
+
+  document.getElementById('diagnostico-texto').textContent = diag;
+  document.getElementById('diagnostico-box').style.display = 'block';
+  document.getElementById('resultado-custo').style.display = 'block';
+  document.getElementById('mo-calcular-botao-voltar').style.display = 'none';
+}
+
+function aplicarMargem(pct) {
+  document.getElementById('input-margem').value = pct;
+  calcularComMargem(pct);
+}
+
+function calcularComMargem(pct) {
+  const margem = parseFloat(pct)||0;
+  if (!state._custoHora || margem <= 0) return;
+  const valorVenda = state._custoHora * (1 + margem/100);
+  document.getElementById('valor-venda-hora').textContent = formatCurrency(valorVenda);
+  document.getElementById('resultado-margem').style.display = 'block';
+}
+
+function usarValorCalculado() {
+  const margem = parseFloat(document.getElementById('input-margem').value)||0;
+  let valor = state._custoHora;
+  if (margem > 0) valor = valor * (1 + margem/100);
+  if (!valor || valor <= 0) { alert('Calcule o custo primeiro'); return; }
+  state.valorHora = valor;
+  abrirPrincipal();
 }
 
 function moModo(modo) {
