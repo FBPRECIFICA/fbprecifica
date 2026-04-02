@@ -50,7 +50,7 @@ Responda APENAS com o JSON, sem texto antes ou depois.`;
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + process.env.OPENAI_KEY },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         max_tokens: 900,
         temperature: 0.2,
         messages: [{ role: 'user', content: prompt }]
