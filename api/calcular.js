@@ -39,7 +39,7 @@ Responda APENAS com JSON válido neste formato exato:
   "valor_servico": 800.00,
   "justificativa": "análise técnica detalhada e específica",
   "alertas_risco": ["alerta 1", "alerta 2"],
-  "verificar_junto": ["serviço 1 — motivo e valor potencial", "serviço 2", "serviço 3"],
+  "verificar_junto": ["serviço 1 — justificativa técnica de por que verificar agora", "serviço 2", "serviço 3"],
   "se_nao_trocar": "consequência real e concreta para o cliente"
 }
 
