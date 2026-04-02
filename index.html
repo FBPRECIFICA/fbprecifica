@@ -4,183 +4,296 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FB Precifica</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Barlow:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #0a0a0a; --surface: #111; --surface2: #1a1a1a;
-    --border: #222; --accent: #C8F135; --accent2: #F1C835;
-    --text: #f0f0f0; --muted: #666; --danger: #ff4444;
+    --bg: #f5f5f5;
+    --white: #ffffff;
+    --surface: #ffffff;
+    --surface2: #f8f8f8;
+    --border: #e5e5e5;
+    --accent: #F97316;
+    --accent-dark: #ea6c0a;
+    --accent-light: #fff4ed;
+    --text: #111111;
+    --muted: #888888;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; }
-  body::before {
-    content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-    background: radial-gradient(ellipse at 30% 20%, rgba(200,241,53,0.04) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 80%, rgba(241,200,53,0.03) 0%, transparent 50%);
-    pointer-events: none; z-index: 0;
-  }
-  .app { position: relative; z-index: 1; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+  /* ── SCREENS ── */
   .screen { display: none; min-height: 100vh; padding: 24px 20px; flex-direction: column; align-items: center; justify-content: center; }
   .screen.active { display: flex; }
-  .logo { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; text-align: center; }
+  .main-screen { display: none; min-height: 100vh; flex-direction: column; }
+  .main-screen.active { display: flex; }
+
+  /* ── HERO HEADER ── */
+  .hero {
+    width: 100%;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 40px 24px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=60') center/cover;
+    opacity: 0.12;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .logo { font-family: 'Barlow', sans-serif; font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -1px; }
   .logo span { color: var(--accent); }
-  .tagline { color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 28px; font-family: 'DM Mono', monospace; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; position: relative; overflow: hidden; }
-  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2), transparent); }
-  label { display: block; font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
-  input, select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 15px; padding: 13px 16px; margin-bottom: 16px; outline: none; transition: border-color 0.2s; }
-  input:focus, select:focus { border-color: var(--accent); }
-  input::placeholder { color: var(--muted); }
-  .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-  .btn-primary { background: var(--accent); color: #0a0a0a; }
-  .btn-primary:hover { background: #d4ff3f; transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-  .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); margin-top: 10px; }
+  .slogan { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; font-weight: 400; line-height: 1.5; }
+
+  /* ── CARD ── */
+  .card { background: var(--white); border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); }
+  .card-title { font-family: 'Barlow', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .card-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  /* ── STEPS ── */
+  .steps { display: flex; gap: 6px; margin-bottom: 24px; }
+  .step { flex: 1; height: 4px; border-radius: 2px; background: var(--border); }
+  .step.done { background: var(--accent); }
+  .step.active { background: var(--accent); opacity: 0.4; }
+
+  /* ── INPUTS ── */
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  input, select {
+    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 12px; color: var(--text); font-family: 'Inter', sans-serif;
+    font-size: 15px; padding: 13px 16px; margin-bottom: 16px; outline: none; transition: border-color 0.2s;
+  }
+  input:focus, select:focus { border-color: var(--accent); background: #fff; }
+  input::placeholder { color: #bbb; }
+
+  /* ── BUTTONS ── */
+  .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(249,115,22,0.3); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); margin-top: 10px; }
   .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
   .btn-ghost { background: transparent; color: var(--muted); font-size: 13px; margin-top: 8px; }
   .btn-ghost:hover { color: var(--text); }
-  .setores-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .setor-card { background: var(--surface2); border: 2px solid var(--border); border-radius: 12px; padding: 14px 12px; cursor: pointer; transition: all 0.2s; text-align: center; user-select: none; }
-  .setor-card:hover { border-color: #444; }
-  .setor-card.active { border-color: var(--accent); background: rgba(200,241,53,0.08); }
-  .setor-icon { font-size: 26px; margin-bottom: 6px; }
+  .btn-outline { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-top: 10px; }
+  .btn-outline:hover { background: var(--accent-light); }
+
+  /* ── SETORES ── */
+  .setores-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .setor-card {
+    border: 2px solid var(--border); border-radius: 16px; padding: 16px 12px;
+    cursor: pointer; transition: all 0.2s; text-align: center; background: var(--white);
+    user-select: none; position: relative; overflow: hidden;
+  }
+  .setor-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(249,115,22,0.1); }
+  .setor-card.active { border-color: var(--accent); background: var(--accent-light); }
+  .setor-img { width: 100%; height: 80px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
   .setor-nome { font-size: 12px; font-weight: 700; color: var(--text); }
   .setor-card.active .setor-nome { color: var(--accent); }
-  .setor-desc { font-size: 10px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
-  .steps { display: flex; gap: 6px; margin-bottom: 24px; }
-  .step { flex: 1; height: 3px; border-radius: 2px; background: var(--border); }
-  .step.done { background: var(--accent); }
-  .step.active { background: var(--accent2); }
-  .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(200,241,53,0.1); border: 1px solid rgba(200,241,53,0.2); color: var(--accent); font-size: 11px; font-family: 'DM Mono', monospace; padding: 4px 10px; border-radius: 20px; margin-bottom: 20px; }
-  .placa-input { font-family: 'DM Mono', monospace !important; font-size: 22px !important; font-weight: 500; text-transform: uppercase; letter-spacing: 4px; text-align: center; border: 2px solid var(--border) !important; }
+  .setor-desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .setor-check { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; background: var(--accent); border-radius: 50%; display: none; align-items: center; justify-content: center; color: white; font-size: 11px; }
+  .setor-card.active .setor-check { display: flex; }
+
+  /* ── BADGE ── */
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-light); border: 1px solid rgba(249,115,22,0.2); color: var(--accent); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 20px; margin-bottom: 20px; }
+
+  /* ── PLACA ── */
+  .placa-input { font-family: 'Barlow', sans-serif !important; font-size: 26px !important; font-weight: 700; text-transform: uppercase; letter-spacing: 6px; text-align: center; border: 2px solid var(--border) !important; }
   .placa-input:focus { border-color: var(--accent) !important; }
-  .veiculo-card { background: rgba(200,241,53,0.06); border: 1px solid rgba(200,241,53,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; animation: fadeIn 0.3s ease; }
-  .veiculo-icon { font-size: 28px; }
+
+  /* ── VEÍCULO CARD ── */
+  .veiculo-card { background: var(--accent-light); border: 1.5px solid rgba(249,115,22,0.2); border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .veiculo-icon { font-size: 32px; }
   .veiculo-info { flex: 1; }
-  .veiculo-modelo { font-size: 15px; font-weight: 700; color: var(--accent); }
-  .veiculo-detalhe { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
-  .loading { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 32px; }
+  .veiculo-modelo { font-size: 15px; font-weight: 700; color: var(--text); }
+  .veiculo-detalhe { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ── LOADING ── */
+  .loading { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 40px; }
   .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  .loading-text { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
-  .navbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--border); background: rgba(10,10,10,0.95); backdrop-filter: blur(10px); width: 100%; }
-  .navbar-logo { font-size: 18px; font-weight: 800; }
+  .loading-text { font-size: 14px; color: var(--muted); font-weight: 500; }
+
+  /* ── NAVBAR ── */
+  .navbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+  .navbar-logo { font-family: 'Barlow', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); }
   .navbar-logo span { color: var(--accent); }
-  .navbar-user { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
-  .main-screen { display: none; min-height: 100vh; flex-direction: column; align-items: center; }
-  .main-screen.active { display: flex; }
-  .main-wrap { width: 100%; max-width: 520px; padding: 20px 20px 80px; }
-  .tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
-  .tab { flex: 1; padding: 10px; border: none; background: transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
-  .tab.active { background: var(--accent); color: #0a0a0a; }
-  .resultado-valor { font-size: 48px; font-weight: 800; color: var(--accent); letter-spacing: -2px; line-height: 1; margin: 12px 0; }
-  .resultado-justificativa { background: var(--surface2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 14px; font-size: 13px; color: #ccc; line-height: 1.6; margin: 16px 0; }
-  .dica-item { background: rgba(241,200,53,0.06); border: 1px solid rgba(241,200,53,0.15); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #ddd; margin-bottom: 8px; }
-  .dica-item::before { content: '→  '; color: var(--accent2); font-weight: 700; }
-  .hist-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .hist-valor { font-size: 18px; font-weight: 800; color: var(--accent); }
-  .chip { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-right: 6px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
-  .chip:hover { border-color: var(--accent); color: var(--accent); }
-  .erro { color: var(--danger); font-size: 12px; font-family: 'DM Mono', monospace; margin: -10px 0 14px; }
+  .navbar-user { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+  /* ── MAIN WRAP ── */
+  .main-wrap { width: 100%; max-width: 540px; margin: 0 auto; padding: 20px 20px 80px; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
+  .tab { flex: 1; padding: 10px; border: none; background: transparent; color: var(--muted); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+  .tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(249,115,22,0.3); }
+
+  /* ── RESULTADO ── */
+  .resultado-box { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+  .resultado-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent), #fb923c); }
+  .resultado-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .resultado-servico { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .resultado-detalhe { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .resultado-valor { font-family: 'Barlow', sans-serif; font-size: 52px; font-weight: 800; color: var(--accent); letter-spacing: -2px; line-height: 1; margin: 8px 0; }
+  .resultado-formula { font-size: 13px; color: var(--muted); }
+
+  /* ── INSIGHT CARDS ── */
+  .insight-section { margin-bottom: 12px; }
+  .insight-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .insight-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; font-size: 13px; color: var(--text); line-height: 1.5; box-shadow: var(--shadow); }
+  .insight-card.alerta { border-left: 4px solid var(--danger); border-color: var(--border); border-left-color: var(--danger); }
+  .insight-card.oportunidade { border-left: 4px solid var(--success); border-left-color: var(--success); }
+  .insight-card.risco { border-left: 4px solid #f59e0b; border-left-color: #f59e0b; }
+
+  /* ── CHIPS ── */
+  .chip { display: inline-block; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 14px; font-size: 12px; color: var(--muted); font-weight: 500; margin-right: 6px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  /* ── HISTÓRICO ── */
+  .hist-item { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
+  .hist-servico { font-size: 14px; font-weight: 600; color: var(--text); }
+  .hist-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .hist-valor { font-family: 'Barlow', sans-serif; font-size: 20px; font-weight: 800; color: var(--accent); }
+
+  /* ── ERRO ── */
+  .erro { color: var(--danger); font-size: 12px; font-weight: 500; margin: -10px 0 14px; }
+
+  /* ── CALC ── */
   .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .calc-grid input { margin-bottom: 0; }
-  .calc-result { background: rgba(200,241,53,0.06); border: 1px solid rgba(200,241,53,0.2); border-radius: 10px; padding: 16px; margin: 16px 0; text-align: center; }
-  .calc-result-val { font-size: 28px; font-weight: 800; color: var(--accent); }
-  .calc-result-desc { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 4px; }
-  .section-title { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .calc-result { background: var(--accent-light); border: 1.5px solid rgba(249,115,22,0.2); border-radius: 14px; padding: 20px; margin: 16px 0; text-align: center; }
+  .calc-val { font-family: 'Barlow', sans-serif; font-size: 32px; font-weight: 800; color: var(--accent); }
+  .calc-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── MOEDA ── */
   .moeda-wrap { position: relative; }
-  .moeda-prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-60%); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 14px; pointer-events: none; }
+  .moeda-prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-60%); color: var(--muted); font-size: 14px; font-weight: 600; pointer-events: none; }
   .moeda-wrap input { padding-left: 40px !important; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
-<div class="app" id="app">
+<div id="app">
 
   <!-- TELA 1: CADASTRO -->
   <div class="screen active" id="screen-cadastro">
-    <div class="card">
-      <div class="logo">FB<span>precifica</span></div>
-      <p class="tagline">// precificação inteligente para oficinas</p>
-      <div class="steps">
-        <div class="step active" id="cs1"></div>
-        <div class="step" id="cs2"></div>
-        <div class="step" id="cs3"></div>
-      </div>
-      <label>Seu nome ou nome da oficina</label>
-      <input type="text" id="input-nome" placeholder="Ex: Auto Center Silva"/>
-      <label>Setores de atuação</label>
-      <div class="setores-grid" id="setores-grid">
-        <div class="setor-card" data-setor="mecanica_leve" onclick="toggleSetor(this)">
-          <div class="setor-icon">🔧</div>
-          <div class="setor-nome">Mecânica Leve</div>
-          <div class="setor-desc">Carros, SUVs</div>
-        </div>
-        <div class="setor-card" data-setor="diesel_leve" onclick="toggleSetor(this)">
-          <div class="setor-icon">🚐</div>
-          <div class="setor-nome">Diesel Leve</div>
-          <div class="setor-desc">Vans, pickups</div>
-        </div>
-        <div class="setor-card" data-setor="diesel_pesado" onclick="toggleSetor(this)">
-          <div class="setor-icon">🚛</div>
-          <div class="setor-nome">Diesel Pesado</div>
-          <div class="setor-desc">Caminhões, ônibus</div>
-        </div>
-        <div class="setor-card" data-setor="retro_maquinas" onclick="toggleSetor(this)">
-          <div class="setor-icon">🚜</div>
-          <div class="setor-nome">Retro e Máquinas</div>
-          <div class="setor-desc">Tratores, retros</div>
+    <div style="width:100%;max-width:480px">
+      <!-- HERO -->
+      <div class="hero" style="border-radius:20px;margin-bottom:20px">
+        <div class="hero-content">
+          <div class="logo">FB<span>precifica</span></div>
+          <div class="slogan">Preço justo para o cliente e para o prestador de serviço</div>
         </div>
       </div>
-      <button class="btn btn-secondary" onclick="toggleTodos()" style="margin-bottom:16px">Selecionar todos</button>
-      <button class="btn btn-primary" onclick="irParaMaoDeObra()">Continuar →</button>
+
+      <div class="card">
+        <div class="card-title">Bem-vindo!</div>
+        <div class="card-sub">Configure seu perfil para começar</div>
+        <div class="steps">
+          <div class="step active"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+
+        <label>Seu nome ou nome da oficina</label>
+        <input type="text" id="input-nome" placeholder="Ex: Auto Center Silva"/>
+
+        <label>Setores de atuação</label>
+        <div class="setores-grid" id="setores-grid">
+          <div class="setor-card" data-setor="mecanica_leve" onclick="toggleSetor(this)">
+            <div class="setor-check">✓</div>
+            <img class="setor-img" src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&q=70" alt="Mecânica Leve" onerror="this.style.display='none'"/>
+            <div class="setor-nome">Mecânica Leve</div>
+            <div class="setor-desc">Carros e SUVs</div>
+          </div>
+          <div class="setor-card" data-setor="diesel_leve" onclick="toggleSetor(this)">
+            <div class="setor-check">✓</div>
+            <img class="setor-img" src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=300&q=70" alt="Diesel Leve" onerror="this.style.display='none'"/>
+            <div class="setor-nome">Diesel Leve</div>
+            <div class="setor-desc">Vans e pickups</div>
+          </div>
+          <div class="setor-card" data-setor="diesel_pesado" onclick="toggleSetor(this)">
+            <div class="setor-check">✓</div>
+            <img class="setor-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=70" alt="Diesel Pesado" onerror="this.style.display='none'"/>
+            <div class="setor-nome">Diesel Pesado</div>
+            <div class="setor-desc">Caminhões e ônibus</div>
+          </div>
+          <div class="setor-card" data-setor="retro_maquinas" onclick="toggleSetor(this)">
+            <div class="setor-check">✓</div>
+            <img class="setor-img" src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300&q=70" alt="Retro e Máquinas" onerror="this.style.display='none'"/>
+            <div class="setor-nome">Retro e Máquinas</div>
+            <div class="setor-desc">Tratores e retros</div>
+          </div>
+        </div>
+        <button class="btn btn-outline" onclick="toggleTodos()" style="margin-bottom:16px">Selecionar todos</button>
+        <button class="btn btn-primary" onclick="irParaMaoDeObra()">Continuar →</button>
+      </div>
     </div>
   </div>
 
   <!-- TELA 2: MÃO DE OBRA -->
   <div class="screen" id="screen-maodeobra">
-    <div class="card">
-      <div class="logo">FB<span>precifica</span></div>
-      <p class="tagline">// defina o valor da sua hora</p>
-      <div class="steps">
-        <div class="step done"></div>
-        <div class="step active"></div>
-        <div class="step"></div>
+    <div style="width:100%;max-width:480px">
+      <div style="text-align:center;margin-bottom:20px">
+        <div class="logo" style="color:var(--text);font-family:'Barlow',sans-serif;font-size:28px;font-weight:800">FB<span style="color:var(--accent)">precifica</span></div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px">Preço justo para o cliente e para o prestador de serviço</div>
       </div>
-      <div id="mo-escolha">
-        <label>Como prefere definir sua hora de M.O.?</label>
-        <button class="btn btn-primary" onclick="moModo('sei')" style="margin-bottom:10px">Já sei meu valor/hora</button>
-        <button class="btn btn-secondary" onclick="moModo('calcular')">Me ajuda a calcular</button>
-      </div>
-      <div id="mo-sei" style="display:none">
-        <label>Valor da hora de mão de obra (R$)</label>
-        <div class="moeda-wrap">
-          <span class="moeda-prefix">R$</span>
-          <input type="number" id="input-hora-direta" placeholder="0,00" min="0"/>
+      <div class="card">
+        <div class="card-title">Valor da mão de obra</div>
+        <div class="card-sub">Defina o valor da sua hora de trabalho</div>
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step active"></div>
+          <div class="step"></div>
         </div>
-        <button class="btn btn-primary" onclick="confirmarMO()">Confirmar →</button>
-        <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
-      </div>
-      <div id="mo-calcular" style="display:none">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;font-family:'DM Mono',monospace">Informe seus custos mensais aproximados:</p>
-        <div class="calc-grid">
-          <div><label>Aluguel (R$)</label><input type="number" id="c-aluguel" placeholder="2000"/></div>
-          <div><label>Salários (R$)</label><input type="number" id="c-salarios" placeholder="5000"/></div>
-          <div><label>Energia/Água (R$)</label><input type="number" id="c-energia" placeholder="800"/></div>
-          <div><label>Outros (R$)</label><input type="number" id="c-outros" placeholder="500"/></div>
-          <div><label>Mecânicos</label><input type="number" id="c-mecanicos" placeholder="2" value="2"/></div>
-          <div><label>Horas/mês</label><input type="number" id="c-horas" placeholder="176" value="176"/></div>
+
+        <div id="mo-escolha">
+          <button class="btn btn-primary" onclick="moModo('sei')" style="margin-bottom:10px">Já sei meu valor/hora</button>
+          <button class="btn btn-secondary" onclick="moModo('calcular')">Me ajuda a calcular</button>
         </div>
-        <button class="btn btn-secondary" onclick="calcularMO()" style="margin:14px 0 0">Calcular valor sugerido</button>
-        <div id="calc-resultado" style="display:none">
-          <div class="calc-result">
-            <div class="calc-result-val" id="calc-val-display"></div>
-            <div class="calc-result-desc">valor sugerido por hora (custos x 250%)</div>
+
+        <div id="mo-sei" style="display:none">
+          <label>Valor da hora de mão de obra (R$)</label>
+          <div class="moeda-wrap">
+            <span class="moeda-prefix">R$</span>
+            <input type="number" id="input-hora-direta" placeholder="0,00" min="0"/>
           </div>
-          <button class="btn btn-primary" onclick="usarValorCalc()">Usar este valor →</button>
+          <button class="btn btn-primary" onclick="confirmarMO()">Confirmar →</button>
+          <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
         </div>
-        <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
+
+        <div id="mo-calcular" style="display:none">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Informe seus custos mensais aproximados:</p>
+          <div class="calc-grid">
+            <div><label>Aluguel (R$)</label><input type="number" id="c-aluguel" placeholder="2000"/></div>
+            <div><label>Salários (R$)</label><input type="number" id="c-salarios" placeholder="5000"/></div>
+            <div><label>Energia/Água (R$)</label><input type="number" id="c-energia" placeholder="800"/></div>
+            <div><label>Outros (R$)</label><input type="number" id="c-outros" placeholder="500"/></div>
+            <div><label>Mecânicos</label><input type="number" id="c-mecanicos" placeholder="2" value="2"/></div>
+            <div><label>Horas/mês</label><input type="number" id="c-horas" placeholder="176" value="176"/></div>
+          </div>
+          <button class="btn btn-secondary" onclick="calcularMO()" style="margin:14px 0 0">Calcular valor sugerido</button>
+          <div id="calc-resultado" style="display:none">
+            <div class="calc-result">
+              <div class="calc-val" id="calc-val-display"></div>
+              <div class="calc-desc">valor sugerido por hora (custos × 250%)</div>
+            </div>
+            <button class="btn btn-primary" onclick="usarValorCalc()">Usar este valor →</button>
+          </div>
+          <button class="btn btn-ghost" onclick="moModo(null)">← Voltar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -191,6 +304,11 @@
       <div class="navbar-logo">FB<span>precifica</span></div>
       <div class="navbar-user" id="navbar-user"></div>
     </div>
+
+    <div style="background:var(--accent);padding:10px 20px;text-align:center">
+      <div style="font-size:12px;color:rgba(255,255,255,0.9);font-weight:500">Preço justo para o cliente e para o prestador de serviço</div>
+    </div>
+
     <div class="main-wrap">
       <div class="tabs">
         <button class="tab active" onclick="switchTab('precificar')">Precificar</button>
@@ -206,7 +324,7 @@
           <div class="step" id="step-p3"></div>
         </div>
 
-        <!-- BLOCO PLACA -->
+        <!-- PLACA -->
         <div id="bloco-placa">
           <label>Placa do veículo</label>
           <input class="placa-input" type="text" id="input-placa" placeholder="ABC1D23" maxlength="8" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
@@ -218,11 +336,11 @@
         <div id="loading-placa" style="display:none">
           <div class="loading">
             <div class="spinner"></div>
-            <div class="loading-text" id="loading-placa-text">Identificando veículo...</div>
+            <div class="loading-text" id="loading-placa-text">Consultando base de dados...</div>
           </div>
         </div>
 
-        <!-- BLOCO VEÍCULO -->
+        <!-- VEÍCULO -->
         <div id="bloco-veiculo" style="display:none">
           <div class="veiculo-card">
             <div class="veiculo-icon" id="veiculo-icon">🚗</div>
@@ -230,11 +348,11 @@
               <div class="veiculo-modelo" id="veiculo-modelo"></div>
               <div class="veiculo-detalhe" id="veiculo-detalhe"></div>
             </div>
-            <button class="btn btn-ghost" style="width:auto;padding:6px 12px;font-size:12px" onclick="trocarPlaca()">trocar</button>
+            <button class="btn btn-ghost" style="width:auto;padding:6px 12px;font-size:12px;color:var(--accent)" onclick="trocarPlaca()">trocar</button>
           </div>
           <label>Serviço desejado</label>
           <input type="text" id="input-servico" placeholder="Ex: troca de embreagem, freios, óleo..." onkeydown="if(event.key==='Enter')calcularServico()"/>
-          <p style="font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'DM Mono',monospace">Sugestões:</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:500">Sugestões rápidas:</p>
           <div>
             <span class="chip" onclick="setServico('troca de embreagem')">embreagem</span>
             <span class="chip" onclick="setServico('troca de óleo e filtro')">troca de óleo</span>
@@ -250,36 +368,58 @@
         <div id="loading-ia" style="display:none">
           <div class="loading">
             <div class="spinner"></div>
-            <div class="loading-text">IA calculando tempo de serviço...</div>
+            <div class="loading-text">IA calculando tempo e análise técnica...</div>
           </div>
         </div>
 
         <!-- RESULTADO -->
         <div id="bloco-resultado" style="display:none;animation:slideUp 0.4s ease">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <div class="section-title">resultado</div>
-            <button class="btn btn-ghost" style="width:auto;font-size:12px;padding:4px 0" onclick="novaConsulta()">+ nova consulta</button>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Resultado</div>
+            <button class="btn btn-ghost" style="width:auto;font-size:12px;padding:4px 0;color:var(--accent)" onclick="novaConsulta()">+ Nova consulta</button>
           </div>
-          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden">
-            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
-            <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px">SERVIÇO</div>
-            <div style="font-size:16px;font-weight:700;margin-bottom:10px" id="res-servico"></div>
-            <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px" id="res-detalhe"></div>
+
+          <div class="resultado-box">
+            <div class="resultado-label">Serviço</div>
+            <div class="resultado-servico" id="res-servico"></div>
+            <div class="resultado-detalhe" id="res-detalhe"></div>
             <div class="resultado-valor" id="res-valor"></div>
-            <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace" id="res-formula"></div>
+            <div class="resultado-formula" id="res-formula"></div>
           </div>
-          <div class="resultado-justificativa" id="res-justificativa"></div>
-          <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">💡 Venda mais — aproveite o acesso</div>
-          <div id="res-dicas"></div>
+
+          <!-- ANÁLISE TÉCNICA -->
+          <div class="insight-section">
+            <div class="insight-header">🔧 Análise técnica</div>
+            <div class="insight-card" id="res-justificativa"></div>
+          </div>
+
+          <!-- ALERTAS DE RISCO -->
+          <div class="insight-section" id="sec-alertas" style="display:none">
+            <div class="insight-header" style="color:var(--danger)">⚠️ Alertas de risco</div>
+            <div id="res-alertas"></div>
+          </div>
+
+          <!-- VERIFICAR JUNTO -->
+          <div class="insight-section" id="sec-verificar" style="display:none">
+            <div class="insight-header" style="color:var(--success)">🔍 Verifique junto — aumente seu ticket</div>
+            <div id="res-verificar"></div>
+          </div>
+
+          <!-- SE NÃO TROCAR -->
+          <div class="insight-section" id="sec-nao-trocar" style="display:none">
+            <div class="insight-header" style="color:#f59e0b">💬 Argumento para o cliente</div>
+            <div id="res-nao-trocar"></div>
+          </div>
+
           <button class="btn btn-secondary" style="margin-top:8px" onclick="novaConsulta()">Fazer nova consulta</button>
         </div>
       </div>
 
       <!-- TAB HISTÓRICO -->
       <div id="tab-historico" style="display:none">
-        <div class="section-title">Consultas realizadas</div>
+        <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px">Consultas realizadas</div>
         <div id="historico-lista">
-          <div style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;padding:40px 0">Nenhuma consulta ainda</div>
+          <div style="text-align:center;color:var(--muted);font-size:13px;padding:40px 0">Nenhuma consulta ainda</div>
         </div>
       </div>
     </div>
@@ -287,12 +427,11 @@
 
 </div>
 <script>
-const OPENAI_KEY = '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';
+const OPENAI_KEY = '';
 const PLACA_TOKEN = '41368a96a1a92ae80223685716740c68';
 
 const state = { nome:'', setores:[], valorHora:0, veiculo:null, historico:[] };
 
-// ── CADASTRO ──
 function toggleSetor(el) { el.classList.toggle('active'); }
 
 function toggleTodos() {
@@ -311,7 +450,6 @@ function irParaMaoDeObra() {
   showScreen('screen-maodeobra');
 }
 
-// ── MÃO DE OBRA ──
 function moModo(modo) {
   document.getElementById('mo-escolha').style.display = modo ? 'none' : 'block';
   document.getElementById('mo-sei').style.display = modo === 'sei' ? 'block' : 'none';
@@ -333,10 +471,7 @@ function calcularMO() {
   state._calc = sugerido;
 }
 
-function usarValorCalc() {
-  state.valorHora = state._calc;
-  abrirPrincipal();
-}
+function usarValorCalc() { state.valorHora = state._calc; abrirPrincipal(); }
 
 function confirmarMO() {
   const val = parseFloat(document.getElementById('input-hora-direta').value);
@@ -351,7 +486,6 @@ function abrirPrincipal() {
   showScreen('screen-main');
 }
 
-// ── TABS ──
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='precificar')||(i===1&&tab==='historico')));
   document.getElementById('tab-precificar').style.display = tab==='precificar' ? 'block' : 'none';
@@ -359,7 +493,6 @@ function switchTab(tab) {
   if (tab==='historico') renderHistorico();
 }
 
-// ── CONSULTA PLACA ──
 async function consultarPlaca() {
   const placa = document.getElementById('input-placa').value.trim();
   if (placa.length < 7) {
@@ -370,53 +503,22 @@ async function consultarPlaca() {
   document.getElementById('erro-placa').style.display = 'none';
   document.getElementById('bloco-placa').style.display = 'none';
   document.getElementById('loading-placa').style.display = 'block';
-  document.getElementById('loading-placa-text').textContent = 'Consultando base de dados...';
 
   try {
-    // Chama o Make como proxy para evitar bloqueio CORS
-    const makeUrl = '/api/placa?placa=' + placa;
-    const resp = await fetch(makeUrl);
+    const resp = await fetch('/api/placa?placa=' + placa);
     const data = await resp.json();
-
-    let modelo, marca, ano, cor, combustivel;
-
     if (data && (data.MODELO || data.modelo)) {
-      marca = data.MARCA || data.marca || '';
-      modelo = data.MODELO || data.modelo || '';
-      ano = data.anoModelo || data.ano || '';
-      cor = data.cor || data.COR || '';
-      combustivel = (data.extra && data.extra.combustivel) || '';
+      const marca = data.MARCA || data.marca || '';
+      const modelo = data.MODELO || data.modelo || '';
+      const ano = data.anoModelo || data.ano || '';
+      const cor = data.cor || data.COR || '';
+      const combustivel = (data.extra && data.extra.combustivel) || '';
       state.veiculo = { placa, modelo: (marca + ' ' + modelo).trim(), ano, cor, combustivel, simulado: false };
       mostrarVeiculo();
-    } else {
-      throw new Error('Veiculo nao encontrado');
-    }
-
+    } else { throw new Error('nao encontrado'); }
   } catch(e) {
-    // Fallback: usa IA para estimar o veículo
-    try {
-      const resp2 = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          max_tokens: 120,
-          temperature: 0.1,
-          messages: [{
-            role: 'user',
-            content: 'Placa brasileira: ' + placa + '. Identifique veiculo provavel pelo padrao. AAA0000=ate 2018. AAA0A00=apos 2018. JSON apenas: {"modelo":"Fiat Fiorino 1.3","marca":"Fiat","ano":"2015","cor":"Branca","combustivel":"Flex"}'
-          }]
-        })
-      });
-      const data2 = await resp2.json();
-      const text = data2.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
-      const v = JSON.parse(text);
-      state.veiculo = { placa, modelo: v.marca + ' ' + v.modelo, ano: v.ano, cor: v.cor, combustivel: v.combustivel, simulado: true };
-      mostrarVeiculo();
-    } catch(e2) {
-      state.veiculo = { placa, modelo: 'Veiculo ' + placa, ano: '', cor: '', combustivel: '', simulado: true };
-      mostrarVeiculo();
-    }
+    state.veiculo = { placa, modelo: 'Veículo ' + placa, ano: '', cor: '', combustivel: '', simulado: true };
+    mostrarVeiculo();
   }
 }
 
@@ -426,13 +528,13 @@ function mostrarVeiculo() {
   const m = (v.modelo||'').toLowerCase();
   let icon = '🚗';
   if (m.includes('hilux')||m.includes('ranger')||m.includes('s10')||m.includes('l200')||m.includes('strada')||m.includes('saveiro')) icon = '🛻';
-  else if (m.includes('sprinter')||m.includes('master')||m.includes('daily')||m.includes('ducato')) icon = '🚐';
-  else if (m.includes('caminhao')||m.includes('caminhão')||m.includes('truck')||m.includes('cargo')||m.includes('worker')) icon = '🚛';
-  else if (m.includes('trator')||m.includes('retro')||m.includes('john')||m.includes('new holland')) icon = '🚜';
+  else if (m.includes('sprinter')||m.includes('master')||m.includes('daily')||m.includes('ducato')||m.includes('fiorino')||m.includes('berlingo')) icon = '🚐';
+  else if (m.includes('caminhao')||m.includes('caminhão')||m.includes('cargo')||m.includes('worker')||m.includes('constellation')) icon = '🚛';
+  else if (m.includes('trator')||m.includes('retro')||m.includes('john')||m.includes('new holland')||m.includes('caterpillar')) icon = '🚜';
   document.getElementById('veiculo-icon').textContent = icon;
   document.getElementById('veiculo-modelo').textContent = v.modelo;
   const det = [v.ano, v.cor, v.combustivel].filter(Boolean).join(' · ');
-  document.getElementById('veiculo-detalhe').textContent = (det || v.placa) + (v.simulado ? ' · ⚡ protótipo' : '');
+  document.getElementById('veiculo-detalhe').textContent = det || v.placa;
   document.getElementById('bloco-veiculo').style.display = 'block';
   document.getElementById('step-p2').classList.add('done');
   document.getElementById('step-p3').classList.add('active');
@@ -449,65 +551,18 @@ function trocarPlaca() {
 
 function setServico(s) { document.getElementById('input-servico').value = s; }
 
-// ── CALCULAR SERVIÇO ──
 async function calcularServico() {
   const servico = document.getElementById('input-servico').value.trim();
   if (!servico) { alert('Informe o serviço desejado'); return; }
   document.getElementById('bloco-veiculo').style.display = 'none';
   document.getElementById('loading-ia').style.display = 'block';
   document.getElementById('bloco-resultado').style.display = 'none';
-
   const v = state.veiculo;
-
-  const prompt = [
-    'Você é especialista em tabela tempária automotiva brasileira. Responda com precisão técnica real.',
-    '',
-    'Veículo: ' + v.modelo + (v.ano ? ' (ano ' + v.ano + ')' : ''),
-    'Serviço: ' + servico,
-    'Valor hora M.O.: R$ ' + state.valorHora.toFixed(2),
-    '',
-    'TEMPOS DE REFERÊNCIA OBRIGATÓRIOS (tabela tempária real):',
-    '- Troca de óleo e filtro: 0.5h',
-    '- Filtro de ar: 0.25h',
-    '- Velas (motor 4cil): 0.5h a 1h',
-    '- Pastilhas freio dianteiro: 1h',
-    '- Pastilhas + discos dianteiros: 1.5h',
-    '- Freio traseiro (lona): 1.5h',
-    '- Amortecedor (por lado): 1h',
-    '- Alinhamento e balanceamento: 0.75h',
-    '- Correia alternador: 0.5h',
-    '- Correia dentada (carro compacto): 3h a 4h',
-    '- Correia dentada (SUV/picape): 4h a 6h',
-    '- Embreagem (carro compacto/furgão): 4h a 5h',
-    '- Embreagem (SUV/picape): 5h a 7h',
-    '- Bomba dagua: 2h a 3h',
-    '- Radiador: 2h',
-    '- Revisão completa 30mil km: 2h',
-    '- Injeção eletrônica limpeza: 1h',
-    '- Suspensão dianteira completa: 3h a 4h',
-    '- Câmbio automático revisão: 4h a 6h',
-    '- Motor (reforma completa): 12h a 20h',
-    '',
-    'REGRAS:',
-    '1. Use EXATAMENTE os tempos da tabela acima para o serviço informado',
-    '2. Ajuste pelo veículo: furgões e vans têm acesso mais difícil (+20% tempo)',
-    '3. valor_servico = horas_estimadas x ' + state.valorHora.toFixed(2) + ' (calcule exatamente)',
-    '4. NUNCA use 3h como padrão — cada serviço tem seu tempo real',
-    '',
-    'Responda APENAS com JSON válido:',
-    '{"horas_estimadas":0.5,"valor_servico":60.00,"justificativa":"Explicacao tecnica especifica para este veiculo e servico","servicos_relacionados":["Servico 1 - motivo","Servico 2 - motivo","Servico 3 - motivo"]}'
-  ].join('\n');
-
   try {
     const resp = await fetch('/api/calcular', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        veiculo: v.modelo + (v.ano ? ' (ano ' + v.ano + ')' : ''),
-        servico: servico,
-        valorHora: state.valorHora,
-        setores: state.setores
-      })
+      body: JSON.stringify({ veiculo: v.modelo + (v.ano ? ' (ano ' + v.ano + ')' : ''), servico, valorHora: state.valorHora, setores: state.setores })
     });
     const result = await resp.json();
     if (result.error) throw new Error(result.error);
@@ -527,14 +582,29 @@ function mostrarResultado(servico, r) {
   document.getElementById('res-valor').textContent = formatCurrency(r.valor_servico);
   document.getElementById('res-formula').textContent = r.horas_estimadas + 'h  ×  ' + formatCurrency(state.valorHora) + '/h';
   document.getElementById('res-justificativa').textContent = r.justificativa;
-  const el = document.getElementById('res-dicas');
-  el.innerHTML = '';
-  (r.servicos_relacionados||[]).forEach(d => {
-    const div = document.createElement('div');
-    div.className = 'dica-item';
-    div.textContent = d;
-    el.appendChild(div);
-  });
+
+  // Alertas de risco
+  if (r.alertas_risco && r.alertas_risco.length) {
+    document.getElementById('sec-alertas').style.display = 'block';
+    document.getElementById('res-alertas').innerHTML = r.alertas_risco.map(a =>
+      '<div class="insight-card alerta">' + a + '</div>'
+    ).join('');
+  } else { document.getElementById('sec-alertas').style.display = 'none'; }
+
+  // Verificar junto
+  if (r.verificar_junto && r.verificar_junto.length) {
+    document.getElementById('sec-verificar').style.display = 'block';
+    document.getElementById('res-verificar').innerHTML = r.verificar_junto.map(a =>
+      '<div class="insight-card oportunidade">' + a + '</div>'
+    ).join('');
+  } else { document.getElementById('sec-verificar').style.display = 'none'; }
+
+  // Se não trocar
+  if (r.se_nao_trocar) {
+    document.getElementById('sec-nao-trocar').style.display = 'block';
+    document.getElementById('res-nao-trocar').innerHTML = '<div class="insight-card risco">' + r.se_nao_trocar + '</div>';
+  } else { document.getElementById('sec-nao-trocar').style.display = 'none'; }
+
   document.getElementById('bloco-resultado').style.display = 'block';
   state.historico.unshift({ placa: v.placa, modelo: v.modelo, servico, horas: r.horas_estimadas, valor: r.valor_servico, data: new Date().toLocaleString('pt-BR') });
 }
@@ -552,11 +622,11 @@ function novaConsulta() {
 function renderHistorico() {
   const el = document.getElementById('historico-lista');
   if (!state.historico.length) {
-    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:13px;padding:40px 0">Nenhuma consulta ainda</div>';
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:40px 0">Nenhuma consulta ainda</div>';
     return;
   }
   el.innerHTML = state.historico.map(h =>
-    '<div class="hist-item"><div><div style="font-size:14px;font-weight:600">' + h.servico + '</div><div style="font-size:11px;color:var(--muted);font-family:\'DM Mono\',monospace">' + h.placa + ' · ' + h.modelo + ' · ' + h.horas + 'h · ' + h.data + '</div></div><div class="hist-valor">' + formatCurrency(h.valor) + '</div></div>'
+    '<div class="hist-item"><div><div class="hist-servico">' + h.servico + '</div><div class="hist-sub">' + h.placa + ' · ' + h.modelo + ' · ' + h.horas + 'h · ' + h.data + '</div></div><div class="hist-valor">' + formatCurrency(h.valor) + '</div></div>'
   ).join('');
 }
 
