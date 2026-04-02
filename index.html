@@ -499,19 +499,23 @@ async function calcularServico() {
   ].join('\n');
 
   try {
-    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    const resp = await fetch('/api/calcular', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
-      body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 500, temperature: 0.2, messages: [{ role: 'user', content: prompt }] })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        veiculo: v.modelo + (v.ano ? ' (ano ' + v.ano + ')' : ''),
+        servico: servico,
+        valorHora: state.valorHora,
+        setores: state.setores
+      })
     });
-    const data = await resp.json();
-    const text = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
-    const result = JSON.parse(text);
+    const result = await resp.json();
+    if (result.error) throw new Error(result.error);
     mostrarResultado(servico, result);
   } catch(e) {
     document.getElementById('loading-ia').style.display = 'none';
     document.getElementById('bloco-veiculo').style.display = 'block';
-    alert('Erro ao consultar IA. Verifique a chave OpenAI.');
+    alert('Erro ao calcular serviço. Tente novamente.');
   }
 }
 
