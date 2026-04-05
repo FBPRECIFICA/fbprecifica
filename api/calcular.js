@@ -49,7 +49,6 @@ Responda APENAS com o JSON.`;
 
     const data = await response.json();
 
-    // Log para debug
     if (!data.choices || !data.choices[0]) {
       return res.status(500).json({ 
         error: 'OpenAI sem choices', 
