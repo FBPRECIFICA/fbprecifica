@@ -13,24 +13,51 @@ export default async function handler(req, res) {
 
   if (!servico) { res.status(400).json({ error: 'Servico obrigatorio' }); return; }
 
-  const prompt = `Você é um especialista em mecânica automotiva brasileira com 20 anos de experiência.
+  const prompt = `Você é um mecânico especialista com 20 anos de experiência em oficinas brasileiras. Conhece profundamente todos os veículos do mercado nacional — especificações técnicas reais, sistemas de motor, tempo de serviço real de bancada.
 
-Veículo: ${veiculo}
-Serviço solicitado: ${servico}
-Valor da hora de mão de obra: R$ ${valorHora}
+VEÍCULO: ${veiculo}
+SERVIÇO SOLICITADO: ${servico}
+VALOR HORA M.O.: R$ ${valorHora}
 
-Responda APENAS com JSON válido neste formato:
+REGRAS CRÍTICAS — SIGA OBRIGATORIAMENTE:
+
+REGRA 1 — TEMPO REAL DE BANCADA:
+Estime o tempo com base na realidade da bancada, não em teoria.
+Exemplos de tempos REAIS:
+- Troca de bieleta / barra estabilizadora: 20 a 40 minutos (serviço rápido, acesso fácil)
+- Troca de óleo: 20 a 30 minutos
+- Pastilhas de freio dianteiras: 30 a 45 minutos
+- Velas de ignição motor simples: 20 a 30 minutos
+- Amortecedor dianteiro: 45 a 60 minutos por lado
+- Embreagem carro compacto: 3 a 5 horas
+- Embreagem caminhão leve: 6 a 8 horas
+- Embreagem caminhão pesado: 8 a 14 horas
+- Correia dentada motor simples: 2 a 3 horas
+- Correia dentada motor complexo: 4 a 6 horas
+- Motor corrente de comando: NÃO tem correia dentada para trocar
+NUNCA arredonde para cima sem justificativa técnica real.
+
+REGRA 2 — CORREIA vs CORRENTE DE DISTRIBUIÇÃO:
+Antes de mencionar correia dentada, verifique se o motor usa CORREIA ou CORRENTE.
+Motores com CORRENTE de distribuição (exemplos): GM Ecotec, VW TSI, Ford EcoBoost, Fiat FireFly 1.0, Fiat 1.3/1.6 16v, Toyota 1NZ, Honda 1.5 VTEC, Renault 1.0/1.3 TCe, Hyundai/Kia 1.0 T-GDI.
+Se o veículo usa CORRENTE: NUNCA mencione troca de correia dentada. Correntes são projetadas para durar a vida útil do motor.
+Se o veículo usa CORREIA: informe o intervalo de troca recomendado pelo fabricante.
+
+REGRA 3 — ESPECIFICIDADE:
+Sua resposta deve ser específica para ESTE veículo e ESTE serviço. Não dê respostas genéricas.
+
+Responda APENAS com JSON válido:
 {
-  "horas_estimadas": 2,
-  "valor_servico": 200.00,
-  "justificativa": "análise técnica detalhada",
-  "alertas_risco": ["alerta 1", "alerta 2"],
-  "verificar_junto": ["serviço 1", "serviço 2", "serviço 3"],
-  "se_nao_trocar": "consequência para o cliente"
+  "horas_estimadas": 0.5,
+  "valor_servico": 50.00,
+  "justificativa": "explicação técnica específica e precisa para este veículo e serviço",
+  "alertas_risco": ["alerta técnico real e específico 1", "alerta 2"],
+  "verificar_junto": ["serviço relacionado com justificativa técnica", "serviço 2", "serviço 3"],
+  "se_nao_trocar": "consequência real e concreta para este veículo específico"
 }
 
-Calcule valor_servico = horas_estimadas x ${valorHora}
-Responda APENAS com o JSON.`;
+valor_servico = horas_estimadas x ${valorHora}
+Responda APENAS com o JSON, sem texto antes ou depois.`;
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -42,7 +69,7 @@ Responda APENAS com o JSON.`;
       body: JSON.stringify({
         model: 'gpt-4o',
         max_tokens: 900,
-        temperature: 0.2,
+        temperature: 0.1,
         messages: [{ role: 'user', content: prompt }]
       })
     });
@@ -50,10 +77,7 @@ Responda APENAS com o JSON.`;
     const data = await response.json();
 
     if (!data.choices || !data.choices[0]) {
-      return res.status(500).json({ 
-        error: 'OpenAI sem choices', 
-        detail: JSON.stringify(data).substring(0, 200)
-      });
+      return res.status(500).json({ error: 'Erro OpenAI', detail: JSON.stringify(data).substring(0, 200) });
     }
 
     const text = data.choices[0].message.content.trim().replace(/```json|```/g, '').trim();
