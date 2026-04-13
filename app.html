@@ -33,9 +33,6 @@ input::placeholder{color:#aaa}
 .btn-p:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-s{background:var(--surf);color:var(--text);border:1.5px solid var(--border);margin-top:10px}
 .btn-s:hover{border-color:var(--acc);color:var(--acc)}
-.btn-g{background:transparent;color:var(--muted);font-size:13px;margin-top:8px}
-.btn-o{background:transparent;color:var(--acc);border:1.5px solid var(--acc);margin-top:10px}
-.btn-o:hover{background:var(--accl)}
 .sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .sc{border:2px solid var(--border);border-radius:16px;padding:14px 10px;cursor:pointer;transition:all .2s;text-align:center;background:var(--white);user-select:none;position:relative}
 .sc:hover{border-color:var(--acc)}
@@ -46,7 +43,6 @@ input::placeholder{color:#aaa}
 .sc .sd{font-size:10px;color:var(--muted);margin-top:2px}
 .ck{position:absolute;top:7px;right:7px;width:18px;height:18px;background:var(--acc);border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700}
 .sc.active .ck{display:flex}
-.badge{display:inline-flex;align-items:center;gap:6px;background:var(--accl);border:1px solid rgba(249,115,22,.2);color:var(--acc);font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;margin-bottom:18px}
 .pi{font-family:'Barlow',sans-serif !important;font-size:26px !important;font-weight:700;text-transform:uppercase;letter-spacing:6px;text-align:center;border:2px solid var(--border) !important}
 .pi:focus{border-color:var(--acc) !important}
 .vc{background:var(--accl);border:1.5px solid rgba(249,115,22,.2);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
@@ -56,7 +52,6 @@ input::placeholder{color:#aaa}
 .load{display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px}
 .spin{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
 .lt{font-size:14px;color:var(--muted);font-weight:500}
-/* NAV */
 .nav{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
 .nl{font-family:'Barlow',sans-serif;font-size:20px;font-weight:900}
 .nl span{color:var(--acc)}
@@ -64,7 +59,6 @@ input::placeholder{color:#aaa}
 .nu{font-size:12px;color:var(--muted);font-weight:500}
 .btn-logout{background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
 .btn-logout:hover{border-color:var(--err);color:var(--err)}
-/* TRIAL BADGE */
 .trial-bar{background:var(--accl);border-bottom:1px solid rgba(249,115,22,.3);padding:7px 20px;text-align:center;font-size:12px;font-weight:600;color:var(--acc)}
 .mw{width:100%;max-width:540px;margin:0 auto;padding:20px 20px 80px}
 .tabs{display:flex;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:22px}
@@ -86,52 +80,37 @@ input::placeholder{color:#aaa}
 .er{color:var(--err);font-size:12px;font-weight:500;margin:-8px 0 12px}
 .cg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cg input{margin-bottom:0}
-.cr{background:var(--accl);border:1.5px solid rgba(249,115,22,.2);border-radius:14px;padding:18px;margin:14px 0;text-align:center}
-.cv{font-family:'Barlow',sans-serif;font-size:30px;font-weight:800;color:var(--acc)}
-.cd{font-size:12px;color:var(--muted);margin-top:3px}
 .mp{position:relative}
 .mp span{position:absolute;left:14px;top:50%;transform:translateY(-60%);color:var(--muted);font-size:14px;font-weight:600;pointer-events:none}
 .mpi{padding-left:40px !important}
 .stit{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-/* BOTÃO CONSULTAR OUTRA VEZ */
 .btn-nova-consulta{width:100%;padding:13px;border-radius:12px;border:1.5px solid var(--acc);background:var(--accl);color:var(--acc);font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-nova-consulta:hover{background:var(--acc);color:#fff}
-/* HISTORICO */
-.hist-item{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:15px;margin-bottom:10px;box-shadow:var(--sh);cursor:pointer;transition:border-color .2s}
-.hist-item:hover{border-color:var(--acc)}
-.hist-placa{font-family:'Barlow',sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;color:var(--text)}
+.hist-item{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:15px;margin-bottom:10px;box-shadow:var(--sh)}
+.hist-placa{font-family:'Barlow',sans-serif;font-size:18px;font-weight:900;letter-spacing:3px}
 .hist-modelo{font-size:13px;color:var(--muted);margin-top:2px}
 .hist-servico{font-size:12px;font-weight:600;color:var(--acc);margin-top:6px;background:var(--accl);display:inline-block;padding:3px 10px;border-radius:20px}
 .hist-data{font-size:11px;color:var(--muted);margin-top:6px}
 .hist-vazio{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px}
-/* MOTORIZAÇÃO SELECTOR */
-.motor-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:14px}
+.motor-grid{display:grid;gap:8px;margin-bottom:14px}
 .motor-opt{border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;background:var(--white)}
-.motor-opt:hover{border-color:var(--acc)}
-.motor-opt.active{border-color:var(--acc);background:var(--accl)}
-.motor-opt .mo-titulo{font-size:14px;font-weight:700}
-.motor-opt .mo-det{font-size:12px;color:var(--muted);margin-top:2px}
-/* TELA BLOQUEADO */
+.motor-opt:hover{border-color:var(--acc);background:var(--accl)}
+.mo-titulo{font-size:14px;font-weight:700}
+.mo-det{font-size:12px;color:var(--muted);margin-top:2px}
 .bloq-box{text-align:center;padding:40px 20px}
 .bloq-icon{font-size:56px;margin-bottom:16px}
 .bloq-title{font-family:'Barlow',sans-serif;font-size:26px;font-weight:900;margin-bottom:8px}
 .bloq-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes su{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- ══ TELA LOADING INICIAL ══ -->
 <div class="screen active" id="s-loading">
-  <div class="load">
-    <div class="spin"></div>
-    <div class="lt">Verificando sessão...</div>
-  </div>
+  <div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>
 </div>
 
-<!-- ══ TELA CADASTRO INICIAL (perfil) ══ -->
 <div class="screen" id="s-cad">
   <div style="width:100%;max-width:480px">
     <div class="logo">FB<span>precifica</span></div>
@@ -139,76 +118,62 @@ input::placeholder{color:#aaa}
     <div class="card">
       <div class="ct">Configure seu perfil</div>
       <div class="cs">Selecione seus setores de atuação para começar</div>
-      <div class="steps"><div class="step act" id="st1"></div><div class="step" id="st2"></div></div>
+      <div class="steps"><div class="step done"></div><div class="step act"></div></div>
       <label>Setores de atuação</label>
       <div class="sg" id="sg">
         <div class="sc" data-s="mecanica_leve" onclick="togS(this)">
           <div class="ck">✓</div>
-          <div style="font-size:36px;margin-bottom:6px">🔧</div>
-          <div class="sn">Mecânica Leve</div>
-          <div class="sd">Carros de passeio</div>
+          <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=200&q=60" alt="Mecânica Leve"/>
+          <div class="sn">Mecânica Leve</div><div class="sd">Carros de passeio</div>
         </div>
         <div class="sc" data-s="mecanica_pesada" onclick="togS(this)">
           <div class="ck">✓</div>
-          <div style="font-size:36px;margin-bottom:6px">🚛</div>
-          <div class="sn">Mecânica Pesada</div>
-          <div class="sd">Caminhões e ônibus</div>
+          <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=200&q=60" alt="Mecânica Pesada"/>
+          <div class="sn">Mecânica Pesada</div><div class="sd">Caminhões e ônibus</div>
         </div>
         <div class="sc" data-s="funilaria" onclick="togS(this)">
           <div class="ck">✓</div>
-          <div style="font-size:36px;margin-bottom:6px">🎨</div>
-          <div class="sn">Funilaria</div>
-          <div class="sd">Lataria e pintura</div>
+          <img src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=200&q=60" alt="Funilaria"/>
+          <div class="sn">Funilaria</div><div class="sd">Lataria e pintura</div>
         </div>
         <div class="sc" data-s="eletrica" onclick="togS(this)">
           <div class="ck">✓</div>
-          <div style="font-size:36px;margin-bottom:6px">⚡</div>
-          <div class="sn">Elétrica</div>
-          <div class="sd">Sistemas elétricos</div>
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=60" alt="Elétrica"/>
+          <div class="sn">Elétrica</div><div class="sd">Sistemas elétricos</div>
         </div>
         <div class="sc" data-s="pneus" onclick="togS(this)">
           <div class="ck">✓</div>
-          <div style="font-size:36px;margin-bottom:6px">🛞</div>
-          <div class="sn">Pneus</div>
-          <div class="sd">Alinhamento e balanceamento</div>
+          <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&q=60" alt="Pneus"/>
+          <div class="sn">Pneus</div><div class="sd">Alinhamento e balanceamento</div>
         </div>
         <div class="sc" data-s="ar_condicionado" onclick="togS(this)">
           <div class="ck">✓</div>
-          <div style="font-size:36px;margin-bottom:6px">❄️</div>
-          <div class="sn">Ar-condicionado</div>
-          <div class="sd">Climatização</div>
+          <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200&q=60" alt="Ar-condicionado"/>
+          <div class="sn">Ar-condicionado</div><div class="sd">Climatização</div>
         </div>
       </div>
       <div class="er" id="er-setor" style="display:none">Selecione pelo menos um setor</div>
-      <button class="btn btn-p" onclick="salvarSetores()">Continuar →</button>
+      <button class="btn btn-p" id="btn-salvar-setor" onclick="salvarSetores()">Continuar →</button>
     </div>
   </div>
 </div>
 
-<!-- ══ TELA BLOQUEADO / TRIAL EXPIRADO ══ -->
 <div class="screen" id="s-bloq">
   <div style="width:100%;max-width:420px">
     <div class="card">
       <div class="bloq-box">
         <div class="bloq-icon">🔒</div>
         <div class="bloq-title">Acesso encerrado</div>
-        <div class="bloq-sub">Seu período de teste gratuito de 7 dias chegou ao fim.<br>Para continuar usando o FB Precifica, fale com o suporte e ative seu plano.</div>
-        <a href="https://wa.me/5522999999999?text=Olá!%20Quero%20ativar%20meu%20plano%20do%20FB%20Precifica" target="_blank">
-          <button class="btn btn-p" style="margin-bottom:10px">💬 Falar no WhatsApp</button>
-        </a>
+        <div class="bloq-sub">Seu período de teste gratuito chegou ao fim.<br>Fale com o suporte para ativar seu plano.</div>
+        <button class="btn btn-p" style="margin-bottom:10px" onclick="window.open('https://wa.me/5522999999999?text=Quero%20ativar%20meu%20plano%20FB%20Precifica')">💬 Falar no WhatsApp</button>
         <button class="btn btn-s" onclick="fazerLogout()">Sair da conta</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ APP PRINCIPAL ══ -->
 <div class="main-s" id="s-main">
-
-  <!-- TRIAL BAR -->
   <div id="trial-bar" class="trial-bar" style="display:none"></div>
-
-  <!-- NAV -->
   <div class="nav">
     <div class="nl">FB<span>precifica</span></div>
     <div class="nav-right">
@@ -216,66 +181,38 @@ input::placeholder{color:#aaa}
       <button class="btn-logout" onclick="fazerLogout()">Sair</button>
     </div>
   </div>
-
   <div class="mw">
-
-    <!-- TABS PRINCIPAIS -->
     <div class="tabs" style="margin-top:4px">
       <button class="tab active" id="tab-calc" onclick="trocarTab('calc')">Calcular</button>
       <button class="tab" id="tab-res" onclick="trocarTab('res')">Resultado</button>
       <button class="tab" id="tab-hist" onclick="trocarTab('hist')">Histórico</button>
     </div>
 
-    <!-- ─── ABA CALCULAR ─── -->
     <div id="pn-calc">
-
-      <!-- VEÍCULO ATUAL (se já consultou) -->
       <div id="veiculo-ativo" style="display:none">
         <div class="vc">
           <div class="vi">🚗</div>
-          <div>
-            <div class="vm" id="va-modelo"></div>
-            <div class="vd" id="va-det"></div>
-          </div>
-          <button onclick="trocarVeiculo()" style="margin-left:auto;background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">Trocar</button>
+          <div style="flex:1"><div class="vm" id="va-modelo"></div><div class="vd" id="va-det"></div></div>
+          <button onclick="trocarVeiculo()" style="background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted);white-space:nowrap;font-family:'Inter',sans-serif">Trocar</button>
         </div>
       </div>
-
-      <!-- PLACA (se não tem veículo ativo) -->
       <div id="bloco-placa">
         <label>Placa do veículo</label>
         <input class="pi" type="text" id="inp-placa" placeholder="ABC1D23" maxlength="8" oninput="formatarPlaca(this)"/>
         <div class="er" id="er-placa" style="display:none"></div>
         <button class="btn btn-p" id="btn-buscar" onclick="buscarPlaca()">Buscar veículo →</button>
-        <div class="load" id="load-placa" style="display:none">
-          <div class="spin"></div>
-          <div class="lt">Consultando placa...</div>
-        </div>
+        <div class="load" id="load-placa" style="display:none"><div class="spin"></div><div class="lt">Consultando placa...</div></div>
       </div>
-
-      <!-- SELETOR DE MOTORIZAÇÃO -->
       <div id="bloco-motorizacao" style="display:none">
         <div class="vc" style="margin-bottom:14px">
           <div class="vi">🚗</div>
-          <div>
-            <div class="vm" id="mot-modelo"></div>
-            <div class="vd">Selecione a motorização</div>
-          </div>
+          <div><div class="vm" id="mot-modelo"></div><div class="vd">Selecione a motorização</div></div>
         </div>
         <label>Qual a versão/motorização?</label>
         <div class="motor-grid" id="motor-grid"></div>
         <button class="btn btn-s" onclick="cancelarMotorizacao()">← Voltar</button>
       </div>
-
-      <!-- SERVIÇO -->
       <div id="bloco-servico" style="display:none">
-        <div class="vc">
-          <div class="vi">🚗</div>
-          <div>
-            <div class="vm" id="sv-modelo"></div>
-            <div class="vd" id="sv-det"></div>
-          </div>
-        </div>
         <label>Serviço a calcular</label>
         <input type="text" id="inp-servico" placeholder="Ex: Troca de pastilha de freio dianteira"/>
         <div class="er" id="er-servico" style="display:none"></div>
@@ -293,60 +230,37 @@ input::placeholder{color:#aaa}
         <div class="cg" style="margin-bottom:14px">
           <div>
             <label>Custo hora/técnico (R$)</label>
-            <div class="mp">
-              <span>R$</span>
-              <input class="mpi" type="number" id="inp-hora" placeholder="85" min="1"/>
-            </div>
+            <div class="mp"><span>R$</span><input class="mpi" type="number" id="inp-hora" placeholder="85" min="1"/></div>
           </div>
           <div>
             <label>Margem de lucro (%)</label>
-            <div class="mp">
-              <span style="left:auto;right:14px">%</span>
-              <input type="number" id="inp-margem" placeholder="35" min="1" max="99" style="padding-right:36px"/>
-            </div>
+            <div class="mp"><span style="left:auto;right:14px">%</span><input type="number" id="inp-margem" placeholder="35" min="1" max="99" style="padding-right:36px"/></div>
           </div>
         </div>
         <button class="btn btn-p" id="btn-calcular" onclick="calcular()">Calcular preço →</button>
-        <div class="load" id="load-calc" style="display:none">
-          <div class="spin"></div>
-          <div class="lt" id="load-txt">Analisando com IA...</div>
-        </div>
+        <div class="load" id="load-calc" style="display:none"><div class="spin"></div><div class="lt">Analisando com IA...</div></div>
       </div>
     </div>
 
-    <!-- ─── ABA RESULTADO ─── -->
     <div id="pn-res" style="display:none">
       <div id="res-content"></div>
-      <!-- BOTÃO CONSULTAR OUTRO SERVIÇO COM MESMA PLACA -->
-      <button class="btn-nova-consulta" id="btn-nova-consulta" style="display:none" onclick="novaConsultaMesmaPlaca()">
-        🔄 Consultar outro serviço com esta placa
-      </button>
+      <button class="btn-nova-consulta" id="btn-nova-consulta" style="display:none" onclick="novaConsultaMesmaPlaca()">🔄 Consultar outro serviço com esta placa</button>
       <button class="btn btn-s" style="margin-top:8px" onclick="novaConsultaCompleta()">+ Nova consulta (outra placa)</button>
     </div>
 
-    <!-- ─── ABA HISTÓRICO ─── -->
     <div id="pn-hist" style="display:none">
       <div class="stit">Consultas anteriores</div>
-      <div id="hist-lista">
-        <div class="load"><div class="spin"></div><div class="lt">Carregando histórico...</div></div>
-      </div>
+      <div id="hist-lista"><div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div></div>
     </div>
+  </div>
+</div>
 
-  </div><!-- /mw -->
-</div><!-- /s-main -->
+</div>
 
-</div><!-- /app -->
-
-<!-- ══ FIREBASE SDK ══ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth, onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-  getFirestore, doc, getDoc, updateDoc,
-  collection, query, where, orderBy, limit, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAFLxVIoPzCKiXcgZV_s7dyOr7N-HlUHEk",
@@ -361,177 +275,117 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 
-// Estado global
 let usuario = null;
 let idToken = null;
 let veiculoAtual = null;
 let setoresUsuario = [];
-let ultimoResultado = null;
 
-// ── VERIFICAÇÃO DE SESSÃO ──
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "/login.html";
-    return;
-  }
+  if (!user) { window.location.href = "/login.html"; return; }
   usuario = user;
   idToken = await user.getIdToken();
-
-  // Busca dados do usuário no Firestore
-  const snap = await getDoc(doc(db, "usuarios", user.uid));
-  if (!snap.exists()) {
-    // Novo usuário sem perfil — vai pra tela de configuração
-    mostrarTela("s-cad");
-    return;
-  }
-
-  const dados = snap.data();
-  setoresUsuario = dados.setores || [];
-
-  // Verifica trial
-  if (dados.plano === "trial" && dados.trialExpiraEm) {
-    const expira = dados.trialExpiraEm.toDate ? dados.trialExpiraEm.toDate() : new Date(dados.trialExpiraEm);
-    if (expira < new Date()) {
-      mostrarTela("s-bloq");
-      return;
+  try {
+    const snap = await getDoc(doc(db, "usuarios", user.uid));
+    if (!snap.exists()) {
+      await setDoc(doc(db, "usuarios", user.uid), {
+        nome: user.displayName || "", email: user.email, plano: "trial", setores: [],
+        criadoEm: new Date(), trialExpiraEm: new Date(Date.now() + 7*24*60*60*1000)
+      });
+      mostrarTela("s-cad"); return;
     }
-    // Mostra dias restantes
-    const diasRestantes = Math.ceil((expira - new Date()) / (1000 * 60 * 60 * 24));
-    const bar = document.getElementById("trial-bar");
-    bar.textContent = `⏳ Trial gratuito: ${diasRestantes} dia${diasRestantes !== 1 ? "s" : ""} restante${diasRestantes !== 1 ? "s" : ""}`;
-    bar.style.display = "block";
-  } else if (dados.plano === "bloqueado") {
-    mostrarTela("s-bloq");
-    return;
-  }
-
-  // Se não tem setores configurados, vai pra tela de configuração
-  if (!setoresUsuario.length) {
+    const dados = snap.data();
+    setoresUsuario = dados.setores || [];
+    if (dados.plano === "bloqueado") { mostrarTela("s-bloq"); return; }
+    if (dados.plano === "trial" && dados.trialExpiraEm) {
+      const expira = dados.trialExpiraEm.toDate ? dados.trialExpiraEm.toDate() : new Date(dados.trialExpiraEm);
+      if (expira < new Date()) { mostrarTela("s-bloq"); return; }
+      const dias = Math.ceil((expira - new Date()) / 86400000);
+      const bar = document.getElementById("trial-bar");
+      bar.textContent = `⏳ Trial gratuito: ${dias} dia${dias!==1?"s":""} restante${dias!==1?"s":""}`;
+      bar.style.display = "block";
+    }
+    if (!setoresUsuario.length) { mostrarTela("s-cad"); return; }
+    document.getElementById("nav-nome").textContent = dados.nome || user.displayName || user.email;
+    mostrarTela("s-main");
+  } catch(e) {
+    console.error(e);
     mostrarTela("s-cad");
-    return;
   }
-
-  // Tudo ok — abre o app
-  document.getElementById("nav-nome").textContent = dados.nome || user.displayName || user.email;
-  mostrarTela("s-main");
 });
 
-// ── LOGOUT ──
-window.fazerLogout = async function() {
-  await signOut(auth);
-  window.location.href = "/login.html";
-};
+window.fazerLogout = async () => { await signOut(auth); window.location.href = "/login.html"; };
 
-// ── SALVAR SETORES ──
-window.salvarSetores = async function() {
-  const selecionados = [...document.querySelectorAll(".sc.active")].map(el => el.dataset.s);
-  if (!selecionados.length) {
-    document.getElementById("er-setor").style.display = "block";
-    return;
-  }
+window.salvarSetores = async () => {
+  const sel = [...document.querySelectorAll(".sc.active")].map(el => el.dataset.s);
+  if (!sel.length) { document.getElementById("er-setor").style.display="block"; return; }
   document.getElementById("er-setor").style.display = "none";
-  await updateDoc(doc(db, "usuarios", usuario.uid), { setores: selecionados });
-  setoresUsuario = selecionados;
-  document.getElementById("nav-nome").textContent = usuario.displayName || usuario.email;
-  mostrarTela("s-main");
+  const btn = document.getElementById("btn-salvar-setor");
+  btn.disabled = true; btn.textContent = "Salvando...";
+  try {
+    await setDoc(doc(db, "usuarios", usuario.uid), { setores: sel }, { merge: true });
+    setoresUsuario = sel;
+    document.getElementById("nav-nome").textContent = usuario.displayName || usuario.email;
+    mostrarTela("s-main");
+  } catch(e) {
+    btn.disabled = false; btn.textContent = "Continuar →";
+    const er = document.getElementById("er-setor");
+    er.textContent = "Erro ao salvar. Tente novamente."; er.style.display = "block";
+  }
 };
 
-// ── BUSCAR PLACA ──
-window.buscarPlaca = async function() {
-  const placa = document.getElementById("inp-placa").value.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
-  if (placa.length < 7) {
-    mostrarErro("er-placa", "Placa inválida. Informe 7 caracteres.");
-    return;
-  }
+window.buscarPlaca = async () => {
+  const placa = document.getElementById("inp-placa").value.replace(/[^A-Za-z0-9]/g,"").toUpperCase();
+  if (placa.length < 7) { mostrarErro("er-placa","Placa inválida. Informe 7 caracteres."); return; }
   esconderErro("er-placa");
   document.getElementById("bloco-placa").style.display = "none";
   document.getElementById("load-placa").style.display = "flex";
-
   try {
-    // Tenta cache primeiro
-    const cacheRes = await fetch(`/api/cache-placa?placa=${placa}`, {
-      headers: { "Authorization": `Bearer ${idToken}` }
-    });
-    const cacheData = await cacheRes.json();
-
-    if (cacheData.cache) {
-      processarVeiculo(cacheData.cache);
-    } else {
-      // Consulta API de placa real
-      const r = await fetch(`/api/placa?placa=${placa}`);
-      const d = await r.json();
-      if (!d || d.erro || !d.MODELO) {
-        throw new Error("Placa não encontrada");
-      }
-      const veiculo = {
-        placa,
-        modelo: d.MODELO,
-        ano: d.ano || d.ANOMODELO || "",
-        motor: d.MOTOR || "",
-        combustivel: d.COMBUSTIVEL || "",
-        versoes: d.versoes || []
-      };
-      // Salva no cache
-      await fetch("/api/cache-placa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
-        body: JSON.stringify({ placa, veiculo })
-      });
-      processarVeiculo(veiculo);
-    }
-  } catch (e) {
+    const cr = await fetch(`/api/cache-placa?placa=${placa}`, { headers:{"Authorization":`Bearer ${idToken}`} });
+    const cd = await cr.json();
+    if (cd.cache) { processarVeiculo(cd.cache); return; }
+    const r = await fetch(`/api/placa?placa=${placa}`);
+    const d = await r.json();
+    if (!d || d.erro || (!d.MODELO && !d.modelo)) throw new Error("Não encontrado");
+    const v = { placa, modelo:d.MODELO||d.modelo||"", ano:d.ANOMODELO||d.ano||"", motor:d.MOTOR||d.motor||"", combustivel:d.COMBUSTIVEL||d.combustivel||"", versoes:d.versoes||[] };
+    await fetch("/api/cache-placa", { method:"POST", headers:{"Content-Type":"application/json","Authorization":`Bearer ${idToken}`}, body:JSON.stringify({placa,veiculo:v}) });
+    processarVeiculo(v);
+  } catch(e) {
     document.getElementById("load-placa").style.display = "none";
     document.getElementById("bloco-placa").style.display = "block";
-    mostrarErro("er-placa", "Não foi possível encontrar a placa. Verifique e tente novamente.");
+    mostrarErro("er-placa","Placa não encontrada. Verifique e tente novamente.");
   }
 };
 
-function processarVeiculo(veiculo) {
+function processarVeiculo(v) {
   document.getElementById("load-placa").style.display = "none";
-
-  // Se tem múltiplas versões, mostra seletor de motorização
-  if (veiculo.versoes && veiculo.versoes.length > 1) {
-    mostrarSeletorMotorizacao(veiculo);
-  } else {
-    confirmarVeiculo(veiculo);
-  }
+  if (v.versoes && v.versoes.length > 1) { mostrarSeletorMotorizacao(v); } else { confirmarVeiculo(v); }
 }
 
-function mostrarSeletorMotorizacao(veiculo) {
-  document.getElementById("mot-modelo").textContent = `${veiculo.modelo} ${veiculo.ano}`;
-  const grid = document.getElementById("motor-grid");
-  grid.innerHTML = "";
-  veiculo.versoes.forEach((v, i) => {
-    const div = document.createElement("div");
-    div.className = "motor-opt";
-    div.innerHTML = `<div class="mo-titulo">${v.versao || v.motor || `Versão ${i+1}`}</div><div class="mo-det">${v.combustivel || veiculo.combustivel || ""} ${v.motor || veiculo.motor || ""}</div>`;
-    div.onclick = () => {
-      const veiculoFinal = { ...veiculo, motor: v.motor || veiculo.motor, combustivel: v.combustivel || veiculo.combustivel, versao: v.versao };
-      confirmarVeiculo(veiculoFinal);
-    };
+function mostrarSeletorMotorizacao(v) {
+  document.getElementById("mot-modelo").textContent = `${v.modelo} ${v.ano}`;
+  const grid = document.getElementById("motor-grid"); grid.innerHTML = "";
+  v.versoes.forEach((ver, i) => {
+    const div = document.createElement("div"); div.className = "motor-opt";
+    div.innerHTML = `<div class="mo-titulo">${ver.versao||ver.motor||"Versão "+(i+1)}</div><div class="mo-det">${ver.combustivel||v.combustivel||""} ${ver.motor||v.motor||""}</div>`;
+    div.onclick = () => confirmarVeiculo({...v, motor:ver.motor||v.motor, combustivel:ver.combustivel||v.combustivel, versao:ver.versao});
     grid.appendChild(div);
   });
   document.getElementById("bloco-motorizacao").style.display = "block";
 }
 
-window.cancelarMotorizacao = function() {
-  document.getElementById("bloco-motorizacao").style.display = "none";
-  document.getElementById("bloco-placa").style.display = "block";
-};
+window.cancelarMotorizacao = () => { document.getElementById("bloco-motorizacao").style.display="none"; document.getElementById("bloco-placa").style.display="block"; };
 
-function confirmarVeiculo(veiculo) {
-  veiculoAtual = veiculo;
+function confirmarVeiculo(v) {
+  veiculoAtual = v;
   document.getElementById("bloco-motorizacao").style.display = "none";
   document.getElementById("bloco-placa").style.display = "none";
-  document.getElementById("sv-modelo").textContent = `${veiculo.modelo} ${veiculo.ano}`;
-  document.getElementById("sv-det").textContent = `${veiculo.motor || ""} • ${veiculo.combustivel || ""} • ${veiculo.placa}`;
-  document.getElementById("va-modelo").textContent = `${veiculo.modelo} ${veiculo.ano}`;
-  document.getElementById("va-det").textContent = `${veiculo.motor || ""} • ${veiculo.placa}`;
-  document.getElementById("bloco-servico").style.display = "block";
+  document.getElementById("va-modelo").textContent = `${v.modelo} ${v.ano}`;
+  document.getElementById("va-det").textContent = `${v.motor||""} • ${v.placa}`;
   document.getElementById("veiculo-ativo").style.display = "block";
+  document.getElementById("bloco-servico").style.display = "block";
 }
 
-window.trocarVeiculo = function() {
+window.trocarVeiculo = () => {
   veiculoAtual = null;
   document.getElementById("veiculo-ativo").style.display = "none";
   document.getElementById("bloco-servico").style.display = "none";
@@ -539,202 +393,74 @@ window.trocarVeiculo = function() {
   document.getElementById("inp-placa").value = "";
 };
 
-// ── CALCULAR ──
-window.calcular = async function() {
+window.calcular = async () => {
   const servico = document.getElementById("inp-servico").value.trim();
-  const hora = parseFloat(document.getElementById("inp-hora").value) || 85;
-  const margem = parseFloat(document.getElementById("inp-margem").value) || 35;
-
-  if (!servico) {
-    mostrarErro("er-servico", "Descreva o serviço a calcular.");
-    return;
-  }
-
-  // Bloqueio de escopo — detecta perguntas fora do automotivo
-  const palavrasForaEscopo = ["receita","culinária","cozinha","doce","bolo","direito","medicina","advogado","lei","investimento","ação bolsa","bitcoin","política","futebol","letra música","poema"];
-  const servicoLower = servico.toLowerCase();
-  if (palavrasForaEscopo.some(p => servicoLower.includes(p))) {
-    mostrarErro("er-servico", "⚠️ Esse app é exclusivo para serviços automotivos. Descreva um serviço para o veículo.");
-    return;
-  }
-
+  const hora = parseFloat(document.getElementById("inp-hora").value)||85;
+  const margem = parseFloat(document.getElementById("inp-margem").value)||35;
+  if (!servico) { mostrarErro("er-servico","Descreva o serviço a calcular."); return; }
+  const fora = ["receita","culinária","cozinha","direito","medicina","advogado","lei","investimento","bitcoin","política","futebol","letra música","poema"];
+  if (fora.some(p => servico.toLowerCase().includes(p))) { mostrarErro("er-servico","⚠️ Este app é exclusivo para serviços automotivos."); return; }
   esconderErro("er-servico");
   document.getElementById("bloco-servico").style.display = "none";
   document.getElementById("load-calc").style.display = "flex";
   document.getElementById("btn-nova-consulta").style.display = "none";
-
   try {
-    const r = await fetch("/api/calcular", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        veiculo: veiculoAtual,
-        servico,
-        custoPorHora: hora,
-        margemLucro: margem,
-        setores: setoresUsuario
-      })
-    });
+    const r = await fetch("/api/calcular", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({veiculo:veiculoAtual,servico,custoPorHora:hora,margemLucro:margem,setores:setoresUsuario}) });
     const dados = await r.json();
-    if (!dados || dados.erro) throw new Error(dados?.erro || "Erro no cálculo");
-
-    ultimoResultado = { servico, dados };
-
-    // Salva no histórico via cache-placa
-    await fetch("/api/cache-placa", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
-      body: JSON.stringify({
-        placa: veiculoAtual.placa,
-        veiculo: veiculoAtual,
-        servico,
-        resultado: dados
-      })
-    });
-
+    if (!dados||dados.erro) throw new Error(dados?.erro||"Erro");
+    await fetch("/api/cache-placa", { method:"POST", headers:{"Content-Type":"application/json","Authorization":`Bearer ${idToken}`}, body:JSON.stringify({placa:veiculoAtual.placa,veiculo:veiculoAtual,servico,resultado:dados}) });
     document.getElementById("load-calc").style.display = "none";
     renderizarResultado(dados, servico);
     trocarTab("res");
     document.getElementById("btn-nova-consulta").style.display = "flex";
-
-  } catch (e) {
+  } catch(e) {
     document.getElementById("load-calc").style.display = "none";
     document.getElementById("bloco-servico").style.display = "block";
-    mostrarErro("er-servico", "Erro ao calcular. Tente novamente.");
+    mostrarErro("er-servico","Erro ao calcular. Tente novamente.");
   }
 };
 
-// ── RENDERIZAR RESULTADO ──
 function renderizarResultado(dados, servico) {
-  const el = document.getElementById("res-content");
-  const preco = dados.precoFinal || dados.preco_sugerido || 0;
-  const pecas = dados.pecas || dados.itens || [];
-  const maoObra = dados.mao_de_obra || dados.maoDeObra || {};
-  const obs = dados.observacoes || dados.alertas || [];
-  const oportunidades = dados.oportunidades || [];
-
-  let html = `
-    <div class="rb">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${servico}</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:2px">${veiculoAtual?.modelo} ${veiculoAtual?.ano} • ${veiculoAtual?.placa}</div>
-      <div class="rv">R$ ${Number(preco).toLocaleString("pt-BR", {minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-      <div style="font-size:12px;color:var(--muted)">Preço sugerido ao cliente</div>
-    </div>`;
-
-  if (maoObra && (maoObra.horas || maoObra.valor)) {
-    html += `<div class="hi"><div><div style="font-size:13px;font-weight:600">Mão de obra</div><div style="font-size:12px;color:var(--muted)">${maoObra.horas || 0}h × R$${maoObra.valorHora || 85}/h</div></div><div class="hv">R$ ${Number(maoObra.valor||0).toLocaleString("pt-BR",{minimumFractionDigits:2})}</div></div>`;
-  }
-
-  if (pecas.length) {
-    html += `<div class="is"><div class="ih">Peças e materiais</div>`;
-    pecas.forEach(p => {
-      html += `<div class="ic">${p.nome || p.item} — <strong>R$ ${Number(p.valor||p.preco||0).toLocaleString("pt-BR",{minimumFractionDigits:2})}</strong><br><span style="color:var(--muted);font-size:12px">${p.obs||""}</span></div>`;
-    });
-    html += `</div>`;
-  }
-
-  if (obs.length) {
-    html += `<div class="is"><div class="ih">Observações</div>`;
-    obs.forEach(o => { html += `<div class="ic al">${o}</div>`; });
-    html += `</div>`;
-  }
-
-  if (oportunidades.length) {
-    html += `<div class="is"><div class="ih">💡 Oportunidades de venda</div>`;
-    oportunidades.forEach(o => { html += `<div class="ic op">${o}</div>`; });
-    html += `</div>`;
-  }
-
-  el.innerHTML = html;
+  const preco = dados.precoFinal||dados.preco_sugerido||0;
+  const pecas = dados.pecas||dados.itens||[];
+  const mo = dados.mao_de_obra||dados.maoDeObra||{};
+  const obs = dados.observacoes||dados.alertas||[];
+  const op = dados.oportunidades||[];
+  let html = `<div class="rb"><div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${servico}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${veiculoAtual?.modelo} ${veiculoAtual?.ano} • ${veiculoAtual?.placa}</div><div class="rv">R$ ${Number(preco).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div style="font-size:12px;color:var(--muted)">Preço sugerido ao cliente</div></div>`;
+  if (mo.horas||mo.valor) html += `<div class="hi"><div><div style="font-size:13px;font-weight:600">Mão de obra</div><div style="font-size:12px;color:var(--muted)">${mo.horas||0}h × R$${mo.valorHora||85}/h</div></div><div class="hv">R$ ${Number(mo.valor||0).toLocaleString("pt-BR",{minimumFractionDigits:2})}</div></div>`;
+  if (pecas.length) { html+=`<div class="is"><div class="ih">Peças e materiais</div>`; pecas.forEach(p=>{html+=`<div class="ic">${p.nome||p.item} — <strong>R$ ${Number(p.valor||p.preco||0).toLocaleString("pt-BR",{minimumFractionDigits:2})}</strong><br><span style="color:var(--muted);font-size:12px">${p.obs||""}</span></div>`;}); html+=`</div>`; }
+  if (obs.length) { html+=`<div class="is"><div class="ih">Observações</div>`; obs.forEach(o=>{html+=`<div class="ic al">${o}</div>`;}); html+=`</div>`; }
+  if (op.length) { html+=`<div class="is"><div class="ih">💡 Oportunidades</div>`; op.forEach(o=>{html+=`<div class="ic op">${o}</div>`;}); html+=`</div>`; }
+  document.getElementById("res-content").innerHTML = html;
 }
 
-// ── NOVA CONSULTA COM MESMA PLACA ──
-window.novaConsultaMesmaPlaca = function() {
-  document.getElementById("inp-servico").value = "";
-  document.getElementById("bloco-servico").style.display = "block";
-  document.getElementById("btn-nova-consulta").style.display = "none";
-  trocarTab("calc");
-};
+window.novaConsultaMesmaPlaca = () => { document.getElementById("inp-servico").value=""; document.getElementById("bloco-servico").style.display="block"; document.getElementById("btn-nova-consulta").style.display="none"; trocarTab("calc"); };
+window.novaConsultaCompleta = () => { veiculoAtual=null; document.getElementById("veiculo-ativo").style.display="none"; document.getElementById("bloco-servico").style.display="none"; document.getElementById("bloco-placa").style.display="block"; document.getElementById("inp-placa").value=""; document.getElementById("inp-servico").value=""; trocarTab("calc"); };
 
-// ── NOVA CONSULTA COMPLETA ──
-window.novaConsultaCompleta = function() {
-  veiculoAtual = null;
-  document.getElementById("veiculo-ativo").style.display = "none";
-  document.getElementById("bloco-servico").style.display = "none";
-  document.getElementById("bloco-placa").style.display = "block";
-  document.getElementById("inp-placa").value = "";
-  document.getElementById("inp-servico").value = "";
-  trocarTab("calc");
-};
-
-// ── HISTÓRICO ──
 async function carregarHistorico() {
   const lista = document.getElementById("hist-lista");
   lista.innerHTML = `<div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>`;
   try {
-    const q = query(
-      collection(db, "historico"),
-      where("uid", "==", usuario.uid),
-      orderBy("criadoEm", "desc"),
-      limit(20)
-    );
+    const q = query(collection(db,"historico"),where("uid","==",usuario.uid),orderBy("criadoEm","desc"),limit(20));
     const snap = await getDocs(q);
-    if (snap.empty) {
-      lista.innerHTML = `<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;
-      return;
-    }
-    let html = "";
-    snap.forEach(doc => {
-      const d = doc.data();
-      const data = d.criadoEm?.toDate ? d.criadoEm.toDate() : new Date(d.criadoEm);
-      const dataStr = data.toLocaleDateString("pt-BR", { day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" });
-      html += `<div class="hist-item" onclick="reabrirHistorico('${doc.id}')">
-        <div class="hist-placa">${d.placa}</div>
-        <div class="hist-modelo">${d.modelo} ${d.ano}</div>
-        <div class="hist-servico">${d.servico}</div>
-        <div class="hist-data">🕐 ${dataStr}</div>
-      </div>`;
-    });
+    if (snap.empty) { lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`; return; }
+    let html="";
+    snap.forEach(d=>{ const dt=d.data(); const data=dt.criadoEm?.toDate?dt.criadoEm.toDate():new Date(dt.criadoEm); html+=`<div class="hist-item"><div class="hist-placa">${dt.placa}</div><div class="hist-modelo">${dt.modelo} ${dt.ano}</div><div class="hist-servico">${dt.servico}</div><div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})}</div></div>`; });
     lista.innerHTML = html;
-  } catch(e) {
-    lista.innerHTML = `<div class="hist-vazio">Erro ao carregar histórico.</div>`;
-  }
+  } catch(e) { lista.innerHTML=`<div class="hist-vazio">Erro ao carregar histórico.</div>`; }
 }
 
-window.reabrirHistorico = async function(id) {
-  // Futuramente: abre resultado salvo
+window.trocarTab = (tab) => {
+  ["calc","res","hist"].forEach(t=>{ document.getElementById("pn-"+t).style.display=t===tab?"block":"none"; document.getElementById("tab-"+t).classList.toggle("active",t===tab); });
+  if (tab==="hist") carregarHistorico();
 };
 
-// ── TROCAR TABS ──
-window.trocarTab = function(tab) {
-  document.getElementById("pn-calc").style.display = tab === "calc" ? "block" : "none";
-  document.getElementById("pn-res").style.display = tab === "res" ? "block" : "none";
-  document.getElementById("pn-hist").style.display = tab === "hist" ? "block" : "none";
-  document.getElementById("tab-calc").classList.toggle("active", tab === "calc");
-  document.getElementById("tab-res").classList.toggle("active", tab === "res");
-  document.getElementById("tab-hist").classList.toggle("active", tab === "hist");
-  if (tab === "hist") carregarHistorico();
-};
-
-// ── HELPERS ──
-window.togS = function(el) { el.classList.toggle("active"); };
-window.setServ = function(v) { document.getElementById("inp-servico").value = v; };
-window.formatarPlaca = function(inp) {
-  inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-};
-
-function mostrarTela(id) {
-  document.querySelectorAll(".screen, .main-s").forEach(el => el.classList.remove("active"));
-  document.getElementById(id)?.classList.add("active");
-}
-function mostrarErro(id, txt) {
-  const el = document.getElementById(id);
-  if (el) { el.textContent = txt; el.style.display = "block"; }
-}
-function esconderErro(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = "none";
-}
+window.togS = el => el.classList.toggle("active");
+window.setServ = v => { document.getElementById("inp-servico").value=v; };
+window.formatarPlaca = inp => { inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,""); };
+function mostrarTela(id) { document.querySelectorAll(".screen,.main-s").forEach(el=>el.classList.remove("active")); document.getElementById(id)?.classList.add("active"); }
+function mostrarErro(id,txt) { const el=document.getElementById(id); if(el){el.textContent=txt;el.style.display="block";} }
+function esconderErro(id) { const el=document.getElementById(id); if(el)el.style.display="none"; }
 </script>
 </body>
 </html>
