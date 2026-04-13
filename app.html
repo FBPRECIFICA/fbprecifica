@@ -34,8 +34,11 @@ input::placeholder{color:#aaa}
 .btn-p:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-s{background:var(--surf);color:var(--text);border:1.5px solid var(--border);margin-top:10px}
 .btn-s:hover{border-color:var(--acc);color:var(--acc)}
-.btn-ajuda{width:100%;padding:11px;border-radius:12px;border:1.5px dashed var(--acc);background:transparent;color:var(--acc);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:6px;margin-bottom:14px}
+.btn-ajuda{width:100%;padding:11px;border-radius:12px;border:1.5px dashed var(--acc);background:transparent;color:var(--acc);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:6px;margin-bottom:6px;display:block}
 .btn-ajuda:hover{background:var(--accl)}
+.btn-ver-salvos{width:100%;padding:10px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:6px;display:none}
+.btn-ver-salvos:hover{border-color:var(--muted);color:var(--text)}
+.btn-ver-salvos.visivel{display:block}
 .er{color:var(--err);font-size:12px;font-weight:500;margin:-8px 0 12px}
 .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 .sc{border:2px solid var(--border);border-radius:14px;padding:12px 8px;cursor:pointer;transition:all .2s;text-align:center;background:var(--white);user-select:none;position:relative}
@@ -47,7 +50,7 @@ input::placeholder{color:#aaa}
 .sc .sd{font-size:9px;color:var(--muted);margin-top:2px}
 .ck{position:absolute;top:6px;right:6px;width:16px;height:16px;background:var(--acc);border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700}
 .sc.active .ck{display:flex}
-.escolha-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.escolha-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .escolha-card{border:2px solid var(--border);border-radius:16px;padding:20px 14px;cursor:pointer;transition:all .2s;text-align:center;background:var(--white);user-select:none}
 .escolha-card:hover{border-color:var(--acc);background:var(--accl)}
 .escolha-icon{font-size:32px;margin-bottom:8px}
@@ -132,18 +135,25 @@ input::placeholder{color:#aaa}
 .modal-fechar{position:absolute;top:16px;right:16px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
 .nao-aplicavel{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:24px 20px;margin-bottom:14px;box-shadow:var(--sh);text-align:center}
 .nao-aplicavel .na-icon{font-size:40px;margin-bottom:10px}
-.nao-aplicavel .na-titulo{font-family:'Barlow',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px;color:var(--text)}
+.nao-aplicavel .na-titulo{font-family:'Barlow',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px}
 .nao-aplicavel .na-texto{font-size:13px;color:var(--muted);line-height:1.6}
+/* Custos salvos resumo */
+.salvos-resumo{background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.salvos-linha{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.salvos-label{color:var(--muted)}
+.salvos-valor{font-weight:600}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div id="app">
 
+<!-- LOADING -->
 <div class="screen active" id="s-loading">
   <div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>
 </div>
 
+<!-- STEP 1: SETORES -->
 <div class="screen" id="s-setores">
   <div style="width:100%;max-width:500px">
     <div class="logo">FB<span>precifica</span></div>
@@ -175,6 +185,7 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
+<!-- STEP 2: MÃO DE OBRA -->
 <div class="screen" id="s-mo">
   <div style="width:100%;max-width:500px">
     <div class="logo">FB<span>precifica</span></div>
@@ -184,6 +195,8 @@ input::placeholder{color:#aaa}
       <div class="cs">Você já sabe quanto custa sua mão de obra por hora?</div>
       <div class="steps"><div class="step done"></div><div class="step act"></div></div>
       <div class="setor-tabs" id="setor-tabs-mo" style="display:none"></div>
+
+      <!-- ESCOLHA -->
       <div id="bloco-escolha">
         <div class="escolha-grid">
           <div class="escolha-card" onclick="escolherModo('simples')">
@@ -197,8 +210,10 @@ input::placeholder{color:#aaa}
             <div class="escolha-desc">Me ajuda a calcular com base nos meus custos</div>
           </div>
         </div>
+        <button class="btn-ver-salvos" id="btn-ver-salvos-onboard" onclick="verCustosSalvos('onboard')">📋 Ver meus custos salvos</button>
       </div>
 
+      <!-- MODO SIMPLES -->
       <div class="form-simples" id="bloco-simples">
         <label>Custo por hora (R$)</label>
         <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="s-custo-hora" placeholder="85" min="1" oninput="atualizarPreviewSimples()"/></div>
@@ -220,6 +235,7 @@ input::placeholder{color:#aaa}
         <button class="btn btn-s" onclick="voltarEscolha()">← Voltar</button>
       </div>
 
+      <!-- MODO COMPLETO -->
       <div class="form-completo" id="bloco-completo">
         <div class="sec-titulo">👷 Pessoal</div>
         <label>Salário bruto do técnico (R$)</label>
@@ -278,7 +294,7 @@ input::placeholder{color:#aaa}
             <div class="rc-custo" id="rc-preco-final">—</div>
           </div>
         </div>
-        <div class="er" id="er-completo" style="display:none">Preencha pelo menos o salário do técnico</div>
+        <div class="er" id="er-completo" style="display:none"></div>
         <button class="btn btn-p" id="btn-salvar-completo" onclick="salvarModoCompleto()">Salvar e entrar no app →</button>
         <button class="btn btn-s" onclick="voltarEscolha()">← Voltar</button>
       </div>
@@ -286,6 +302,7 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
+<!-- BLOQUEADO -->
 <div class="screen" id="s-bloq">
   <div style="width:100%;max-width:420px">
     <div class="card">
@@ -300,6 +317,7 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
+<!-- APP PRINCIPAL -->
 <div class="main-s" id="s-main">
   <div id="trial-bar" class="trial-bar" style="display:none"></div>
   <div class="nav">
@@ -331,10 +349,11 @@ input::placeholder{color:#aaa}
         <button class="btn btn-p" id="btn-buscar" onclick="buscarPlaca()">Buscar veículo →</button>
         <div class="load" id="load-placa" style="display:none"><div class="spin"></div><div class="lt">Consultando placa...</div></div>
       </div>
+      <!-- SELETOR DE MOTORIZAÇÃO -->
       <div id="bloco-motorizacao" style="display:none">
         <div class="vc" style="margin-bottom:14px">
           <div style="font-size:28px">🚗</div>
-          <div><div class="vm" id="mot-modelo"></div><div class="vd">Selecione a motorização</div></div>
+          <div style="flex:1"><div class="vm" id="mot-modelo"></div><div class="vd">Selecione a motorização</div></div>
         </div>
         <label>Qual a versão/motorização?</label>
         <div class="motor-grid" id="motor-grid"></div>
@@ -372,16 +391,17 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
+<!-- MODAL M.O. -->
 <div class="modal-overlay" id="modal-mo" onclick="if(event.target.id==='modal-mo')fecharModalMO()">
   <div class="modal">
     <button class="modal-fechar" onclick="fecharModalMO()">✕</button>
-    <div style="font-family:'Barlow',sans-serif;font-size:20px;font-weight:900;margin-bottom:4px">⚙️ Alterar mão de obra</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Atualize seu custo/hora e margem de lucro</div>
+    <div style="font-family:'Barlow',sans-serif;font-size:20px;font-weight:900;margin-bottom:4px">⚙️ Mão de obra</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Atualize ou revise seus custos</div>
     <div class="setor-tabs" id="modal-setor-tabs" style="display:none"></div>
-    <div id="modal-form"></div>
-    <button class="btn btn-p" style="margin-top:8px" onclick="salvarModal()">Salvar alterações</button>
+    <div id="modal-conteudo"></div>
   </div>
 </div>
+
 </div>
 
 <script type="module">
@@ -409,11 +429,12 @@ let configUsuario = { setores: [], maoDeObra: {} };
 let setoresSelecionados = [];
 let setorAtivo = null;
 let setorModal = null;
-let _custoHoraCalculado = 0;
+let _custoHoraCalc = 0;
 
 const LABEL = { mecanica_leve:"Mecânica Leve", diesel_leve:"Diesel Leve / Pickups", caminhoes_pesados:"Caminhões Pesados" };
 const ICON = { mecanica_leve:"🔧", diesel_leve:"🚙", caminhoes_pesados:"🚛" };
 
+// ── SESSÃO ──
 onAuthStateChanged(auth, async (user) => {
   if (!user) { window.location.href="/login.html"; return; }
   usuario = user;
@@ -444,6 +465,7 @@ onAuthStateChanged(auth, async (user) => {
 window.fazerLogout = async()=>{ await signOut(auth); window.location.href="/login.html"; };
 window.togS = el => el.classList.toggle("active");
 
+// ── SETORES ──
 window.avancarParaMO = () => {
   setoresSelecionados = [...document.querySelectorAll("#sg-setores .sc.active")].map(el=>el.dataset.s);
   if (!setoresSelecionados.length) { document.getElementById("er-setor").style.display="block"; return; }
@@ -470,12 +492,13 @@ function resetarMO() {
   document.getElementById("bloco-completo").style.display="none";
   document.getElementById("resultado-completo").style.display="none";
   document.getElementById("preview-simples").style.display="none";
+  // Mostra botão "ver salvos" se já tem dados
   const mo = configUsuario.maoDeObra[setorAtivo]||{};
+  const btnVer = document.getElementById("btn-ver-salvos-onboard");
   if (mo.valorHora) {
-    escolherModo("simples");
-    document.getElementById("s-custo-hora").value=mo.custoHora||mo.valorHora||"";
-    document.getElementById("s-margem").value=mo.margem||"";
-    atualizarPreviewSimples();
+    btnVer.classList.add("visivel");
+  } else {
+    btnVer.classList.remove("visivel");
   }
 }
 
@@ -489,60 +512,104 @@ window.escolherModo = (modo) => {
   document.getElementById("bloco-escolha").style.display="none";
   document.getElementById("bloco-simples").style.display=modo==="simples"?"block":"none";
   document.getElementById("bloco-completo").style.display=modo==="completo"?"block":"none";
+  // Preenche valores salvos se existirem
+  const mo = configUsuario.maoDeObra[setorAtivo]||{};
+  if (modo==="simples") {
+    if (mo.custoHora) document.getElementById("s-custo-hora").value=mo.custoHora;
+    if (mo.margem) document.getElementById("s-margem").value=mo.margem;
+    atualizarPreviewSimples();
+  }
+  if (modo==="completo" && mo.salario) preencherFormCompleto(mo);
 };
 
+// Ver custos salvos — mostra resumo e abre formulário preenchido
+window.verCustosSalvos = (origem) => {
+  const mo = configUsuario.maoDeObra[setorAtivo||configUsuario.setores[0]]||{};
+  if (!mo.valorHora) { alert("Nenhum custo salvo ainda."); return; }
+  if (origem==="modal") {
+    // No modal, preenche o formulário simples com os dados salvos
+    renderizarModalConteudo(setorModal, "simples");
+  } else {
+    // No onboarding, abre modo simples preenchido
+    escolherModo("simples");
+  }
+};
+
+function preencherFormCompleto(mo) {
+  const campos = {
+    "c-salario":"salario","c-encargos":"encargos","c-prolabore":"prolabore",
+    "c-aluguel":"aluguel","c-energia":"energia","c-agua":"agua","c-internet":"internet",
+    "c-contador":"contador","c-manutencao":"manutencao","c-simples":"simples",
+    "c-alvara":"alvara","c-materiais":"materiais","c-epis":"epis","c-sistema":"sistema",
+    "c-tecnicos":"tecnicos","c-horas-dia":"horasDia","c-dias-mes":"diasMes"
+  };
+  Object.entries(campos).forEach(([id,key])=>{
+    const el=document.getElementById(id); if(el&&mo[key]!==undefined)el.value=mo[key];
+  });
+  if(mo.margem){const m=document.getElementById("c-margem-final");if(m)m.value=mo.margem;}
+  recalcularCompleto();
+}
+
+// ── MODO SIMPLES ──
 window.atualizarPreviewSimples = () => {
-  const custo=parseFloat(document.getElementById("s-custo-hora").value)||0;
-  const margem=parseFloat(document.getElementById("s-margem").value)||0;
+  const custo=parseFloat(document.getElementById("s-custo-hora")?.value)||0;
+  const margem=parseFloat(document.getElementById("s-margem")?.value)||0;
   if (!custo||!margem) { document.getElementById("preview-simples").style.display="none"; return; }
-  const preco=custo*(1+margem/100);
   document.getElementById("preview-simples").style.display="block";
   document.getElementById("ps-custo").textContent=`R$ ${fmt(custo)}`;
   document.getElementById("ps-margem").textContent=`${margem}%`;
-  document.getElementById("ps-preco").textContent=`R$ ${fmt(preco)}/h`;
+  document.getElementById("ps-preco").textContent=`R$ ${fmt(custo*(1+margem/100))}/h`;
 };
 
 window.salvarModoSimples = async () => {
-  const custo=parseFloat(document.getElementById("s-custo-hora").value);
-  const margem=parseFloat(document.getElementById("s-margem").value);
+  const custo=parseFloat(document.getElementById("s-custo-hora")?.value);
+  const margem=parseFloat(document.getElementById("s-margem")?.value);
   if (!custo||!margem) { document.getElementById("er-simples").style.display="block"; return; }
   document.getElementById("er-simples").style.display="none";
   await salvarMO({ modo:"simples", custoHora:custo, margem, valorHora:parseFloat((custo*(1+margem/100)).toFixed(2)) });
 };
 
+// ── MODO COMPLETO ──
 window.recalcularCompleto = () => {
   const g=(id,def=0)=>parseFloat(document.getElementById(id)?.value)||def;
   const salario=g("c-salario"); if(!salario){document.getElementById("resultado-completo").style.display="none";return;}
   const encargos=g("c-encargos",72),prolabore=g("c-prolabore"),aluguel=g("c-aluguel"),energia=g("c-energia"),agua=g("c-agua"),internet=g("c-internet"),contador=g("c-contador"),manutencao=g("c-manutencao"),simples=g("c-simples"),alvara=g("c-alvara"),materiais=g("c-materiais"),epis=g("c-epis"),sistema=g("c-sistema");
   const tecnicos=g("c-tecnicos",1)||1,horasDia=g("c-horas-dia",8)||8,diasMes=g("c-dias-mes",22)||22;
-  const custoTecnico=salario*(1+encargos/100)*tecnicos;
+  const custoTec=salario*(1+encargos/100)*tecnicos;
   const fixos=aluguel+energia+agua+internet+contador+manutencao+alvara+materiais+epis+sistema+prolabore;
-  const base=custoTecnico+fixos;
-  const totalMensal=base*(1+simples/100);
+  const totalMensal=(custoTec+fixos)*(1+simples/100);
   const horasMes=horasDia*diasMes*tecnicos;
-  _custoHoraCalculado=horasMes>0?totalMensal/horasMes:0;
+  _custoHoraCalc=horasMes>0?totalMensal/horasMes:0;
   document.getElementById("resultado-completo").style.display="block";
   document.getElementById("rc-total").textContent=`R$ ${fmt(totalMensal)}`;
   document.getElementById("rc-horas").textContent=`${horasMes.toFixed(0)}h`;
-  document.getElementById("rc-custo-hora-val").textContent=`R$ ${fmt(_custoHoraCalculado)}/h`;
+  document.getElementById("rc-custo-hora-val").textContent=`R$ ${fmt(_custoHoraCalc)}/h`;
   recalcularPrecoFinal();
 };
 
 window.recalcularPrecoFinal = () => {
   const margem=parseFloat(document.getElementById("c-margem-final")?.value)||0;
-  if (!margem||!_custoHoraCalculado) { document.getElementById("preco-final-wrap").style.display="none"; return; }
+  if (!margem||!_custoHoraCalc) { document.getElementById("preco-final-wrap").style.display="none"; return; }
   document.getElementById("preco-final-wrap").style.display="block";
-  document.getElementById("rc-preco-final").textContent=`R$ ${fmt(_custoHoraCalculado*(1+margem/100))}/h`;
+  document.getElementById("rc-preco-final").textContent=`R$ ${fmt(_custoHoraCalc*(1+margem/100))}/h`;
 };
 
 window.salvarModoCompleto = async () => {
-  const salario=parseFloat(document.getElementById("c-salario").value);
-  const margem=parseFloat(document.getElementById("c-margem-final").value);
-  if (!salario) { document.getElementById("er-completo").textContent="Preencha pelo menos o salário do técnico"; document.getElementById("er-completo").style.display="block"; return; }
-  if (!margem) { document.getElementById("er-completo").textContent="Informe a margem de lucro desejada"; document.getElementById("er-completo").style.display="block"; return; }
+  const salario=parseFloat(document.getElementById("c-salario")?.value);
+  const margem=parseFloat(document.getElementById("c-margem-final")?.value);
+  if (!salario) { mostrarErroEl("er-completo","Preencha pelo menos o salário do técnico"); return; }
+  if (!margem) { mostrarErroEl("er-completo","Informe a margem de lucro desejada"); return; }
   document.getElementById("er-completo").style.display="none";
   const g=(id,def=0)=>parseFloat(document.getElementById(id)?.value)||def;
-  await salvarMO({ modo:"completo", salario, encargos:g("c-encargos",72), prolabore:g("c-prolabore"), aluguel:g("c-aluguel"), energia:g("c-energia"), agua:g("c-agua"), internet:g("c-internet"), contador:g("c-contador"), manutencao:g("c-manutencao"), simples:g("c-simples"), alvara:g("c-alvara"), materiais:g("c-materiais"), epis:g("c-epis"), sistema:g("c-sistema"), tecnicos:g("c-tecnicos",1)||1, horasDia:g("c-horas-dia",8)||8, diasMes:g("c-dias-mes",22)||22, margem, custoHora:parseFloat(_custoHoraCalculado.toFixed(2)), valorHora:parseFloat((_custoHoraCalculado*(1+margem/100)).toFixed(2)) });
+  await salvarMO({
+    modo:"completo", salario, encargos:g("c-encargos",72), prolabore:g("c-prolabore"),
+    aluguel:g("c-aluguel"), energia:g("c-energia"), agua:g("c-agua"), internet:g("c-internet"),
+    contador:g("c-contador"), manutencao:g("c-manutencao"), simples:g("c-simples"),
+    alvara:g("c-alvara"), materiais:g("c-materiais"), epis:g("c-epis"), sistema:g("c-sistema"),
+    tecnicos:g("c-tecnicos",1)||1, horasDia:g("c-horas-dia",8)||8, diasMes:g("c-dias-mes",22)||22,
+    margem, custoHora:parseFloat(_custoHoraCalc.toFixed(2)),
+    valorHora:parseFloat((_custoHoraCalc*(1+margem/100)).toFixed(2))
+  });
 };
 
 async function salvarMO(dadosSetor) {
@@ -551,16 +618,18 @@ async function salvarMO(dadosSetor) {
   if(btnS)btnS.disabled=true; if(btnC)btnC.disabled=true;
   try {
     const maoDeObra={...configUsuario.maoDeObra,[setorAtivo]:dadosSetor};
-    await setDoc(doc(db,"usuarios",usuario.uid),{setores:setoresSelecionados,maoDeObra},{merge:true});
-    configUsuario={setores:setoresSelecionados,maoDeObra};
+    await setDoc(doc(db,"usuarios",usuario.uid),{setores:setoresSelecionados.length?setoresSelecionados:configUsuario.setores,maoDeObra},{merge:true});
+    configUsuario.maoDeObra=maoDeObra;
+    if(setoresSelecionados.length)configUsuario.setores=setoresSelecionados;
     document.getElementById("nav-nome").textContent=usuario.displayName||usuario.email;
     mostrarTela("s-main");
   } catch(e){
-    if(btnS){btnS.disabled=false;} if(btnC){btnC.disabled=false;}
+    if(btnS)btnS.disabled=false; if(btnC)btnC.disabled=false;
     alert("Erro ao salvar. Tente novamente.");
   }
 }
 
+// ── MODAL M.O. ──
 window.abrirModalMO = () => {
   setorModal=configUsuario.setores[0];
   const tabs=document.getElementById("modal-setor-tabs");
@@ -568,7 +637,7 @@ window.abrirModalMO = () => {
     tabs.style.display="flex";
     tabs.innerHTML=configUsuario.setores.map(s=>`<button class="setor-tab${s===setorModal?" active":""}" onclick="trocarSetorModal('${s}')">${ICON[s]} ${LABEL[s]}</button>`).join("");
   } else { tabs.style.display="none"; }
-  renderizarModalForm(setorModal);
+  renderizarModalConteudo(setorModal, "escolha");
   document.getElementById("modal-mo").classList.add("active");
 };
 
@@ -577,24 +646,117 @@ window.fecharModalMO=()=>document.getElementById("modal-mo").classList.remove("a
 window.trocarSetorModal=(s)=>{
   setorModal=s;
   document.querySelectorAll("#modal-setor-tabs .setor-tab").forEach(t=>t.classList.toggle("active",t.textContent.includes(LABEL[s])));
-  renderizarModalForm(s);
+  renderizarModalConteudo(s,"escolha");
 };
 
-function renderizarModalForm(setor) {
-  const mo=configUsuario.maoDeObra[setor]||{};
-  document.getElementById("modal-form").innerHTML=`
-    <label>Custo por hora (R$)</label>
-    <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="m-custo-hora" placeholder="85" min="1" value="${mo.custoHora||""}" oninput="atualizarPreviewModal()"/></div>
-    <label>Margem de lucro (%)</label>
-    <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="m-margem" placeholder="Ex: 50" min="1" max="300" value="${mo.margem||""}" oninput="atualizarPreviewModal()"/></div>
-    <div class="resultado-calc" id="modal-preview" style="margin-top:8px">
-      <div class="rc-titulo">📊 Preço/hora ao cliente</div>
-      <div class="rc-custo" id="m-preco-hora">—</div>
-    </div>`;
-  atualizarPreviewModal();
+function renderizarModalConteudo(setor, modo) {
+  const mo = configUsuario.maoDeObra[setor]||{};
+  const c = document.getElementById("modal-conteudo");
+
+  if (modo==="escolha") {
+    const temSalvos = !!mo.valorHora;
+    const resumo = temSalvos ? `
+      <div class="salvos-resumo">
+        <div class="salvos-linha"><span class="salvos-label">Custo/hora atual</span><span class="salvos-valor">R$ ${fmt(mo.custoHora||mo.valorHora||0)}</span></div>
+        <div class="salvos-linha"><span class="salvos-label">Margem atual</span><span class="salvos-valor">${mo.margem||0}%</span></div>
+        <div class="salvos-linha"><span class="salvos-label">Preço/hora ao cliente</span><span class="salvos-valor" style="color:var(--acc)">R$ ${fmt(mo.valorHora||0)}</span></div>
+      </div>` : "";
+    c.innerHTML = `
+      ${resumo}
+      <div class="escolha-grid">
+        <div class="escolha-card" onclick="renderizarModalConteudo('${setor}','simples')">
+          <div class="escolha-icon">✅</div>
+          <div class="escolha-titulo">Já sei</div>
+          <div class="escolha-desc">Digitar diretamente o custo por hora</div>
+        </div>
+        <div class="escolha-card" onclick="renderizarModalConteudo('${setor}','completo')">
+          <div class="escolha-icon">🧮</div>
+          <div class="escolha-titulo">Recalcular</div>
+          <div class="escolha-desc">Ver e revisar todos os custos detalhados</div>
+        </div>
+      </div>
+      ${temSalvos ? `<button class="btn-ajuda" onclick="renderizarModalConteudo('${setor}','simples')">📋 Editar custo/hora e margem</button>` : ""}
+    `;
+  } else if (modo==="simples") {
+    c.innerHTML = `
+      <label>Custo por hora (R$)</label>
+      <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="m-custo-hora" placeholder="85" min="1" value="${mo.custoHora||""}" oninput="atualizarPreviewModal()"/></div>
+      <div class="hint">Quanto custa 1 hora do seu técnico (com encargos)</div>
+      <label>Margem de lucro (%)</label>
+      <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="m-margem" placeholder="Ex: 50" min="1" max="300" value="${mo.margem||""}" oninput="atualizarPreviewModal()"/></div>
+      <div class="resultado-calc" id="modal-preview" style="margin-top:8px">
+        <div class="rc-titulo">📊 Preço/hora ao cliente</div>
+        <div class="rc-custo" id="m-preco-hora">—</div>
+      </div>
+      <button class="btn-ajuda" onclick="renderizarModalConteudo('${setor}','completo')">🧮 Me ajude a descobrir meu custo de mão de obra</button>
+      <button class="btn btn-p" style="margin-top:8px" onclick="salvarModal()">Salvar alterações</button>
+      <button class="btn btn-s" onclick="renderizarModalConteudo('${setor}','escolha')">← Voltar</button>
+    `;
+    atualizarPreviewModal();
+  } else if (modo==="completo") {
+    // Formulário completo no modal
+    c.innerHTML = `
+      <div class="sec-titulo">👷 Pessoal</div>
+      <label>Salário bruto do técnico (R$)</label>
+      <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-salario" placeholder="2.500" min="0" value="${mo.salario||""}" oninput="recalcularModal()"/></div>
+      <label>Encargos (%)</label>
+      <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="mc-encargos" placeholder="72" value="${mo.encargos||72}" oninput="recalcularModal()"/></div>
+      <div class="hint">FGTS + INSS + férias + 13º. Padrão: 72%</div>
+      <label>Pró-labore rateado (R$)</label>
+      <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-prolabore" placeholder="500" value="${mo.prolabore||""}" oninput="recalcularModal()"/></div>
+      <div class="sec-titulo">🏢 Custos fixos</div>
+      <div class="cg2">
+        <div><label>Aluguel (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-aluguel" placeholder="2.000" value="${mo.aluguel||""}" oninput="recalcularModal()"/></div></div>
+        <div><label>Energia (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-energia" placeholder="600" value="${mo.energia||""}" oninput="recalcularModal()"/></div></div>
+      </div>
+      <div class="cg2">
+        <div><label>Água (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-agua" placeholder="150" value="${mo.agua||""}" oninput="recalcularModal()"/></div></div>
+        <div><label>Internet/tel (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-internet" placeholder="200" value="${mo.internet||""}" oninput="recalcularModal()"/></div></div>
+      </div>
+      <div class="cg2">
+        <div><label>Contador (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-contador" placeholder="350" value="${mo.contador||""}" oninput="recalcularModal()"/></div></div>
+        <div><label>Manutenção (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-manutencao" placeholder="200" value="${mo.manutencao||""}" oninput="recalcularModal()"/></div></div>
+      </div>
+      <div class="sec-titulo">🧾 Impostos</div>
+      <div class="cg2">
+        <div><label>Simples (%)</label><div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="mc-simples" placeholder="6" value="${mo.simples||""}" oninput="recalcularModal()"/></div></div>
+        <div><label>Alvará (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-alvara" placeholder="80" value="${mo.alvara||""}" oninput="recalcularModal()"/></div></div>
+      </div>
+      <div class="sec-titulo">🔩 Operacional</div>
+      <div class="cg2">
+        <div><label>Materiais (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-materiais" placeholder="300" value="${mo.materiais||""}" oninput="recalcularModal()"/></div></div>
+        <div><label>EPIs (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-epis" placeholder="100" value="${mo.epis||""}" oninput="recalcularModal()"/></div></div>
+      </div>
+      <label>Sistema (R$)</label>
+      <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="mc-sistema" placeholder="150" value="${mo.sistema||""}" oninput="recalcularModal()"/></div>
+      <div class="sec-titulo">⏱️ Capacidade</div>
+      <div class="cg2">
+        <div><label>Nº técnicos</label><input type="number" id="mc-tecnicos" placeholder="2" min="1" value="${mo.tecnicos||1}" oninput="recalcularModal()"/></div>
+        <div><label>Horas/dia</label><input type="number" id="mc-horas-dia" placeholder="8" value="${mo.horasDia||8}" oninput="recalcularModal()"/></div>
+      </div>
+      <label>Dias úteis/mês</label>
+      <input type="number" id="mc-dias-mes" placeholder="22" value="${mo.diasMes||22}" oninput="recalcularModal()"/>
+      <div class="resultado-calc" id="modal-resultado-completo">
+        <div class="rc-titulo">📊 Resultado</div>
+        <div class="rc-linha"><span class="rc-label">Custo total mensal</span><span class="rc-valor" id="m-rc-total">—</span></div>
+        <div class="rc-linha"><span class="rc-label">Custo por hora</span><span class="rc-valor" id="m-rc-hora">—</span></div>
+        <div class="rc-divisor"></div>
+        <label style="font-size:13px;text-transform:none;letter-spacing:0;font-weight:700;color:var(--text);margin-bottom:8px">Margem de lucro desejada (%)</label>
+        <div class="mp" style="margin-bottom:6px"><span class="mp-suf">%</span><input class="mpd" type="number" id="mc-margem" placeholder="Ex: 50" value="${mo.margem||""}" oninput="recalcularModal()"/></div>
+        <div id="m-preco-final-wrap" style="display:none">
+          <div class="rc-divisor"></div>
+          <div class="rc-linha"><span class="rc-label" style="font-weight:700">Preço/hora ao cliente</span></div>
+          <div class="rc-custo" id="m-rc-preco">—</div>
+        </div>
+      </div>
+      <button class="btn btn-p" style="margin-top:8px" onclick="salvarModalCompleto()">Salvar alterações</button>
+      <button class="btn btn-s" onclick="renderizarModalConteudo('${setor}','escolha')">← Voltar</button>
+    `;
+    recalcularModal();
+  }
 }
 
-window.atualizarPreviewModal=()=>{
+window.atualizarPreviewModal = () => {
   const custo=parseFloat(document.getElementById("m-custo-hora")?.value)||0;
   const margem=parseFloat(document.getElementById("m-margem")?.value)||0;
   const prev=document.getElementById("modal-preview");
@@ -603,13 +765,56 @@ window.atualizarPreviewModal=()=>{
   document.getElementById("m-preco-hora").textContent=`R$ ${fmt(custo*(1+margem/100))}/h`;
 };
 
-window.salvarModal=async()=>{
+window.recalcularModal = () => {
+  const g=(id,def=0)=>parseFloat(document.getElementById(id)?.value)||def;
+  const salario=g("mc-salario"); if(!salario){const r=document.getElementById("modal-resultado-completo");if(r)r.style.display="none";return;}
+  const encargos=g("mc-encargos",72),prolabore=g("mc-prolabore"),aluguel=g("mc-aluguel"),energia=g("mc-energia"),agua=g("mc-agua"),internet=g("mc-internet"),contador=g("mc-contador"),manutencao=g("mc-manutencao"),simples=g("mc-simples"),alvara=g("mc-alvara"),materiais=g("mc-materiais"),epis=g("mc-epis"),sistema=g("mc-sistema");
+  const tecnicos=g("mc-tecnicos",1)||1,horasDia=g("mc-horas-dia",8)||8,diasMes=g("mc-dias-mes",22)||22;
+  const custoTec=salario*(1+encargos/100)*tecnicos;
+  const fixos=aluguel+energia+agua+internet+contador+manutencao+alvara+materiais+epis+sistema+prolabore;
+  const totalMensal=(custoTec+fixos)*(1+simples/100);
+  const horasMes=horasDia*diasMes*tecnicos;
+  const custoHora=horasMes>0?totalMensal/horasMes:0;
+  window._modalCustoHora=custoHora;
+  const r=document.getElementById("modal-resultado-completo");if(r)r.style.display="block";
+  const mt=document.getElementById("m-rc-total");if(mt)mt.textContent=`R$ ${fmt(totalMensal)}`;
+  const mh=document.getElementById("m-rc-hora");if(mh)mh.textContent=`R$ ${fmt(custoHora)}/h`;
+  const margem=g("mc-margem");
+  const pw=document.getElementById("m-preco-final-wrap");
+  if(margem&&custoHora){if(pw)pw.style.display="block";const mp=document.getElementById("m-rc-preco");if(mp)mp.textContent=`R$ ${fmt(custoHora*(1+margem/100))}/h`;}
+  else{if(pw)pw.style.display="none";}
+};
+
+window.salvarModal = async () => {
   const custo=parseFloat(document.getElementById("m-custo-hora")?.value);
   const margem=parseFloat(document.getElementById("m-margem")?.value);
   if(!custo||!margem){alert("Preencha custo/hora e margem.");return;}
   const mo=configUsuario.maoDeObra[setorModal]||{};
   const novoMO={...mo,custoHora:custo,margem,valorHora:parseFloat((custo*(1+margem/100)).toFixed(2))};
-  const maoDeObra={...configUsuario.maoDeObra,[setorModal]:novoMO};
+  await salvarMOModal(novoMO);
+};
+
+window.salvarModalCompleto = async () => {
+  const g=(id,def=0)=>parseFloat(document.getElementById(id)?.value)||def;
+  const salario=g("mc-salario");
+  const margem=g("mc-margem");
+  const custoHora=window._modalCustoHora||0;
+  if(!salario){alert("Preencha o salário do técnico.");return;}
+  if(!margem){alert("Informe a margem de lucro.");return;}
+  const novoMO={
+    modo:"completo",salario,encargos:g("mc-encargos",72),prolabore:g("mc-prolabore"),
+    aluguel:g("mc-aluguel"),energia:g("mc-energia"),agua:g("mc-agua"),internet:g("mc-internet"),
+    contador:g("mc-contador"),manutencao:g("mc-manutencao"),simples:g("mc-simples"),
+    alvara:g("mc-alvara"),materiais:g("mc-materiais"),epis:g("mc-epis"),sistema:g("mc-sistema"),
+    tecnicos:g("mc-tecnicos",1)||1,horasDia:g("mc-horas-dia",8)||8,diasMes:g("mc-dias-mes",22)||22,
+    margem,custoHora:parseFloat(custoHora.toFixed(2)),
+    valorHora:parseFloat((custoHora*(1+margem/100)).toFixed(2))
+  };
+  await salvarMOModal(novoMO);
+};
+
+async function salvarMOModal(dados) {
+  const maoDeObra={...configUsuario.maoDeObra,[setorModal]:dados};
   try{
     await setDoc(doc(db,"usuarios",usuario.uid),{maoDeObra},{merge:true});
     configUsuario.maoDeObra=maoDeObra;
@@ -617,7 +822,7 @@ window.salvarModal=async()=>{
     atualizarBadgeCusto();
     alert("✅ Salvo com sucesso!");
   }catch(e){alert("Erro ao salvar.");}
-};
+}
 
 function atualizarBadgeCusto(){
   const wrap=document.getElementById("custo-badge-wrap");
@@ -628,7 +833,8 @@ function atualizarBadgeCusto(){
   wrap.innerHTML=`<div class="custo-badge" onclick="abrirModalMO()">💰 R$ ${fmt(mo.valorHora)}/h · Margem: ${mo.margem||0}% · ⚙️ alterar</div>`;
 }
 
-window.buscarPlaca=async()=>{
+// ── BUSCAR PLACA ──
+window.buscarPlaca = async () => {
   const placa=document.getElementById("inp-placa").value.replace(/[^A-Za-z0-9]/g,"").toUpperCase();
   if(placa.length<7){mostrarErro("er-placa","Placa inválida. Informe 7 caracteres.");return;}
   esconderErro("er-placa");
@@ -661,21 +867,24 @@ function mostrarSeletorMotorizacao(v){
   const grid=document.getElementById("motor-grid");grid.innerHTML="";
   v.versoes.forEach((ver,i)=>{
     const div=document.createElement("div");div.className="motor-opt";
-    div.innerHTML=`<div class="mo-titulo">${ver.versao||ver.motor||"Versão "+(i+1)}</div><div class="mo-det">${ver.combustivel||v.combustivel||""} ${ver.motor||v.motor||""}</div>`;
+    div.innerHTML=`<div class="mo-titulo">${ver.versao||ver.motor||"Versão "+(i+1)}</div><div class="mo-det">${[ver.combustivel||v.combustivel,ver.motor||v.motor].filter(Boolean).join(" · ")}</div>`;
     div.onclick=()=>confirmarVeiculo({...v,motor:ver.motor||v.motor,combustivel:ver.combustivel||v.combustivel,versao:ver.versao});
     grid.appendChild(div);
   });
   document.getElementById("bloco-motorizacao").style.display="block";
 }
 
-window.cancelarMotorizacao=()=>{document.getElementById("bloco-motorizacao").style.display="none";document.getElementById("bloco-placa").style.display="block";};
+window.cancelarMotorizacao=()=>{
+  document.getElementById("bloco-motorizacao").style.display="none";
+  document.getElementById("bloco-placa").style.display="block";
+};
 
 function confirmarVeiculo(v){
   veiculoAtual=v;
   document.getElementById("bloco-motorizacao").style.display="none";
   document.getElementById("bloco-placa").style.display="none";
   document.getElementById("va-modelo").textContent=`${v.modelo} ${v.ano}`;
-  document.getElementById("va-det").textContent=`${v.motor||""} • ${v.placa}`;
+  document.getElementById("va-det").textContent=`${[v.motor,v.versao].filter(Boolean).join(" · ")} • ${v.placa}`;
   document.getElementById("veiculo-ativo").style.display="block";
   document.getElementById("bloco-servico").style.display="block";
   atualizarBadgeCusto();
@@ -689,7 +898,8 @@ window.trocarVeiculo=()=>{
   document.getElementById("inp-placa").value="";
 };
 
-window.calcular=async()=>{
+// ── CALCULAR ──
+window.calcular = async () => {
   const servico=document.getElementById("inp-servico").value.trim();
   if(!servico){mostrarErro("er-servico","Descreva o serviço a calcular.");return;}
   const fora=["receita","culinária","cozinha","direito","medicina","advogado","lei","investimento","bitcoin","política","futebol","letra música","poema"];
@@ -703,7 +913,7 @@ window.calcular=async()=>{
   document.getElementById("load-calc").style.display="flex";
   document.getElementById("btn-nova-consulta").style.display="none";
   try{
-    const veiculoStr=`${veiculoAtual.modelo} ${veiculoAtual.ano} motor ${veiculoAtual.motor||""} ${veiculoAtual.combustivel||""} placa ${veiculoAtual.placa}`;
+    const veiculoStr=`${veiculoAtual.modelo} ${veiculoAtual.ano}${veiculoAtual.versao?" "+veiculoAtual.versao:""} motor ${veiculoAtual.motor||""} ${veiculoAtual.combustivel||""} placa ${veiculoAtual.placa}`.trim();
     const r=await fetch("/api/calcular",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({veiculo:veiculoStr,servico,valorHora,margem})});
     const dados=await r.json();
     if(!dados||dados.error)throw new Error(dados?.error||"Erro");
@@ -725,19 +935,16 @@ function renderizarResultado(dados,servico,valorHora,margem){
   const alertas=dados.alertas_risco||[];
   const verif=dados.verificar_junto||[];
   const seNao=dados.se_nao_trocar||"";
-
-  // Serviço não se aplica ao veículo
   if(horas===0){
-    let html=`<div class="nao-aplicavel">
-      <div class="na-icon">ℹ️</div>
-      <div class="na-titulo">Serviço não aplicável</div>
-      <div class="na-texto">${just||"Este serviço não se aplica a este veículo conforme análise da IA."}</div>
+    let html=`<div style="background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:24px 20px;margin-bottom:14px;box-shadow:var(--sh);text-align:center">
+      <div style="font-size:40px;margin-bottom:10px">ℹ️</div>
+      <div style="font-family:'Barlow',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px">Serviço não aplicável</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6">${just||"Este serviço não se aplica a este veículo."}</div>
     </div>`;
     if(alertas.length){html+=`<div class="is"><div class="ih">⚠️ Atenção</div>`;alertas.forEach(a=>{html+=`<div class="ic al">${a}</div>`;});html+=`</div>`;}
     document.getElementById("res-content").innerHTML=html;
     return;
   }
-
   const custo=horas*valorHora;
   const preco=custo*(1+margem/100);
   let html=`<div class="rb">
@@ -761,13 +968,11 @@ async function carregarHistorico(){
   const lista=document.getElementById("hist-lista");
   lista.innerHTML=`<div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>`;
   try{
-    // Query sem orderBy para evitar necessidade de índice composto
     const q=query(collection(db,"historico"),where("uid","==",usuario.uid),limit(20));
     const snap=await getDocs(q);
     if(snap.empty){lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;return;}
     const docs=[];
     snap.forEach(d=>docs.push({id:d.id,...d.data()}));
-    // Ordena no cliente do mais recente para o mais antigo
     docs.sort((a,b)=>{
       const da=a.criadoEm?.toDate?a.criadoEm.toDate():new Date(a.criadoEm||0);
       const db2=b.criadoEm?.toDate?b.criadoEm.toDate():new Date(b.criadoEm||0);
@@ -781,7 +986,7 @@ async function carregarHistorico(){
     lista.innerHTML=html;
   }catch(e){
     console.error("Histórico erro:",e);
-    lista.innerHTML=`<div class="hist-vazio">Erro ao carregar: ${e.message}</div>`;
+    lista.innerHTML=`<div class="hist-vazio">Erro: ${e.message}</div>`;
   }
 }
 
@@ -790,8 +995,9 @@ window.setServ=v=>{document.getElementById("inp-servico").value=v;};
 window.formatarPlaca=inp=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,"");};
 function mostrarTela(id){document.querySelectorAll(".screen,.main-s").forEach(el=>el.classList.remove("active"));document.getElementById(id)?.classList.add("active");}
 function mostrarErro(id,txt){const el=document.getElementById(id);if(el){el.textContent=txt;el.style.display="block";}}
+function mostrarErroEl(id,txt){const el=document.getElementById(id);if(el){el.textContent=txt;el.style.display="block";}}
 function esconderErro(id){const el=document.getElementById(id);if(el)el.style.display="none";}
-function fmt(v){return v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmt(v){return (v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});}
 </script>
 </body>
 </html>
