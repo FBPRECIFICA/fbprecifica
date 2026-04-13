@@ -24,7 +24,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .step.done{background:var(--acc)}
 .step.act{background:var(--acc);opacity:.5}
 label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-input,select{width:100%;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;padding:13px 16px;margin-bottom:14px;outline:none;transition:border-color .2s;appearance:none}
+input{width:100%;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;padding:13px 16px;margin-bottom:14px;outline:none;transition:border-color .2s}
 input:focus{border-color:var(--acc);background:var(--white)}
 input::placeholder{color:#aaa}
 .hint{font-size:11px;color:var(--muted);margin:-10px 0 12px}
@@ -34,8 +34,9 @@ input::placeholder{color:#aaa}
 .btn-p:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-s{background:var(--surf);color:var(--text);border:1.5px solid var(--border);margin-top:10px}
 .btn-s:hover{border-color:var(--acc);color:var(--acc)}
+.btn-ajuda{width:100%;padding:11px;border-radius:12px;border:1.5px dashed var(--acc);background:transparent;color:var(--acc);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:6px;margin-bottom:14px}
+.btn-ajuda:hover{background:var(--accl)}
 .er{color:var(--err);font-size:12px;font-weight:500;margin:-8px 0 12px}
-/* SETORES */
 .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
 .sc{border:2px solid var(--border);border-radius:14px;padding:12px 8px;cursor:pointer;transition:all .2s;text-align:center;background:var(--white);user-select:none;position:relative}
 .sc:hover{border-color:var(--acc)}
@@ -46,26 +47,22 @@ input::placeholder{color:#aaa}
 .sc .sd{font-size:9px;color:var(--muted);margin-top:2px}
 .ck{position:absolute;top:6px;right:6px;width:16px;height:16px;background:var(--acc);border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700}
 .sc.active .ck{display:flex}
-/* ESCOLHA M.O. */
 .escolha-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .escolha-card{border:2px solid var(--border);border-radius:16px;padding:20px 14px;cursor:pointer;transition:all .2s;text-align:center;background:var(--white);user-select:none}
 .escolha-card:hover{border-color:var(--acc);background:var(--accl)}
 .escolha-icon{font-size:32px;margin-bottom:8px}
 .escolha-titulo{font-size:14px;font-weight:700;margin-bottom:4px}
 .escolha-desc{font-size:11px;color:var(--muted);line-height:1.4}
-/* FORM SIMPLES */
 .form-simples{display:none}
+.form-completo{display:none}
 .mp{position:relative}
 .mp-pre{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;font-weight:600;pointer-events:none}
 .mp-suf{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;font-weight:600;pointer-events:none}
 .mpi{padding-left:38px !important}
 .mpd{padding-right:36px !important}
-/* FORM COMPLETO */
-.form-completo{display:none}
 .sec-titulo{font-family:'Barlow',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin:18px 0 10px;padding-bottom:6px;border-bottom:1.5px solid var(--border)}
 .cg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
 .cg2 input{margin-bottom:0}
-/* RESULTADO CALC */
 .resultado-calc{background:var(--accl);border:2px solid rgba(249,115,22,.25);border-radius:16px;padding:20px;margin:16px 0;display:none}
 .rc-titulo{font-size:11px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
 .rc-linha{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:13px}
@@ -73,11 +70,9 @@ input::placeholder{color:#aaa}
 .rc-valor{font-weight:700}
 .rc-custo{font-family:'Barlow',sans-serif;font-size:32px;font-weight:900;color:var(--acc);margin:8px 0 4px}
 .rc-divisor{height:1px;background:rgba(249,115,22,.2);margin:10px 0}
-/* SETOR TABS */
 .setor-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
 .setor-tab{padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .2s;font-family:'Inter',sans-serif}
 .setor-tab.active{background:var(--acc);color:#fff;border-color:var(--acc)}
-/* NAV */
 .nav{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
 .nl{font-family:'Barlow',sans-serif;font-size:20px;font-weight:900}
 .nl span{color:var(--acc)}
@@ -87,7 +82,6 @@ input::placeholder{color:#aaa}
 .btn-nav:hover{border-color:var(--acc);color:var(--acc)}
 .btn-nav.danger:hover{border-color:var(--err);color:var(--err)}
 .trial-bar{background:var(--accl);border-bottom:1px solid rgba(249,115,22,.3);padding:7px 20px;text-align:center;font-size:12px;font-weight:600;color:var(--acc)}
-/* APP */
 .mw{width:100%;max-width:540px;margin:0 auto;padding:20px 20px 80px}
 .tabs{display:flex;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:22px}
 .tab{flex:1;padding:10px;border:none;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;transition:all .2s}
@@ -128,28 +122,28 @@ input::placeholder{color:#aaa}
 .lt{font-size:14px;color:var(--muted);font-weight:500}
 .pi{font-family:'Barlow',sans-serif !important;font-size:26px !important;font-weight:700;text-transform:uppercase;letter-spacing:6px;text-align:center;border:2px solid var(--border) !important}
 .pi:focus{border-color:var(--acc) !important}
-/* BLOQUEADO */
 .bloq-box{text-align:center;padding:40px 20px}
 .bloq-icon{font-size:56px;margin-bottom:16px}
 .bloq-title{font-family:'Barlow',sans-serif;font-size:26px;font-weight:900;margin-bottom:8px}
 .bloq-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
 .modal-overlay.active{display:flex}
 .modal{background:var(--white);border-radius:20px 20px 0 0;padding:28px 24px 40px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;position:relative}
 .modal-fechar{position:absolute;top:16px;right:16px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+.nao-aplicavel{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:24px 20px;margin-bottom:14px;box-shadow:var(--sh);text-align:center}
+.nao-aplicavel .na-icon{font-size:40px;margin-bottom:10px}
+.nao-aplicavel .na-titulo{font-family:'Barlow',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px;color:var(--text)}
+.nao-aplicavel .na-texto{font-size:13px;color:var(--muted);line-height:1.6}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- LOADING -->
 <div class="screen active" id="s-loading">
   <div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>
 </div>
 
-<!-- STEP 1: SETORES -->
 <div class="screen" id="s-setores">
   <div style="width:100%;max-width:500px">
     <div class="logo">FB<span>precifica</span></div>
@@ -181,20 +175,15 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
-<!-- STEP 2: CONFIGURAÇÃO M.O. -->
 <div class="screen" id="s-mo">
   <div style="width:100%;max-width:500px">
     <div class="logo">FB<span>precifica</span></div>
     <div class="tag">Configure sua mão de obra</div>
     <div class="card">
       <div class="ct">Mão de obra</div>
-      <div class="cs" id="mo-cs">Você já sabe quanto custa sua mão de obra por hora?</div>
+      <div class="cs">Você já sabe quanto custa sua mão de obra por hora?</div>
       <div class="steps"><div class="step done"></div><div class="step act"></div></div>
-
-      <!-- TABS SETOR (se mais de um) -->
       <div class="setor-tabs" id="setor-tabs-mo" style="display:none"></div>
-
-      <!-- ESCOLHA INICIAL -->
       <div id="bloco-escolha">
         <div class="escolha-grid">
           <div class="escolha-card" onclick="escolherModo('simples')">
@@ -210,110 +199,68 @@ input::placeholder{color:#aaa}
         </div>
       </div>
 
-      <!-- MODO SIMPLES -->
       <div class="form-simples" id="bloco-simples">
         <label>Custo por hora (R$)</label>
         <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="s-custo-hora" placeholder="85" min="1" oninput="atualizarPreviewSimples()"/></div>
-        <div class="hint">Quanto custa 1 hora de trabalho do seu técnico (com encargos)</div>
+        <div class="hint">Quanto custa 1 hora do seu técnico (com encargos)</div>
         <label>Margem de lucro (%)</label>
         <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="s-margem" placeholder="Ex: 40" min="1" max="300" oninput="atualizarPreviewSimples()"/></div>
-        <div class="hint">Percentual de lucro que você quer ganhar em cima do custo</div>
+        <div class="hint">Percentual de lucro em cima do custo</div>
         <div class="resultado-calc" id="preview-simples">
           <div class="rc-titulo">📊 Preço cobrado ao cliente</div>
           <div class="rc-linha"><span class="rc-label">Custo por hora</span><span class="rc-valor" id="ps-custo">—</span></div>
           <div class="rc-linha"><span class="rc-label">Margem</span><span class="rc-valor" id="ps-margem">—</span></div>
           <div class="rc-divisor"></div>
-          <div class="rc-linha"><span class="rc-label" style="font-weight:700">Preço/hora ao cliente</span><span class="rc-custo" id="ps-preco">—</span></div>
+          <div class="rc-linha"><span class="rc-label" style="font-weight:700">Preço/hora ao cliente</span></div>
+          <div class="rc-custo" id="ps-preco">—</div>
         </div>
+        <button class="btn-ajuda" onclick="escolherModo('completo')">🧮 Me ajude a descobrir meu custo de mão de obra</button>
         <div class="er" id="er-simples" style="display:none">Preencha custo/hora e margem</div>
         <button class="btn btn-p" id="btn-salvar-simples" onclick="salvarModoSimples()">Salvar e entrar no app →</button>
         <button class="btn btn-s" onclick="voltarEscolha()">← Voltar</button>
       </div>
 
-      <!-- MODO COMPLETO -->
       <div class="form-completo" id="bloco-completo">
         <div class="sec-titulo">👷 Pessoal</div>
         <label>Salário bruto do técnico (R$)</label>
         <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-salario" placeholder="2.500" min="0" oninput="recalcularCompleto()"/></div>
         <label>Encargos sociais (%)</label>
         <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="c-encargos" placeholder="72" min="0" max="200" value="72" oninput="recalcularCompleto()"/></div>
-        <div class="hint">FGTS + INSS + férias + 13º + outros. Padrão: 72%</div>
+        <div class="hint">FGTS + INSS + férias + 13º. Padrão: 72%</div>
         <label>Pró-labore rateado por técnico (R$)</label>
         <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-prolabore" placeholder="500" min="0" oninput="recalcularCompleto()"/></div>
-
         <div class="sec-titulo">🏢 Custos fixos mensais</div>
         <div class="cg2">
-          <div>
-            <label>Aluguel (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-aluguel" placeholder="2.000" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
-          <div>
-            <label>Energia (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-energia" placeholder="600" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
+          <div><label>Aluguel (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-aluguel" placeholder="2.000" min="0" oninput="recalcularCompleto()"/></div></div>
+          <div><label>Energia (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-energia" placeholder="600" min="0" oninput="recalcularCompleto()"/></div></div>
         </div>
         <div class="cg2">
-          <div>
-            <label>Água (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-agua" placeholder="150" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
-          <div>
-            <label>Internet/telefone (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-internet" placeholder="200" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
+          <div><label>Água (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-agua" placeholder="150" min="0" oninput="recalcularCompleto()"/></div></div>
+          <div><label>Internet/telefone (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-internet" placeholder="200" min="0" oninput="recalcularCompleto()"/></div></div>
         </div>
         <div class="cg2">
-          <div>
-            <label>Contador (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-contador" placeholder="350" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
-          <div>
-            <label>Manutenção equip. (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-manutencao" placeholder="200" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
+          <div><label>Contador (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-contador" placeholder="350" min="0" oninput="recalcularCompleto()"/></div></div>
+          <div><label>Manutenção equip. (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-manutencao" placeholder="200" min="0" oninput="recalcularCompleto()"/></div></div>
         </div>
-
         <div class="sec-titulo">🧾 Impostos e taxas</div>
         <div class="cg2">
-          <div>
-            <label>Simples Nacional (%)</label>
-            <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="c-simples" placeholder="6" min="0" max="30" oninput="recalcularCompleto()"/></div>
-          </div>
-          <div>
-            <label>Alvará e taxas (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-alvara" placeholder="80" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
+          <div><label>Simples Nacional (%)</label><div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="c-simples" placeholder="6" min="0" max="30" oninput="recalcularCompleto()"/></div></div>
+          <div><label>Alvará e taxas (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-alvara" placeholder="80" min="0" oninput="recalcularCompleto()"/></div></div>
         </div>
-
         <div class="sec-titulo">🔩 Operacional</div>
         <div class="cg2">
-          <div>
-            <label>Materiais consumo (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-materiais" placeholder="300" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
-          <div>
-            <label>Uniformes/EPIs (R$)</label>
-            <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-epis" placeholder="100" min="0" oninput="recalcularCompleto()"/></div>
-          </div>
+          <div><label>Materiais consumo (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-materiais" placeholder="300" min="0" oninput="recalcularCompleto()"/></div></div>
+          <div><label>Uniformes/EPIs (R$)</label><div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-epis" placeholder="100" min="0" oninput="recalcularCompleto()"/></div></div>
         </div>
         <label>Sistema/software (R$)</label>
         <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="c-sistema" placeholder="150" min="0" oninput="recalcularCompleto()"/></div>
-
         <div class="sec-titulo">⏱️ Capacidade</div>
         <div class="cg2">
-          <div>
-            <label>Nº de técnicos</label>
-            <input type="number" id="c-tecnicos" placeholder="2" min="1" value="1" oninput="recalcularCompleto()"/>
-          </div>
-          <div>
-            <label>Horas/dia</label>
-            <input type="number" id="c-horas-dia" placeholder="8" min="1" max="24" value="8" oninput="recalcularCompleto()"/>
-          </div>
+          <div><label>Nº de técnicos</label><input type="number" id="c-tecnicos" placeholder="2" min="1" value="1" oninput="recalcularCompleto()"/></div>
+          <div><label>Horas/dia</label><input type="number" id="c-horas-dia" placeholder="8" min="1" max="24" value="8" oninput="recalcularCompleto()"/></div>
         </div>
         <label>Dias úteis por mês</label>
         <input type="number" id="c-dias-mes" placeholder="22" min="1" max="31" value="22" oninput="recalcularCompleto()"/>
-
-        <!-- RESULTADO -->
         <div class="resultado-calc" id="resultado-completo">
           <div class="rc-titulo">📊 Resultado do cálculo</div>
           <div class="rc-linha"><span class="rc-label">Custo total mensal</span><span class="rc-valor" id="rc-total">—</span></div>
@@ -331,17 +278,14 @@ input::placeholder{color:#aaa}
             <div class="rc-custo" id="rc-preco-final">—</div>
           </div>
         </div>
-
         <div class="er" id="er-completo" style="display:none">Preencha pelo menos o salário do técnico</div>
         <button class="btn btn-p" id="btn-salvar-completo" onclick="salvarModoCompleto()">Salvar e entrar no app →</button>
         <button class="btn btn-s" onclick="voltarEscolha()">← Voltar</button>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- BLOQUEADO -->
 <div class="screen" id="s-bloq">
   <div style="width:100%;max-width:420px">
     <div class="card">
@@ -356,7 +300,6 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
-<!-- APP PRINCIPAL -->
 <div class="main-s" id="s-main">
   <div id="trial-bar" class="trial-bar" style="display:none"></div>
   <div class="nav">
@@ -373,7 +316,6 @@ input::placeholder{color:#aaa}
       <button class="tab" id="tab-res" onclick="trocarTab('res')">Resultado</button>
       <button class="tab" id="tab-hist" onclick="trocarTab('hist')">Histórico</button>
     </div>
-
     <div id="pn-calc">
       <div id="veiculo-ativo" style="display:none">
         <div class="vc">
@@ -418,13 +360,11 @@ input::placeholder{color:#aaa}
         <div class="load" id="load-calc" style="display:none"><div class="spin"></div><div class="lt">Analisando com IA...</div></div>
       </div>
     </div>
-
     <div id="pn-res" style="display:none">
       <div id="res-content"></div>
       <button class="btn-nova-consulta" id="btn-nova-consulta" style="display:none" onclick="novaConsultaMesmaPlaca()">🔄 Consultar outro serviço com esta placa</button>
       <button class="btn btn-s" style="margin-top:8px" onclick="novaConsultaCompleta()">+ Nova consulta (outra placa)</button>
     </div>
-
     <div id="pn-hist" style="display:none">
       <div class="stit">Consultas anteriores</div>
       <div id="hist-lista"><div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div></div>
@@ -432,7 +372,6 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
-<!-- MODAL M.O. -->
 <div class="modal-overlay" id="modal-mo" onclick="if(event.target.id==='modal-mo')fecharModalMO()">
   <div class="modal">
     <button class="modal-fechar" onclick="fecharModalMO()">✕</button>
@@ -443,13 +382,12 @@ input::placeholder{color:#aaa}
     <button class="btn btn-p" style="margin-top:8px" onclick="salvarModal()">Salvar alterações</button>
   </div>
 </div>
-
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAFLxVIoPzCKiXcgZV_s7dyOr7N-HlUHEk",
@@ -470,13 +408,12 @@ let veiculoAtual = null;
 let configUsuario = { setores: [], maoDeObra: {} };
 let setoresSelecionados = [];
 let setorAtivo = null;
-let modoAtual = null; // 'simples' ou 'completo'
 let setorModal = null;
+let _custoHoraCalculado = 0;
 
 const LABEL = { mecanica_leve:"Mecânica Leve", diesel_leve:"Diesel Leve / Pickups", caminhoes_pesados:"Caminhões Pesados" };
 const ICON = { mecanica_leve:"🔧", diesel_leve:"🚙", caminhoes_pesados:"🚛" };
 
-// ── SESSÃO ──
 onAuthStateChanged(auth, async (user) => {
   if (!user) { window.location.href="/login.html"; return; }
   usuario = user;
@@ -505,8 +442,6 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 window.fazerLogout = async()=>{ await signOut(auth); window.location.href="/login.html"; };
-
-// ── SETORES ──
 window.togS = el => el.classList.toggle("active");
 
 window.avancarParaMO = () => {
@@ -514,11 +449,10 @@ window.avancarParaMO = () => {
   if (!setoresSelecionados.length) { document.getElementById("er-setor").style.display="block"; return; }
   document.getElementById("er-setor").style.display="none";
   setorAtivo = setoresSelecionados[0];
-  // Mostra tabs se mais de um setor
   const tabs = document.getElementById("setor-tabs-mo");
   if (setoresSelecionados.length>1) {
     tabs.style.display="flex";
-    tabs.innerHTML = setoresSelecionados.map(s=>`<button class="setor-tab${s===setorAtivo?" active":""}" onclick="trocarSetorOnboarding('${s}')">${ICON[s]} ${LABEL[s]}</button>`).join("");
+    tabs.innerHTML=setoresSelecionados.map(s=>`<button class="setor-tab${s===setorAtivo?" active":""}" onclick="trocarSetorOnboarding('${s}')">${ICON[s]} ${LABEL[s]}</button>`).join("");
   } else { tabs.style.display="none"; }
   resetarMO();
   mostrarTela("s-mo");
@@ -528,56 +462,40 @@ window.trocarSetorOnboarding = (s) => {
   setorAtivo = s;
   document.querySelectorAll("#setor-tabs-mo .setor-tab").forEach(t=>t.classList.toggle("active",t.textContent.includes(LABEL[s])));
   resetarMO();
-  const mo = configUsuario.maoDeObra[s]||{};
-  if (mo.modo==="simples") {
-    escolherModo("simples");
-    document.getElementById("s-custo-hora").value = mo.custoHora||"";
-    document.getElementById("s-margem").value = mo.margem||"";
-    atualizarPreviewSimples();
-  } else if (mo.modo==="completo") {
-    escolherModo("completo");
-    preencherFormCompleto(mo);
-  }
 };
 
 function resetarMO() {
-  modoAtual = null;
   document.getElementById("bloco-escolha").style.display="block";
   document.getElementById("bloco-simples").style.display="none";
   document.getElementById("bloco-completo").style.display="none";
   document.getElementById("resultado-completo").style.display="none";
   document.getElementById("preview-simples").style.display="none";
-}
-
-window.voltarEscolha = () => resetarMO();
-
-window.escolherModo = (modo) => {
-  modoAtual = modo;
-  document.getElementById("bloco-escolha").style.display="none";
-  document.getElementById("bloco-simples").style.display = modo==="simples"?"block":"none";
-  document.getElementById("bloco-completo").style.display = modo==="completo"?"block":"none";
-  // Preenche se já tem dados salvos
   const mo = configUsuario.maoDeObra[setorAtivo]||{};
-  if (modo==="simples"&&mo.custoHora) {
-    document.getElementById("s-custo-hora").value=mo.custoHora;
+  if (mo.valorHora) {
+    escolherModo("simples");
+    document.getElementById("s-custo-hora").value=mo.custoHora||mo.valorHora||"";
     document.getElementById("s-margem").value=mo.margem||"";
     atualizarPreviewSimples();
   }
-  if (modo==="completo"&&mo.salario) preencherFormCompleto(mo);
-};
-
-function preencherFormCompleto(mo) {
-  const campos = ["salario","encargos","prolabore","aluguel","energia","agua","internet","contador","manutencao","simples","alvara","materiais","epis","sistema","tecnicos","horas-dia","dias-mes"];
-  campos.forEach(c=>{const el=document.getElementById(`c-${c}`);if(el&&mo[c.replace("-","")]!==undefined)el.value=mo[c.replace("-","")];});
-  recalcularCompleto();
 }
 
-// ── MODO SIMPLES ──
+window.voltarEscolha = () => {
+  document.getElementById("bloco-escolha").style.display="block";
+  document.getElementById("bloco-simples").style.display="none";
+  document.getElementById("bloco-completo").style.display="none";
+};
+
+window.escolherModo = (modo) => {
+  document.getElementById("bloco-escolha").style.display="none";
+  document.getElementById("bloco-simples").style.display=modo==="simples"?"block":"none";
+  document.getElementById("bloco-completo").style.display=modo==="completo"?"block":"none";
+};
+
 window.atualizarPreviewSimples = () => {
-  const custo = parseFloat(document.getElementById("s-custo-hora").value)||0;
-  const margem = parseFloat(document.getElementById("s-margem").value)||0;
+  const custo=parseFloat(document.getElementById("s-custo-hora").value)||0;
+  const margem=parseFloat(document.getElementById("s-margem").value)||0;
   if (!custo||!margem) { document.getElementById("preview-simples").style.display="none"; return; }
-  const preco = custo*(1+margem/100);
+  const preco=custo*(1+margem/100);
   document.getElementById("preview-simples").style.display="block";
   document.getElementById("ps-custo").textContent=`R$ ${fmt(custo)}`;
   document.getElementById("ps-margem").textContent=`${margem}%`;
@@ -585,33 +503,13 @@ window.atualizarPreviewSimples = () => {
 };
 
 window.salvarModoSimples = async () => {
-  const custo = parseFloat(document.getElementById("s-custo-hora").value);
-  const margem = parseFloat(document.getElementById("s-margem").value);
+  const custo=parseFloat(document.getElementById("s-custo-hora").value);
+  const margem=parseFloat(document.getElementById("s-margem").value);
   if (!custo||!margem) { document.getElementById("er-simples").style.display="block"; return; }
   document.getElementById("er-simples").style.display="none";
   await salvarMO({ modo:"simples", custoHora:custo, margem, valorHora:parseFloat((custo*(1+margem/100)).toFixed(2)) });
 };
 
-// ── MODO COMPLETO ──
-window.recalcularCompleto = () => {
-  const g=(id,def=0)=>parseFloat(document.getElementById(id)?.value)||def;
-  const salario=g("c-salario"); if(!salario){document.getElementById("resultado-completo").style.display="none";return;}
-  const encargos=g("c-encargos",72),prolabore=g("c-prolabore"),aluguel=g("c-aluguel"),energia=g("c-energia"),agua=g("c-agua"),internet=g("c-internet"),contador=g("c-contador"),manutencao=g("c-manutencao"),simples=g("c-simples"),alvara=g("c-alvara"),materiais=g("c-materiais"),epis=g("c-epis"),sistema=g("c-sistema");
-  const tecnicos=g("c-tecnicos",1)||1,horasDia=g("c-horas-dia",8)||8,diasMes=g("c-dias-mes",22)||22;
-  const custoTecnico=salario*(1+encargos/100)*tecnicos;
-  const fixos=aluguel+energia+agua+internet+contador+manutencao+alvara+materiais+epis+sistema+prolabore;
-  const base=custoTecnico+fixos;
-  const totalMensal=base*(1+simples/100);
-  const horasMes=horasDia*diasMes*tecnicos;
-  const custoHora=horasMes>0?totalMensal/horasMes:0;
-  document.getElementById("resultado-completo").style.display="block";
-  document.getElementById("rc-total").textContent=`R$ ${fmt(totalMensal)}`;
-  document.getElementById("rc-horas").textContent=`${horasMes.toFixed(0)}h`;
-  document.getElementById("rc-custo-hora-val").textContent=`R$ ${fmt(custoHora)}/h`;
-  recalcularPrecoFinal(custoHora);
-};
-
-let _custoHoraCalculado = 0;
 window.recalcularCompleto = () => {
   const g=(id,def=0)=>parseFloat(document.getElementById(id)?.value)||def;
   const salario=g("c-salario"); if(!salario){document.getElementById("resultado-completo").style.display="none";return;}
@@ -633,35 +531,24 @@ window.recalcularCompleto = () => {
 window.recalcularPrecoFinal = () => {
   const margem=parseFloat(document.getElementById("c-margem-final")?.value)||0;
   if (!margem||!_custoHoraCalculado) { document.getElementById("preco-final-wrap").style.display="none"; return; }
-  const preco=_custoHoraCalculado*(1+margem/100);
   document.getElementById("preco-final-wrap").style.display="block";
-  document.getElementById("rc-preco-final").textContent=`R$ ${fmt(preco)}/h`;
+  document.getElementById("rc-preco-final").textContent=`R$ ${fmt(_custoHoraCalculado*(1+margem/100))}/h`;
 };
 
 window.salvarModoCompleto = async () => {
   const salario=parseFloat(document.getElementById("c-salario").value);
   const margem=parseFloat(document.getElementById("c-margem-final").value);
-  if (!salario) { document.getElementById("er-completo").style.display="block"; return; }
+  if (!salario) { document.getElementById("er-completo").textContent="Preencha pelo menos o salário do técnico"; document.getElementById("er-completo").style.display="block"; return; }
   if (!margem) { document.getElementById("er-completo").textContent="Informe a margem de lucro desejada"; document.getElementById("er-completo").style.display="block"; return; }
   document.getElementById("er-completo").style.display="none";
   const g=(id,def=0)=>parseFloat(document.getElementById(id)?.value)||def;
-  const dados={
-    modo:"completo",salario,encargos:g("c-encargos",72),prolabore:g("c-prolabore"),
-    aluguel:g("c-aluguel"),energia:g("c-energia"),agua:g("c-agua"),internet:g("c-internet"),
-    contador:g("c-contador"),manutencao:g("c-manutencao"),simples:g("c-simples"),
-    alvara:g("c-alvara"),materiais:g("c-materiais"),epis:g("c-epis"),sistema:g("c-sistema"),
-    tecnicos:g("c-tecnicos",1)||1,horasDia:g("c-horas-dia",8)||8,diasMes:g("c-dias-mes",22)||22,
-    margem, custoHora:parseFloat(_custoHoraCalculado.toFixed(2)),
-    valorHora:parseFloat((_custoHoraCalculado*(1+margem/100)).toFixed(2))
-  };
-  await salvarMO(dados);
+  await salvarMO({ modo:"completo", salario, encargos:g("c-encargos",72), prolabore:g("c-prolabore"), aluguel:g("c-aluguel"), energia:g("c-energia"), agua:g("c-agua"), internet:g("c-internet"), contador:g("c-contador"), manutencao:g("c-manutencao"), simples:g("c-simples"), alvara:g("c-alvara"), materiais:g("c-materiais"), epis:g("c-epis"), sistema:g("c-sistema"), tecnicos:g("c-tecnicos",1)||1, horasDia:g("c-horas-dia",8)||8, diasMes:g("c-dias-mes",22)||22, margem, custoHora:parseFloat(_custoHoraCalculado.toFixed(2)), valorHora:parseFloat((_custoHoraCalculado*(1+margem/100)).toFixed(2)) });
 };
 
 async function salvarMO(dadosSetor) {
   const btnS=document.getElementById("btn-salvar-simples");
   const btnC=document.getElementById("btn-salvar-completo");
-  if(btnS)btnS.disabled=true;
-  if(btnC)btnC.disabled=true;
+  if(btnS)btnS.disabled=true; if(btnC)btnC.disabled=true;
   try {
     const maoDeObra={...configUsuario.maoDeObra,[setorAtivo]:dadosSetor};
     await setDoc(doc(db,"usuarios",usuario.uid),{setores:setoresSelecionados,maoDeObra},{merge:true});
@@ -669,15 +556,13 @@ async function salvarMO(dadosSetor) {
     document.getElementById("nav-nome").textContent=usuario.displayName||usuario.email;
     mostrarTela("s-main");
   } catch(e){
-    if(btnS){btnS.disabled=false;btnS.textContent="Salvar e entrar no app →";}
-    if(btnC){btnC.disabled=false;btnC.textContent="Salvar e entrar no app →";}
+    if(btnS){btnS.disabled=false;} if(btnC){btnC.disabled=false;}
     alert("Erro ao salvar. Tente novamente.");
   }
 }
 
-// ── MODAL M.O. ──
 window.abrirModalMO = () => {
-  setorModal = configUsuario.setores[0];
+  setorModal=configUsuario.setores[0];
   const tabs=document.getElementById("modal-setor-tabs");
   if (configUsuario.setores.length>1) {
     tabs.style.display="flex";
@@ -699,7 +584,7 @@ function renderizarModalForm(setor) {
   const mo=configUsuario.maoDeObra[setor]||{};
   document.getElementById("modal-form").innerHTML=`
     <label>Custo por hora (R$)</label>
-    <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="m-custo-hora" placeholder="85" min="1" value="${mo.custoHora||mo.valorHora||""}" oninput="atualizarPreviewModal()"/></div>
+    <div class="mp"><span class="mp-pre">R$</span><input class="mpi" type="number" id="m-custo-hora" placeholder="85" min="1" value="${mo.custoHora||""}" oninput="atualizarPreviewModal()"/></div>
     <label>Margem de lucro (%)</label>
     <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="m-margem" placeholder="Ex: 50" min="1" max="300" value="${mo.margem||""}" oninput="atualizarPreviewModal()"/></div>
     <div class="resultado-calc" id="modal-preview" style="margin-top:8px">
@@ -715,8 +600,7 @@ window.atualizarPreviewModal=()=>{
   const prev=document.getElementById("modal-preview");
   if(!custo||!margem){if(prev)prev.style.display="none";return;}
   if(prev)prev.style.display="block";
-  const preco=custo*(1+margem/100);
-  document.getElementById("m-preco-hora").textContent=`R$ ${fmt(preco)}/h`;
+  document.getElementById("m-preco-hora").textContent=`R$ ${fmt(custo*(1+margem/100))}/h`;
 };
 
 window.salvarModal=async()=>{
@@ -735,7 +619,6 @@ window.salvarModal=async()=>{
   }catch(e){alert("Erro ao salvar.");}
 };
 
-// ── BADGE ──
 function atualizarBadgeCusto(){
   const wrap=document.getElementById("custo-badge-wrap");
   if(!wrap||!veiculoAtual)return;
@@ -745,7 +628,6 @@ function atualizarBadgeCusto(){
   wrap.innerHTML=`<div class="custo-badge" onclick="abrirModalMO()">💰 R$ ${fmt(mo.valorHora)}/h · Margem: ${mo.margem||0}% · ⚙️ alterar</div>`;
 }
 
-// ── PLACA ──
 window.buscarPlaca=async()=>{
   const placa=document.getElementById("inp-placa").value.replace(/[^A-Za-z0-9]/g,"").toUpperCase();
   if(placa.length<7){mostrarErro("er-placa","Placa inválida. Informe 7 caracteres.");return;}
@@ -807,7 +689,6 @@ window.trocarVeiculo=()=>{
   document.getElementById("inp-placa").value="";
 };
 
-// ── CALCULAR ──
 window.calcular=async()=>{
   const servico=document.getElementById("inp-servico").value.trim();
   if(!servico){mostrarErro("er-servico","Descreva o serviço a calcular.");return;}
@@ -840,6 +721,23 @@ window.calcular=async()=>{
 
 function renderizarResultado(dados,servico,valorHora,margem){
   const horas=dados.horas_estimadas||0;
+  const just=dados.justificativa||"";
+  const alertas=dados.alertas_risco||[];
+  const verif=dados.verificar_junto||[];
+  const seNao=dados.se_nao_trocar||"";
+
+  // Serviço não se aplica ao veículo
+  if(horas===0){
+    let html=`<div class="nao-aplicavel">
+      <div class="na-icon">ℹ️</div>
+      <div class="na-titulo">Serviço não aplicável</div>
+      <div class="na-texto">${just||"Este serviço não se aplica a este veículo conforme análise da IA."}</div>
+    </div>`;
+    if(alertas.length){html+=`<div class="is"><div class="ih">⚠️ Atenção</div>`;alertas.forEach(a=>{html+=`<div class="ic al">${a}</div>`;});html+=`</div>`;}
+    document.getElementById("res-content").innerHTML=html;
+    return;
+  }
+
   const custo=horas*valorHora;
   const preco=custo*(1+margem/100);
   let html=`<div class="rb">
@@ -849,10 +747,6 @@ function renderizarResultado(dados,servico,valorHora,margem){
     <div style="font-size:12px;color:var(--muted)">Preço sugerido ao cliente (com ${margem}% de margem)</div>
   </div>`;
   html+=`<div class="hi"><div><div style="font-size:13px;font-weight:600">Mão de obra</div><div style="font-size:12px;color:var(--muted)">${horas}h × R$ ${fmt(valorHora)}/h</div></div><div class="hv">R$ ${fmt(custo)}</div></div>`;
-  const just=dados.justificativa||"";
-  const alertas=dados.alertas_risco||[];
-  const verif=dados.verificar_junto||[];
-  const seNao=dados.se_nao_trocar||"";
   if(just)html+=`<div class="is"><div class="ih">Análise técnica</div><div class="ic rs">${just}</div></div>`;
   if(alertas.length){html+=`<div class="is"><div class="ih">⚠️ Alertas de risco</div>`;alertas.forEach(a=>{html+=`<div class="ic al">${a}</div>`;});html+=`</div>`;}
   if(verif.length){html+=`<div class="is"><div class="ih">💡 Verificar junto</div>`;verif.forEach(v=>{html+=`<div class="ic op">${v}</div>`;});html+=`</div>`;}
@@ -867,13 +761,28 @@ async function carregarHistorico(){
   const lista=document.getElementById("hist-lista");
   lista.innerHTML=`<div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>`;
   try{
-    const q=query(collection(db,"historico"),where("uid","==",usuario.uid),orderBy("criadoEm","desc"),limit(20));
+    // Query sem orderBy para evitar necessidade de índice composto
+    const q=query(collection(db,"historico"),where("uid","==",usuario.uid),limit(20));
     const snap=await getDocs(q);
     if(snap.empty){lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;return;}
+    const docs=[];
+    snap.forEach(d=>docs.push({id:d.id,...d.data()}));
+    // Ordena no cliente do mais recente para o mais antigo
+    docs.sort((a,b)=>{
+      const da=a.criadoEm?.toDate?a.criadoEm.toDate():new Date(a.criadoEm||0);
+      const db2=b.criadoEm?.toDate?b.criadoEm.toDate():new Date(b.criadoEm||0);
+      return db2-da;
+    });
     let html="";
-    snap.forEach(d=>{const dt=d.data();const data=dt.criadoEm?.toDate?dt.criadoEm.toDate():new Date(dt.criadoEm||Date.now());html+=`<div class="hist-item"><div class="hist-placa">${dt.placa||""}</div><div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div><div class="hist-servico">${dt.servico||""}</div><div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})}</div></div>`;});
+    docs.forEach(dt=>{
+      const data=dt.criadoEm?.toDate?dt.criadoEm.toDate():new Date(dt.criadoEm||Date.now());
+      html+=`<div class="hist-item"><div class="hist-placa">${dt.placa||""}</div><div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div><div class="hist-servico">${dt.servico||""}</div><div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})}</div></div>`;
+    });
     lista.innerHTML=html;
-  }catch(e){lista.innerHTML=`<div class="hist-vazio">Erro ao carregar histórico.</div>`;}
+  }catch(e){
+    console.error("Histórico erro:",e);
+    lista.innerHTML=`<div class="hist-vazio">Erro ao carregar: ${e.message}</div>`;
+  }
 }
 
 window.trocarTab=(tab)=>{["calc","res","hist"].forEach(t=>{document.getElementById("pn-"+t).style.display=t===tab?"block":"none";document.getElementById("tab-"+t).classList.toggle("active",t===tab);});if(tab==="hist")carregarHistorico();};
