@@ -1,1 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FB Precifica — Entrar</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#d6d6d6;
+  --white:#eaeaea;
+  --surf:#d6d6d6;
+  --border:#c2c2c2;
+  --acc:#F97316;
+  --acc2:#ea6c0a;
+  --accl:#ffeedd;
+  --text:#111;
+  --muted:#666;
+  --ok:#16a34a;
+  --err:#dc2626;
+  --sh:0 2px 12px rgba(0,0,0,0.12);
+  --shl:0 8px 32px rgba(0,0,0,0.18)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px}
 
+/* LOGO */
+.logo{font-family:'Barlow',sans-serif;font-size:32px;font-weight:900;color:var(--text);letter-spacing:-1px;text-align:center;margin-bottom:4px}
+.logo span{color:var(--acc)}
+.tag{color:var(--muted);font-size:13px;text-align:center;margin-bottom:28px}
+
+/* CARD */
+.card{background:var(--white);border-radius:20px;padding:32px 28px;width:100%;max-width:420px;box-shadow:var(--shl)}
+
+/* TABS LOGIN/CADASTRO */
+.tabs{display:flex;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:26px}
+.tab{flex:1;padding:10px;border:none;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;transition:all .2s}
+.tab.active{background:var(--acc);color:#fff;box-shadow:0 2px 8px rgba(249,115,22,.3)}
+
+/* FORM */
+.form{display:none}
+.form.active{display:block}
+label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+input{width:100%;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;padding:13px 16px;margin-bottom:14px;outline:none;transition:border-color .2s}
+input:focus{border-color:var(--acc);background:var(--white)}
+input::placeholder{color:#aaa}
+
+/* BOTÕES */
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px}
+.btn-p{background:var(--acc);color:#fff}
+.btn-p:hover{background:var(--acc2);transform:translateY(-1px)}
+.btn-p:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-link{background:transparent;color:var(--acc);font-size:13px;text-decoration:underline;cursor:pointer;border:none;padding:8px 0;display:block;text-align:center;width:100%;margin-top:6px}
+.btn-link:hover{color:var(--acc2)}
+
+/* MENSAGENS */
+.msg{border-radius:10px;padding:11px 14px;font-size:13px;font-weight:500;margin-bottom:14px;display:none}
+.msg.ok{background:#dcfce7;color:var(--ok);border:1px solid #bbf7d0;display:block}
+.msg.err{background:#fee2e2;color:var(--err);border:1px solid #fecaca;display:block}
+
+/* LOADING */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RODAPÉ */
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}
+.footer a{color:var(--acc);text-decoration:none}
+
+/* DIVISOR */
+.divider{display:flex;align-items:center;gap:10px;margin:10px 0 18px}
+.divider span{color:var(--muted);font-size:12px;white-space:nowrap}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+</style>
+</head>
+<body>
+
+<div class="logo">FB<span>precifica</span></div>
+<div class="tag">Preço justo para o cliente e para o prestador de serviço</div>
+
+<div class="card">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="trocarTab('login')">Entrar</button>
+    <button class="tab" onclick="trocarTab('cadastro')">Criar conta</button>
+  </div>
+
+  <!-- MSG GLOBAL -->
+  <div class="msg" id="msg"></div>
+
+  <!-- FORM LOGIN -->
+  <div class="form active" id="form-login">
+    <label>E-mail</label>
+    <input type="email" id="l-email" placeholder="seu@email.com" autocomplete="email"/>
+    <label>Senha</label>
+    <input type="password" id="l-senha" placeholder="Sua senha" autocomplete="current-password"/>
+    <button class="btn btn-p" id="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div class="divider"><span>ou</span></div>
+    <button class="btn-link" onclick="trocarTab('recuperar')">Esqueci minha senha</button>
+  </div>
+
+  <!-- FORM CADASTRO -->
+  <div class="form" id="form-cadastro">
+    <label>Nome ou nome da oficina</label>
+    <input type="text" id="c-nome" placeholder="Ex: Auto Center Silva" autocomplete="name"/>
+    <label>E-mail</label>
+    <input type="email" id="c-email" placeholder="seu@email.com" autocomplete="email"/>
+    <label>Senha (mínimo 6 caracteres)</label>
+    <input type="password" id="c-senha" placeholder="Crie uma senha" autocomplete="new-password"/>
+    <label>Confirmar senha</label>
+    <input type="password" id="c-senha2" placeholder="Repita a senha" autocomplete="new-password"/>
+    <button class="btn btn-p" id="btn-cadastro" onclick="fazerCadastro()">Criar conta grátis</button>
+  </div>
+
+  <!-- FORM RECUPERAR SENHA -->
+  <div class="form" id="form-recuperar">
+    <label>E-mail cadastrado</label>
+    <input type="email" id="r-email" placeholder="seu@email.com" autocomplete="email"/>
+    <button class="btn btn-p" id="btn-recuperar" onclick="recuperarSenha()">Enviar link de recuperação</button>
+    <button class="btn-link" onclick="trocarTab('login')">← Voltar para o login</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  Ao criar uma conta você concorda com nossos <a href="#">Termos de Uso</a>
+</div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── CONFIG FIREBASE ──
+const firebaseConfig = {
+  apiKey: "AIzaSyAFLxVIoPzCKiXcgZV_s7dyOr7N-HlUHEk",
+  authDomain: "fb-precifica.firebaseapp.com",
+  projectId: "fb-precifica",
+  storageBucket: "fb-precifica.appspot.com",
+  messagingSenderId: "636655637162",
+  appId: "1:636655637162:web:8189ede5cc9f1a5c8036d3"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ── SE JÁ LOGADO, REDIRECIONA ──
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.href = "/app.html";
+  }
+});
+
+// ── HELPERS ──
+function mostrarMsg(texto, tipo) {
+  const el = document.getElementById("msg");
+  el.textContent = texto;
+  el.className = "msg " + tipo;
+}
+
+function setLoading(btnId, loading, textoOriginal) {
+  const btn = document.getElementById(btnId);
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span>Aguarde...';
+  } else {
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+}
+
+function traduzirErro(codigo) {
+  const erros = {
+    "auth/user-not-found": "E-mail não encontrado. Verifique ou crie uma conta.",
+    "auth/wrong-password": "Senha incorreta. Tente novamente.",
+    "auth/invalid-email": "E-mail inválido.",
+    "auth/email-already-in-use": "Este e-mail já está cadastrado. Faça login.",
+    "auth/weak-password": "Senha muito fraca. Use pelo menos 6 caracteres.",
+    "auth/too-many-requests": "Muitas tentativas. Aguarde alguns minutos.",
+    "auth/network-request-failed": "Sem conexão. Verifique sua internet.",
+    "auth/invalid-credential": "E-mail ou senha incorretos."
+  };
+  return erros[codigo] || "Erro inesperado. Tente novamente.";
+}
+
+// ── LOGIN ──
+window.fazerLogin = async function() {
+  const email = document.getElementById("l-email").value.trim();
+  const senha = document.getElementById("l-senha").value;
+
+  if (!email || !senha) {
+    mostrarMsg("Preencha e-mail e senha.", "err");
+    return;
+  }
+
+  setLoading("btn-login", true, "Entrar");
+  try {
+    await signInWithEmailAndPassword(auth, email, senha);
+    // onAuthStateChanged vai redirecionar automaticamente
+  } catch (e) {
+    mostrarMsg(traduzirErro(e.code), "err");
+    setLoading("btn-login", false, "Entrar");
+  }
+};
+
+// ── CADASTRO ──
+window.fazerCadastro = async function() {
+  const nome  = document.getElementById("c-nome").value.trim();
+  const email = document.getElementById("c-email").value.trim();
+  const senha = document.getElementById("c-senha").value;
+  const senha2 = document.getElementById("c-senha2").value;
+
+  if (!nome || !email || !senha || !senha2) {
+    mostrarMsg("Preencha todos os campos.", "err");
+    return;
+  }
+  if (senha !== senha2) {
+    mostrarMsg("As senhas não coincidem.", "err");
+    return;
+  }
+  if (senha.length < 6) {
+    mostrarMsg("A senha deve ter pelo menos 6 caracteres.", "err");
+    return;
+  }
+
+  setLoading("btn-cadastro", true, "Criar conta grátis");
+  try {
+    // Cria usuário no Firebase Auth
+    const cred = await createUserWithEmailAndPassword(auth, email, senha);
+    const user = cred.user;
+
+    // Salva nome no perfil do Auth
+    await updateProfile(user, { displayName: nome });
+
+    // Cria documento do usuário no Firestore
+    await setDoc(doc(db, "usuarios", user.uid), {
+      nome: nome,
+      email: email,
+      plano: "trial",
+      setores: [],
+      criadoEm: serverTimestamp(),
+      trialExpiraEm: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 dias
+    });
+
+    // onAuthStateChanged vai redirecionar automaticamente
+  } catch (e) {
+    mostrarMsg(traduzirErro(e.code), "err");
+    setLoading("btn-cadastro", false, "Criar conta grátis");
+  }
+};
+
+// ── RECUPERAR SENHA ──
+window.recuperarSenha = async function() {
+  const email = document.getElementById("r-email").value.trim();
+
+  if (!email) {
+    mostrarMsg("Digite seu e-mail.", "err");
+    return;
+  }
+
+  setLoading("btn-recuperar", true, "Enviar link de recuperação");
+  try {
+    await sendPasswordResetEmail(auth, email);
+    mostrarMsg("Link enviado! Verifique sua caixa de entrada (e spam).", "ok");
+    setLoading("btn-recuperar", false, "Enviar link de recuperação");
+  } catch (e) {
+    mostrarMsg(traduzirErro(e.code), "err");
+    setLoading("btn-recuperar", false, "Enviar link de recuperação");
+  }
+};
+
+// ── TROCAR TAB ──
+window.trocarTab = function(tab) {
+  // Esconde todos os forms
+  document.querySelectorAll(".form").forEach(f => f.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+
+  // Limpa msg
+  const msg = document.getElementById("msg");
+  msg.className = "msg";
+
+  // Mostra o form correto
+  document.getElementById("form-" + tab).classList.add("active");
+
+  // Ativa tab visual (login ou cadastro)
+  const tabs = document.querySelectorAll(".tab");
+  if (tab === "login" || tab === "recuperar") tabs[0].classList.add("active");
+  if (tab === "cadastro") tabs[1].classList.add("active");
+};
+
+// ── ENTER NOS INPUTS ──
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  const loginAtivo = document.getElementById("form-login").classList.contains("active");
+  const cadAtivo = document.getElementById("form-cadastro").classList.contains("active");
+  const recAtivo = document.getElementById("form-recuperar").classList.contains("active");
+  if (loginAtivo) window.fazerLogin();
+  if (cadAtivo) window.fazerCadastro();
+  if (recAtivo) window.recuperarSenha();
+});
+</script>
+
+</body>
+</html>
