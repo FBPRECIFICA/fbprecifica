@@ -22,7 +22,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .steps{display:flex;gap:6px;margin-bottom:20px}
 .step{flex:1;height:4px;border-radius:2px;background:var(--border)}
 .step.done{background:var(--acc)}
-.step.act{background:var(--acc);opacity:.4}
+.step.act{background:var(--acc);opacity:.5}
 label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
 input,select{width:100%;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;padding:13px 16px;margin-bottom:14px;outline:none;transition:border-color .2s;appearance:none}
 input:focus,select:focus{border-color:var(--acc);background:var(--white)}
@@ -33,7 +33,8 @@ input::placeholder{color:#aaa}
 .btn-p:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-s{background:var(--surf);color:var(--text);border:1.5px solid var(--border);margin-top:10px}
 .btn-s:hover{border-color:var(--acc);color:var(--acc)}
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+/* SETORES */
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
 .sc{border:2px solid var(--border);border-radius:16px;padding:14px 10px;cursor:pointer;transition:all .2s;text-align:center;background:var(--white);user-select:none;position:relative}
 .sc:hover{border-color:var(--acc)}
 .sc.active{border-color:var(--acc);background:var(--accl)}
@@ -43,6 +44,17 @@ input::placeholder{color:#aaa}
 .sc .sd{font-size:10px;color:var(--muted);margin-top:2px}
 .ck{position:absolute;top:7px;right:7px;width:18px;height:18px;background:var(--acc);border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700}
 .sc.active .ck{display:flex}
+/* CONFIG MÃO DE OBRA */
+.config-setor{background:var(--surf);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+.config-setor-titulo{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cg2 input{margin-bottom:0}
+.mp{position:relative}
+.mp span{position:absolute;left:14px;top:50%;transform:translateY(-60%);color:var(--muted);font-size:14px;font-weight:600;pointer-events:none}
+.mpi{padding-left:40px !important}
+.mpd{padding-right:36px !important}
+.mp .mp-suf{left:auto;right:14px}
+/* PLACA E APP */
 .pi{font-family:'Barlow',sans-serif !important;font-size:26px !important;font-weight:700;text-transform:uppercase;letter-spacing:6px;text-align:center;border:2px solid var(--border) !important}
 .pi:focus{border-color:var(--acc) !important}
 .vc{background:var(--accl);border:1.5px solid rgba(249,115,22,.2);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
@@ -52,18 +64,22 @@ input::placeholder{color:#aaa}
 .load{display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px}
 .spin{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
 .lt{font-size:14px;color:var(--muted);font-weight:500}
+/* NAV */
 .nav{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100}
 .nl{font-family:'Barlow',sans-serif;font-size:20px;font-weight:900}
 .nl span{color:var(--acc)}
-.nav-right{display:flex;align-items:center;gap:10px}
+.nav-right{display:flex;align-items:center;gap:8px}
 .nu{font-size:12px;color:var(--muted);font-weight:500}
-.btn-logout{background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
-.btn-logout:hover{border-color:var(--err);color:var(--err)}
+.btn-nav{background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.btn-nav:hover{border-color:var(--acc);color:var(--acc)}
+.btn-nav.danger:hover{border-color:var(--err);color:var(--err)}
 .trial-bar{background:var(--accl);border-bottom:1px solid rgba(249,115,22,.3);padding:7px 20px;text-align:center;font-size:12px;font-weight:600;color:var(--acc)}
+/* APP */
 .mw{width:100%;max-width:540px;margin:0 auto;padding:20px 20px 80px}
 .tabs{display:flex;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:22px}
 .tab{flex:1;padding:10px;border:none;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;transition:all .2s}
 .tab.active{background:var(--acc);color:#fff;box-shadow:0 2px 8px rgba(249,115,22,.3)}
+/* RESULTADO */
 .rb{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:var(--sh)}
 .rb::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--acc),#fb923c)}
 .rv{font-family:'Barlow',sans-serif;font-size:50px;font-weight:900;color:var(--acc);letter-spacing:-2px;line-height:1;margin:8px 0}
@@ -78,86 +94,100 @@ input::placeholder{color:#aaa}
 .hi{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:15px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh)}
 .hv{font-family:'Barlow',sans-serif;font-size:20px;font-weight:800;color:var(--acc)}
 .er{color:var(--err);font-size:12px;font-weight:500;margin:-8px 0 12px}
-.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cg input{margin-bottom:0}
-.mp{position:relative}
-.mp span{position:absolute;left:14px;top:50%;transform:translateY(-60%);color:var(--muted);font-size:14px;font-weight:600;pointer-events:none}
-.mpi{padding-left:40px !important}
 .stit{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
 .btn-nova-consulta{width:100%;padding:13px;border-radius:12px;border:1.5px solid var(--acc);background:var(--accl);color:var(--acc);font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-nova-consulta:hover{background:var(--acc);color:#fff}
+/* HISTÓRICO */
 .hist-item{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:15px;margin-bottom:10px;box-shadow:var(--sh)}
 .hist-placa{font-family:'Barlow',sans-serif;font-size:18px;font-weight:900;letter-spacing:3px}
 .hist-modelo{font-size:13px;color:var(--muted);margin-top:2px}
 .hist-servico{font-size:12px;font-weight:600;color:var(--acc);margin-top:6px;background:var(--accl);display:inline-block;padding:3px 10px;border-radius:20px}
 .hist-data{font-size:11px;color:var(--muted);margin-top:6px}
 .hist-vazio{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px}
+/* MOTORIZAÇÃO */
 .motor-grid{display:grid;gap:8px;margin-bottom:14px}
 .motor-opt{border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;background:var(--white)}
 .motor-opt:hover{border-color:var(--acc);background:var(--accl)}
 .mo-titulo{font-size:14px;font-weight:700}
 .mo-det{font-size:12px;color:var(--muted);margin-top:2px}
+/* BLOQUEADO */
 .bloq-box{text-align:center;padding:40px 20px}
 .bloq-icon{font-size:56px;margin-bottom:16px}
 .bloq-title{font-family:'Barlow',sans-serif;font-size:26px;font-weight:900;margin-bottom:8px}
 .bloq-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+/* MODAL CONFIG */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--white);border-radius:20px 20px 0 0;padding:28px 24px;width:100%;max-width:540px;max-height:85vh;overflow-y:auto}
+.modal-titulo{font-family:'Barlow',sans-serif;font-size:20px;font-weight:900;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.modal-fechar{position:absolute;top:16px;right:16px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--muted)}
+/* INFO CUSTO */
+.custo-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accl);border:1px solid rgba(249,115,22,.2);color:var(--acc);font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;margin-bottom:14px;cursor:pointer}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div id="app">
 
+<!-- LOADING -->
 <div class="screen active" id="s-loading">
   <div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>
 </div>
 
-<div class="screen" id="s-cad">
-  <div style="width:100%;max-width:480px">
+<!-- STEP 1: SETORES -->
+<div class="screen" id="s-setores">
+  <div style="width:100%;max-width:520px">
     <div class="logo">FB<span>precifica</span></div>
     <div class="tag">Preço justo para o cliente e para o prestador de serviço</div>
     <div class="card">
-      <div class="ct">Configure seu perfil</div>
-      <div class="cs">Selecione seus setores de atuação para começar</div>
-      <div class="steps"><div class="step done"></div><div class="step act"></div></div>
-      <label>Setores de atuação</label>
-      <div class="sg" id="sg">
+      <div class="ct">Seu perfil</div>
+      <div class="cs">Selecione seu(s) setor(es) de atuação</div>
+      <div class="steps"><div class="step act" id="st1"></div><div class="step" id="st2"></div></div>
+      <div class="sg" id="sg-setores">
         <div class="sc" data-s="mecanica_leve" onclick="togS(this)">
           <div class="ck">✓</div>
-          <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=200&q=60" alt="Mecânica Leve"/>
-          <div class="sn">Mecânica Leve</div><div class="sd">Carros de passeio</div>
+          <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=300&q=70" alt="Mecânica Leve"/>
+          <div class="sn">Mecânica Leve</div>
+          <div class="sd">Carros de passeio</div>
         </div>
-        <div class="sc" data-s="mecanica_pesada" onclick="togS(this)">
+        <div class="sc" data-s="diesel_leve" onclick="togS(this)">
           <div class="ck">✓</div>
-          <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=200&q=60" alt="Mecânica Pesada"/>
-          <div class="sn">Mecânica Pesada</div><div class="sd">Caminhões e ônibus</div>
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=70" alt="Diesel Leve"/>
+          <div class="sn">Diesel Leve</div>
+          <div class="sd">Pickups e utilitários</div>
         </div>
-        <div class="sc" data-s="funilaria" onclick="togS(this)">
+        <div class="sc" data-s="caminhoes_pesados" onclick="togS(this)">
           <div class="ck">✓</div>
-          <img src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=200&q=60" alt="Funilaria"/>
-          <div class="sn">Funilaria</div><div class="sd">Lataria e pintura</div>
-        </div>
-        <div class="sc" data-s="eletrica" onclick="togS(this)">
-          <div class="ck">✓</div>
-          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=60" alt="Elétrica"/>
-          <div class="sn">Elétrica</div><div class="sd">Sistemas elétricos</div>
-        </div>
-        <div class="sc" data-s="pneus" onclick="togS(this)">
-          <div class="ck">✓</div>
-          <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&q=60" alt="Pneus"/>
-          <div class="sn">Pneus</div><div class="sd">Alinhamento e balanceamento</div>
-        </div>
-        <div class="sc" data-s="ar_condicionado" onclick="togS(this)">
-          <div class="ck">✓</div>
-          <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200&q=60" alt="Ar-condicionado"/>
-          <div class="sn">Ar-condicionado</div><div class="sd">Climatização</div>
+          <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=300&q=70" alt="Caminhões Pesados"/>
+          <div class="sn">Caminhões Pesados</div>
+          <div class="sd">Frota pesada</div>
         </div>
       </div>
       <div class="er" id="er-setor" style="display:none">Selecione pelo menos um setor</div>
-      <button class="btn btn-p" id="btn-salvar-setor" onclick="salvarSetores()">Continuar →</button>
+      <button class="btn btn-p" onclick="avancarParaMaoDeObra()">Próximo →</button>
     </div>
   </div>
 </div>
 
+<!-- STEP 2: MÃO DE OBRA POR SETOR -->
+<div class="screen" id="s-mao-obra">
+  <div style="width:100%;max-width:520px">
+    <div class="logo">FB<span>precifica</span></div>
+    <div class="tag">Configure o custo de mão de obra por setor</div>
+    <div class="card">
+      <div class="ct">Custo de mão de obra</div>
+      <div class="cs">Esses valores serão usados automaticamente nos cálculos. Você pode alterar depois.</div>
+      <div class="steps"><div class="step done"></div><div class="step act"></div></div>
+      <div id="config-mo-container"></div>
+      <div class="er" id="er-mo" style="display:none">Preencha todos os campos</div>
+      <button class="btn btn-p" id="btn-salvar-config" onclick="salvarConfiguracaoCompleta()">Salvar e entrar no app →</button>
+      <button class="btn btn-s" onclick="voltarParaSetores()">← Voltar</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOQUEADO -->
 <div class="screen" id="s-bloq">
   <div style="width:100%;max-width:420px">
     <div class="card">
@@ -172,13 +202,15 @@ input::placeholder{color:#aaa}
   </div>
 </div>
 
+<!-- APP PRINCIPAL -->
 <div class="main-s" id="s-main">
   <div id="trial-bar" class="trial-bar" style="display:none"></div>
   <div class="nav">
     <div class="nl">FB<span>precifica</span></div>
     <div class="nav-right">
       <span class="nu" id="nav-nome"></span>
-      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+      <button class="btn-nav" onclick="abrirModalConfig()">⚙️ M.O.</button>
+      <button class="btn-nav danger" onclick="fazerLogout()">Sair</button>
     </div>
   </div>
   <div class="mw">
@@ -188,6 +220,7 @@ input::placeholder{color:#aaa}
       <button class="tab" id="tab-hist" onclick="trocarTab('hist')">Histórico</button>
     </div>
 
+    <!-- ABA CALCULAR -->
     <div id="pn-calc">
       <div id="veiculo-ativo" style="display:none">
         <div class="vc">
@@ -198,7 +231,7 @@ input::placeholder{color:#aaa}
       </div>
       <div id="bloco-placa">
         <label>Placa do veículo</label>
-        <input class="pi" type="text" id="inp-placa" placeholder="ABC1D23" maxlength="8" oninput="formatarPlaca(this)"/>
+        <input class="pi" type="text" id="inp-placa" placeholder="ABC1D23" maxlength="8" oninput="formatarPlaca(this)" onkeydown="if(event.key==='Enter')buscarPlaca()"/>
         <div class="er" id="er-placa" style="display:none"></div>
         <button class="btn btn-p" id="btn-buscar" onclick="buscarPlaca()">Buscar veículo →</button>
         <div class="load" id="load-placa" style="display:none"><div class="spin"></div><div class="lt">Consultando placa...</div></div>
@@ -213,8 +246,9 @@ input::placeholder{color:#aaa}
         <button class="btn btn-s" onclick="cancelarMotorizacao()">← Voltar</button>
       </div>
       <div id="bloco-servico" style="display:none">
+        <div id="custo-badge-wrap"></div>
         <label>Serviço a calcular</label>
-        <input type="text" id="inp-servico" placeholder="Ex: Troca de pastilha de freio dianteira"/>
+        <input type="text" id="inp-servico" placeholder="Ex: Troca de pastilha de freio dianteira" onkeydown="if(event.key==='Enter')calcular()"/>
         <div class="er" id="er-servico" style="display:none"></div>
         <div style="margin-bottom:14px">
           <div class="stit">Sugestões rápidas</div>
@@ -227,31 +261,34 @@ input::placeholder{color:#aaa}
           <span class="chip" onclick="setServ('Higienização do ar-condicionado')">Ar-condicionado</span>
           <span class="chip" onclick="setServ('Troca de bateria')">Bateria</span>
         </div>
-        <div class="cg" style="margin-bottom:14px">
-          <div>
-            <label>Custo hora/técnico (R$)</label>
-            <div class="mp"><span>R$</span><input class="mpi" type="number" id="inp-hora" placeholder="85" min="1"/></div>
-          </div>
-          <div>
-            <label>Margem de lucro (%)</label>
-            <div class="mp"><span style="left:auto;right:14px">%</span><input type="number" id="inp-margem" placeholder="35" min="1" max="99" style="padding-right:36px"/></div>
-          </div>
-        </div>
         <button class="btn btn-p" id="btn-calcular" onclick="calcular()">Calcular preço →</button>
         <div class="load" id="load-calc" style="display:none"><div class="spin"></div><div class="lt">Analisando com IA...</div></div>
       </div>
     </div>
 
+    <!-- ABA RESULTADO -->
     <div id="pn-res" style="display:none">
       <div id="res-content"></div>
       <button class="btn-nova-consulta" id="btn-nova-consulta" style="display:none" onclick="novaConsultaMesmaPlaca()">🔄 Consultar outro serviço com esta placa</button>
       <button class="btn btn-s" style="margin-top:8px" onclick="novaConsultaCompleta()">+ Nova consulta (outra placa)</button>
     </div>
 
+    <!-- ABA HISTÓRICO -->
     <div id="pn-hist" style="display:none">
       <div class="stit">Consultas anteriores</div>
       <div id="hist-lista"><div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div></div>
     </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIG MÃO DE OBRA -->
+<div class="modal-overlay" id="modal-config" onclick="fecharModalSeClicouFora(event)">
+  <div class="modal" style="position:relative">
+    <button class="modal-fechar" onclick="fecharModalConfig()">✕</button>
+    <div class="modal-titulo">⚙️ Configurar mão de obra</div>
+    <div class="modal-sub">Altere o custo por hora e margem de lucro por setor</div>
+    <div id="modal-mo-container"></div>
+    <button class="btn btn-p" onclick="salvarModalConfig()">Salvar alterações</button>
   </div>
 </div>
 
@@ -275,11 +312,26 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 
+// ── ESTADO GLOBAL ──
 let usuario = null;
 let idToken = null;
 let veiculoAtual = null;
-let setoresUsuario = [];
+let configUsuario = {}; // { setores: [], maoDeObra: { mecanica_leve: { valorHora: 85, margem: 35 } } }
+let setoresSelecionados = []; // temporário durante onboarding
 
+const SETORES_LABEL = {
+  mecanica_leve: "Mecânica Leve",
+  diesel_leve: "Diesel Leve / Pickups",
+  caminhoes_pesados: "Caminhões Pesados"
+};
+
+const SETORES_ICON = {
+  mecanica_leve: "🔧",
+  diesel_leve: "🚙",
+  caminhoes_pesados: "🚛"
+};
+
+// ── SESSÃO ──
 onAuthStateChanged(auth, async (user) => {
   if (!user) { window.location.href = "/login.html"; return; }
   usuario = user;
@@ -288,13 +340,16 @@ onAuthStateChanged(auth, async (user) => {
     const snap = await getDoc(doc(db, "usuarios", user.uid));
     if (!snap.exists()) {
       await setDoc(doc(db, "usuarios", user.uid), {
-        nome: user.displayName || "", email: user.email, plano: "trial", setores: [],
-        criadoEm: new Date(), trialExpiraEm: new Date(Date.now() + 7*24*60*60*1000)
+        nome: user.displayName || "", email: user.email, plano: "trial",
+        setores: [], maoDeObra: {},
+        criadoEm: new Date(),
+        trialExpiraEm: new Date(Date.now() + 7*24*60*60*1000)
       });
-      mostrarTela("s-cad"); return;
+      mostrarTela("s-setores"); return;
     }
     const dados = snap.data();
-    setoresUsuario = dados.setores || [];
+    configUsuario = { setores: dados.setores || [], maoDeObra: dados.maoDeObra || {} };
+
     if (dados.plano === "bloqueado") { mostrarTela("s-bloq"); return; }
     if (dados.plano === "trial" && dados.trialExpiraEm) {
       const expira = dados.trialExpiraEm.toDate ? dados.trialExpiraEm.toDate() : new Date(dados.trialExpiraEm);
@@ -304,35 +359,133 @@ onAuthStateChanged(auth, async (user) => {
       bar.textContent = `⏳ Trial gratuito: ${dias} dia${dias!==1?"s":""} restante${dias!==1?"s":""}`;
       bar.style.display = "block";
     }
-    if (!setoresUsuario.length) { mostrarTela("s-cad"); return; }
+
+    if (!configUsuario.setores.length) { mostrarTela("s-setores"); return; }
+
     document.getElementById("nav-nome").textContent = dados.nome || user.displayName || user.email;
     mostrarTela("s-main");
   } catch(e) {
-    console.error(e);
-    mostrarTela("s-cad");
+    console.error("Erro ao carregar perfil:", e);
+    mostrarTela("s-setores");
   }
 });
 
 window.fazerLogout = async () => { await signOut(auth); window.location.href = "/login.html"; };
 
-window.salvarSetores = async () => {
-  const sel = [...document.querySelectorAll(".sc.active")].map(el => el.dataset.s);
-  if (!sel.length) { document.getElementById("er-setor").style.display="block"; return; }
+// ── ONBOARDING: SETORES ──
+window.togS = el => el.classList.toggle("active");
+
+window.avancarParaMaoDeObra = () => {
+  setoresSelecionados = [...document.querySelectorAll("#sg-setores .sc.active")].map(el => el.dataset.s);
+  if (!setoresSelecionados.length) { document.getElementById("er-setor").style.display="block"; return; }
   document.getElementById("er-setor").style.display = "none";
-  const btn = document.getElementById("btn-salvar-setor");
+  renderizarConfigMO("config-mo-container", setoresSelecionados, configUsuario.maoDeObra);
+  mostrarTela("s-mao-obra");
+};
+
+window.voltarParaSetores = () => mostrarTela("s-setores");
+
+function renderizarConfigMO(containerId, setores, maoDeObraAtual) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  setores.forEach(s => {
+    const atual = maoDeObraAtual[s] || {};
+    container.innerHTML += `
+      <div class="config-setor">
+        <div class="config-setor-titulo">${SETORES_ICON[s]} ${SETORES_LABEL[s]}</div>
+        <div class="cg2">
+          <div>
+            <label>Custo hora técnico (R$)</label>
+            <div class="mp"><span>R$</span><input class="mpi" type="number" id="mo-hora-${s}" placeholder="85" min="1" value="${atual.valorHora||""}"/></div>
+          </div>
+          <div>
+            <label>Margem de lucro (%)</label>
+            <div class="mp"><span class="mp-suf">%</span><input class="mpd" type="number" id="mo-margem-${s}" placeholder="35" min="1" max="99" value="${atual.margem||""}"/></div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:-8px">💡 Não sabe o custo? <span style="color:var(--acc);cursor:pointer;font-weight:600" onclick="ajudaCalcularMO('${s}')">Calcular com ajuda da IA →</span></div>
+      </div>`;
+  });
+}
+
+window.ajudaCalcularMO = (setor) => {
+  // Abre mini modal de ajuda para calcular custo/hora
+  const nome = SETORES_LABEL[setor];
+  const r = prompt(`Cálculo de custo/hora — ${nome}\n\nInforme:\n- Salário bruto do técnico (R$): `);
+  if (!r) return;
+  const salario = parseFloat(r) || 0;
+  const encargos = salario * 0.72; // aprox encargos
+  const horasMes = 176;
+  const custoHora = ((salario + encargos) / horasMes).toFixed(2);
+  document.getElementById(`mo-hora-${setor}`).value = custoHora;
+  alert(`Custo estimado por hora: R$ ${custoHora}\n(Salário + encargos ÷ ${horasMes}h/mês)\n\nValor preenchido automaticamente. Ajuste se necessário.`);
+};
+
+window.salvarConfiguracaoCompleta = async () => {
+  const maoDeObra = {};
+  let valido = true;
+  setoresSelecionados.forEach(s => {
+    const hora = parseFloat(document.getElementById(`mo-hora-${s}`)?.value);
+    const margem = parseFloat(document.getElementById(`mo-margem-${s}`)?.value);
+    if (!hora || !margem) { valido = false; return; }
+    maoDeObra[s] = { valorHora: hora, margem };
+  });
+  if (!valido) { document.getElementById("er-mo").style.display="block"; return; }
+  document.getElementById("er-mo").style.display = "none";
+  const btn = document.getElementById("btn-salvar-config");
   btn.disabled = true; btn.textContent = "Salvando...";
   try {
-    await setDoc(doc(db, "usuarios", usuario.uid), { setores: sel }, { merge: true });
-    setoresUsuario = sel;
+    await setDoc(doc(db, "usuarios", usuario.uid), { setores: setoresSelecionados, maoDeObra }, { merge: true });
+    configUsuario = { setores: setoresSelecionados, maoDeObra };
     document.getElementById("nav-nome").textContent = usuario.displayName || usuario.email;
     mostrarTela("s-main");
   } catch(e) {
-    btn.disabled = false; btn.textContent = "Continuar →";
-    const er = document.getElementById("er-setor");
-    er.textContent = "Erro ao salvar. Tente novamente."; er.style.display = "block";
+    btn.disabled = false; btn.textContent = "Salvar e entrar no app →";
+    document.getElementById("er-mo").textContent = "Erro ao salvar. Tente novamente.";
+    document.getElementById("er-mo").style.display = "block";
   }
 };
 
+// ── MODAL CONFIG ──
+window.abrirModalConfig = () => {
+  renderizarConfigMO("modal-mo-container", configUsuario.setores, configUsuario.maoDeObra);
+  document.getElementById("modal-config").classList.add("active");
+};
+window.fecharModalConfig = () => document.getElementById("modal-config").classList.remove("active");
+window.fecharModalSeClicouFora = e => { if (e.target.id === "modal-config") fecharModalConfig(); };
+
+window.salvarModalConfig = async () => {
+  const maoDeObra = { ...configUsuario.maoDeObra };
+  let valido = true;
+  configUsuario.setores.forEach(s => {
+    const hora = parseFloat(document.getElementById(`mo-hora-${s}`)?.value);
+    const margem = parseFloat(document.getElementById(`mo-margem-${s}`)?.value);
+    if (!hora || !margem) { valido = false; return; }
+    maoDeObra[s] = { valorHora: hora, margem };
+  });
+  if (!valido) { alert("Preencha todos os campos."); return; }
+  try {
+    await setDoc(doc(db, "usuarios", usuario.uid), { maoDeObra }, { merge: true });
+    configUsuario.maoDeObra = maoDeObra;
+    fecharModalConfig();
+    atualizarBadgeCusto();
+    alert("Configuração salva com sucesso!");
+  } catch(e) {
+    alert("Erro ao salvar. Tente novamente.");
+  }
+};
+
+// ── BADGE CUSTO NO APP ──
+function atualizarBadgeCusto() {
+  const wrap = document.getElementById("custo-badge-wrap");
+  if (!wrap || !veiculoAtual) return;
+  const setor = configUsuario.setores[0];
+  const mo = configUsuario.maoDeObra[setor] || {};
+  if (!mo.valorHora) return;
+  wrap.innerHTML = `<div class="custo-badge" onclick="abrirModalConfig()">💰 M.O.: R$ ${mo.valorHora}/h · Margem: ${mo.margem}% · ⚙️ alterar</div>`;
+}
+
+// ── BUSCAR PLACA ──
 window.buscarPlaca = async () => {
   const placa = document.getElementById("inp-placa").value.replace(/[^A-Za-z0-9]/g,"").toUpperCase();
   if (placa.length < 7) { mostrarErro("er-placa","Placa inválida. Informe 7 caracteres."); return; }
@@ -383,6 +536,7 @@ function confirmarVeiculo(v) {
   document.getElementById("va-det").textContent = `${v.motor||""} • ${v.placa}`;
   document.getElementById("veiculo-ativo").style.display = "block";
   document.getElementById("bloco-servico").style.display = "block";
+  atualizarBadgeCusto();
 }
 
 window.trocarVeiculo = () => {
@@ -393,24 +547,47 @@ window.trocarVeiculo = () => {
   document.getElementById("inp-placa").value = "";
 };
 
+// ── CALCULAR ──
 window.calcular = async () => {
   const servico = document.getElementById("inp-servico").value.trim();
-  const hora = parseFloat(document.getElementById("inp-hora").value)||85;
-  const margem = parseFloat(document.getElementById("inp-margem").value)||35;
   if (!servico) { mostrarErro("er-servico","Descreva o serviço a calcular."); return; }
   const fora = ["receita","culinária","cozinha","direito","medicina","advogado","lei","investimento","bitcoin","política","futebol","letra música","poema"];
   if (fora.some(p => servico.toLowerCase().includes(p))) { mostrarErro("er-servico","⚠️ Este app é exclusivo para serviços automotivos."); return; }
   esconderErro("er-servico");
+
+  // Pega valorHora e margem do setor do veículo (usa primeiro setor cadastrado como padrão)
+  const setor = configUsuario.setores[0] || "mecanica_leve";
+  const mo = configUsuario.maoDeObra[setor] || {};
+  const valorHora = mo.valorHora || 85;
+  const margem = mo.margem || 35;
+
   document.getElementById("bloco-servico").style.display = "none";
   document.getElementById("load-calc").style.display = "flex";
   document.getElementById("btn-nova-consulta").style.display = "none";
+
   try {
-    const r = await fetch("/api/calcular", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({veiculo:veiculoAtual,servico,custoPorHora:hora,margemLucro:margem,setores:setoresUsuario}) });
+    const r = await fetch("/api/calcular", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        veiculo: veiculoAtual,
+        servico,
+        valorHora,   // ← nome correto que o calcular.js espera
+        margem
+      })
+    });
     const dados = await r.json();
-    if (!dados||dados.erro) throw new Error(dados?.erro||"Erro");
-    await fetch("/api/cache-placa", { method:"POST", headers:{"Content-Type":"application/json","Authorization":`Bearer ${idToken}`}, body:JSON.stringify({placa:veiculoAtual.placa,veiculo:veiculoAtual,servico,resultado:dados}) });
+    if (!dados || dados.error) throw new Error(dados?.error||"Erro");
+
+    // Salva histórico
+    await fetch("/api/cache-placa", {
+      method: "POST",
+      headers: {"Content-Type":"application/json","Authorization":`Bearer ${idToken}`},
+      body: JSON.stringify({ placa: veiculoAtual.placa, veiculo: veiculoAtual, servico, resultado: dados })
+    });
+
     document.getElementById("load-calc").style.display = "none";
-    renderizarResultado(dados, servico);
+    renderizarResultado(dados, servico, valorHora, margem);
     trocarTab("res");
     document.getElementById("btn-nova-consulta").style.display = "flex";
   } catch(e) {
@@ -420,23 +597,72 @@ window.calcular = async () => {
   }
 };
 
-function renderizarResultado(dados, servico) {
-  const preco = dados.precoFinal||dados.preco_sugerido||0;
-  const pecas = dados.pecas||dados.itens||[];
-  const mo = dados.mao_de_obra||dados.maoDeObra||{};
-  const obs = dados.observacoes||dados.alertas||[];
-  const op = dados.oportunidades||[];
-  let html = `<div class="rb"><div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${servico}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${veiculoAtual?.modelo} ${veiculoAtual?.ano} • ${veiculoAtual?.placa}</div><div class="rv">R$ ${Number(preco).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div style="font-size:12px;color:var(--muted)">Preço sugerido ao cliente</div></div>`;
-  if (mo.horas||mo.valor) html += `<div class="hi"><div><div style="font-size:13px;font-weight:600">Mão de obra</div><div style="font-size:12px;color:var(--muted)">${mo.horas||0}h × R$${mo.valorHora||85}/h</div></div><div class="hv">R$ ${Number(mo.valor||0).toLocaleString("pt-BR",{minimumFractionDigits:2})}</div></div>`;
-  if (pecas.length) { html+=`<div class="is"><div class="ih">Peças e materiais</div>`; pecas.forEach(p=>{html+=`<div class="ic">${p.nome||p.item} — <strong>R$ ${Number(p.valor||p.preco||0).toLocaleString("pt-BR",{minimumFractionDigits:2})}</strong><br><span style="color:var(--muted);font-size:12px">${p.obs||""}</span></div>`;}); html+=`</div>`; }
-  if (obs.length) { html+=`<div class="is"><div class="ih">Observações</div>`; obs.forEach(o=>{html+=`<div class="ic al">${o}</div>`;}); html+=`</div>`; }
-  if (op.length) { html+=`<div class="is"><div class="ih">💡 Oportunidades</div>`; op.forEach(o=>{html+=`<div class="ic op">${o}</div>`;}); html+=`</div>`; }
+function renderizarResultado(dados, servico, valorHora, margem) {
+  // calcular.js retorna: horas_estimadas, valor_servico, justificativa, alertas_risco, verificar_junto, se_nao_trocar
+  const horas = dados.horas_estimadas || 0;
+  const valorServico = dados.valor_servico || 0;
+  const justificativa = dados.justificativa || "";
+  const alertas = dados.alertas_risco || [];
+  const verificar = dados.verificar_junto || [];
+  const seNaoTrocar = dados.se_nao_trocar || "";
+
+  // Calcula preço final com margem
+  const custo = horas * valorHora;
+  const precoFinal = custo * (1 + margem/100);
+
+  let html = `<div class="rb">
+    <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${servico}</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:2px">${veiculoAtual?.modelo} ${veiculoAtual?.ano} • ${veiculoAtual?.placa}</div>
+    <div class="rv">R$ ${precoFinal.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+    <div style="font-size:12px;color:var(--muted)">Preço sugerido ao cliente (com ${margem}% de margem)</div>
+  </div>`;
+
+  html += `<div class="hi">
+    <div><div style="font-size:13px;font-weight:600">Mão de obra</div><div style="font-size:12px;color:var(--muted)">${horas}h × R$ ${valorHora}/h</div></div>
+    <div class="hv">R$ ${custo.toLocaleString("pt-BR",{minimumFractionDigits:2})}</div>
+  </div>`;
+
+  if (justificativa) {
+    html += `<div class="is"><div class="ih">Análise técnica</div><div class="ic rs">${justificativa}</div></div>`;
+  }
+
+  if (alertas.length) {
+    html += `<div class="is"><div class="ih">⚠️ Alertas de risco</div>`;
+    alertas.forEach(a => { html += `<div class="ic al">${a}</div>`; });
+    html += `</div>`;
+  }
+
+  if (verificar.length) {
+    html += `<div class="is"><div class="ih">💡 Verificar junto</div>`;
+    verificar.forEach(v => { html += `<div class="ic op">${v}</div>`; });
+    html += `</div>`;
+  }
+
+  if (seNaoTrocar) {
+    html += `<div class="is"><div class="ih">🚨 Se não trocar</div><div class="ic al">${seNaoTrocar}</div></div>`;
+  }
+
   document.getElementById("res-content").innerHTML = html;
 }
 
-window.novaConsultaMesmaPlaca = () => { document.getElementById("inp-servico").value=""; document.getElementById("bloco-servico").style.display="block"; document.getElementById("btn-nova-consulta").style.display="none"; trocarTab("calc"); };
-window.novaConsultaCompleta = () => { veiculoAtual=null; document.getElementById("veiculo-ativo").style.display="none"; document.getElementById("bloco-servico").style.display="none"; document.getElementById("bloco-placa").style.display="block"; document.getElementById("inp-placa").value=""; document.getElementById("inp-servico").value=""; trocarTab("calc"); };
+window.novaConsultaMesmaPlaca = () => {
+  document.getElementById("inp-servico").value = "";
+  document.getElementById("bloco-servico").style.display = "block";
+  document.getElementById("btn-nova-consulta").style.display = "none";
+  trocarTab("calc");
+};
 
+window.novaConsultaCompleta = () => {
+  veiculoAtual = null;
+  document.getElementById("veiculo-ativo").style.display = "none";
+  document.getElementById("bloco-servico").style.display = "none";
+  document.getElementById("bloco-placa").style.display = "block";
+  document.getElementById("inp-placa").value = "";
+  document.getElementById("inp-servico").value = "";
+  trocarTab("calc");
+};
+
+// ── HISTÓRICO ──
 async function carregarHistorico() {
   const lista = document.getElementById("hist-lista");
   lista.innerHTML = `<div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>`;
@@ -444,20 +670,28 @@ async function carregarHistorico() {
     const q = query(collection(db,"historico"),where("uid","==",usuario.uid),orderBy("criadoEm","desc"),limit(20));
     const snap = await getDocs(q);
     if (snap.empty) { lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`; return; }
-    let html="";
-    snap.forEach(d=>{ const dt=d.data(); const data=dt.criadoEm?.toDate?dt.criadoEm.toDate():new Date(dt.criadoEm); html+=`<div class="hist-item"><div class="hist-placa">${dt.placa}</div><div class="hist-modelo">${dt.modelo} ${dt.ano}</div><div class="hist-servico">${dt.servico}</div><div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})}</div></div>`; });
+    let html = "";
+    snap.forEach(d => {
+      const dt = d.data();
+      const data = dt.criadoEm?.toDate ? dt.criadoEm.toDate() : new Date(dt.criadoEm||Date.now());
+      html += `<div class="hist-item"><div class="hist-placa">${dt.placa||""}</div><div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div><div class="hist-servico">${dt.servico||""}</div><div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})}</div></div>`;
+    });
     lista.innerHTML = html;
-  } catch(e) { lista.innerHTML=`<div class="hist-vazio">Erro ao carregar histórico.</div>`; }
+  } catch(e) {
+    lista.innerHTML = `<div class="hist-vazio">Erro ao carregar histórico.</div>`;
+  }
 }
 
 window.trocarTab = (tab) => {
-  ["calc","res","hist"].forEach(t=>{ document.getElementById("pn-"+t).style.display=t===tab?"block":"none"; document.getElementById("tab-"+t).classList.toggle("active",t===tab); });
+  ["calc","res","hist"].forEach(t => {
+    document.getElementById("pn-"+t).style.display = t===tab?"block":"none";
+    document.getElementById("tab-"+t).classList.toggle("active", t===tab);
+  });
   if (tab==="hist") carregarHistorico();
 };
 
-window.togS = el => el.classList.toggle("active");
-window.setServ = v => { document.getElementById("inp-servico").value=v; };
-window.formatarPlaca = inp => { inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,""); };
+window.setServ = v => { document.getElementById("inp-servico").value = v; };
+window.formatarPlaca = inp => { inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9]/g,""); };
 function mostrarTela(id) { document.querySelectorAll(".screen,.main-s").forEach(el=>el.classList.remove("active")); document.getElementById(id)?.classList.add("active"); }
 function mostrarErro(id,txt) { const el=document.getElementById(id); if(el){el.textContent=txt;el.style.display="block";} }
 function esconderErro(id) { const el=document.getElementById(id); if(el)el.style.display="none"; }
