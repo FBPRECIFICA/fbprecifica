@@ -1,1142 +1,661 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FB Precifica — Seu Assistente Técnico e Comercial na Bancada</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;900&family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FB Precifica — Precificação Inteligente para Oficinas</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --red: #F47920;
-    --red-dark: #D4620F;
-    --red-glow: rgba(244,121,32,0.18);
-    --black: #F5F5F5;
-    --dark: #EBEBEB;
-    --card: #FFFFFF;
-    --border: rgba(0,0,0,0.08);
-    --white: #1A1A1A;
-    --gray: #666666;
-    --light: #2A2A2A;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Barlow', sans-serif;
-    overflow-x: hidden;
-  }
-
-  /* ─── NOISE OVERLAY ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ─── NAV ─── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(to bottom, rgba(245,245,245,0.97), transparent);
-    backdrop-filter: blur(8px);
-  }
-
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 2px;
-    color: var(--white);
-  }
-
-  .logo span { color: var(--red); }
-
-  .nav-cta {
-    background: var(--red);
-    color: var(--white);
-    padding: 10px 24px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 14px;
-    text-decoration: none;
-    letter-spacing: 0.5px;
-    transition: background 0.2s;
-  }
-  .nav-cta:hover { background: var(--red-dark); }
-
-  /* ─── HERO ─── */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    padding: 120px 40px 80px;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 60% at 70% 50%, rgba(244,121,32,0.10) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(244,121,32,0.06) 0%, transparent 60%);
-  }
-
-  .hero-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 1100px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(244,121,32,0.10);
-    border: 1px solid rgba(244,121,32,0.3);
-    padding: 6px 16px;
-    border-radius: 100px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #D4620F;
-    letter-spacing: 0.5px;
-    margin-bottom: 32px;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .hero-badge::before {
-    content: '';
-    width: 7px; height: 7px;
-    background: var(--red);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
-  }
-
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(52px, 8vw, 110px);
-    line-height: 0.92;
-    letter-spacing: 1px;
-    margin-bottom: 24px;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
-
-  .hero h1 .red { color: var(--red); }
-  .hero h1 .outline {
-    -webkit-text-stroke: 2px rgba(0,0,0,0.15);
-    color: transparent;
-  }
-
-  .hero-sub {
-    font-size: clamp(16px, 2vw, 22px);
-    color: var(--gray);
-    max-width: 600px;
-    line-height: 1.6;
-    margin-bottom: 48px;
-    animation: fadeUp 0.6s 0.2s ease both;
-  }
-
-  .hero-sub strong { color: var(--white); }
-
-  .hero-actions {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-
-  .btn-primary {
-    background: var(--red);
-    color: var(--white);
-    padding: 16px 36px;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 700;
-    text-decoration: none;
-    letter-spacing: 0.5px;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .btn-primary:hover {
-    background: var(--red-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(227,30,36,0.35);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    padding: 16px 36px;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    text-decoration: none;
-    border: 1px solid rgba(0,0,0,0.2);
-    transition: all 0.2s;
-  }
-  .btn-secondary:hover {
-    border-color: rgba(0,0,0,0.5);
-    background: rgba(0,0,0,0.05);
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 48px;
-    margin-top: 72px;
-    padding-top: 40px;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-    animation: fadeUp 0.6s 0.4s ease both;
-  }
-
-  .stat-item { text-align: left; }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 42px;
-    color: var(--red);
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 13px;
-    color: var(--gray);
-    margin-top: 4px;
-    letter-spacing: 0.3px;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─── SECTION BASE ─── */
-  section {
-    position: relative;
-    z-index: 1;
-    padding: 100px 40px;
-  }
-
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .section-label {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 16px;
-  }
-
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 5vw, 64px);
-    line-height: 1;
-    margin-bottom: 20px;
-  }
-
-  .section-desc {
-    font-size: 17px;
-    color: var(--gray);
-    max-width: 580px;
-    line-height: 1.65;
-  }
-
-  /* ─── PROBLEMA ─── */
-  .problema {
-    background: var(--dark);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .problema-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-    margin-top: 60px;
-  }
-
-  .problema-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .problema-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    font-size: 16px;
-    color: var(--light);
-    line-height: 1.5;
-  }
-
-  .problema-list li::before {
-    content: '✗';
-    color: var(--red);
-    font-size: 20px;
-    font-weight: 900;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .problema-quote {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--red);
-    padding: 36px;
-    border-radius: 8px;
-  }
-
-  .problema-quote p {
-    font-size: 20px;
-    line-height: 1.55;
-    color: var(--light);
-    font-style: italic;
-  }
-
-  .problema-quote cite {
-    display: block;
-    margin-top: 20px;
-    font-size: 14px;
-    color: var(--gray);
-    font-style: normal;
-  }
-
-  /* ─── 4 DIFERENCIAIS ─── */
-  .diferenciais {
-    background: var(--black);
-  }
-
-  .diferenciais-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-    margin-top: 60px;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .dif-card {
-    background: var(--card);
-    padding: 48px 40px;
-    position: relative;
-    transition: background 0.3s;
-    cursor: default;
-  }
-
-  .dif-card:hover {
-    background: #1E1E1E;
-  }
-
-  .dif-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 40px; right: 40px;
-    height: 2px;
-    background: var(--red);
-    transform: scaleX(0);
-    transition: transform 0.3s;
-    transform-origin: left;
-  }
-
-  .dif-card:hover::after { transform: scaleX(1); }
-
-  .dif-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 72px;
-    color: rgba(227,30,36,0.12);
-    line-height: 1;
-    margin-bottom: 8px;
-    transition: color 0.3s;
-  }
-
-  .dif-card:hover .dif-num { color: rgba(227,30,36,0.25); }
-
-  .dif-icon {
-    font-size: 32px;
-    margin-bottom: 16px;
-  }
-
-  .dif-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-    color: var(--white);
-    text-transform: uppercase;
-  }
-
-  .dif-desc {
-    font-size: 15px;
-    color: var(--gray);
-    line-height: 1.65;
-  }
-
-  .dif-tag {
-    display: inline-block;
-    margin-top: 16px;
-    background: rgba(244,121,32,0.08);
-    border: 1px solid rgba(244,121,32,0.2);
-    color: #D4620F;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 4px 12px;
-    border-radius: 100px;
-  }
-
-  /* ─── COMO FUNCIONA ─── */
-  .como {
-    background: var(--dark);
-    border-top: 1px solid var(--border);
-  }
-
-  .como-steps {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
-    margin-top: 60px;
-  }
-
-  .step {
-    background: var(--card);
-    padding: 36px 28px;
-    position: relative;
-  }
-
-  .step-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 56px;
-    color: var(--red);
-    line-height: 1;
-    margin-bottom: 16px;
-  }
-
-  .step-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--white);
-  }
-
-  .step-desc {
-    font-size: 14px;
-    color: var(--gray);
-    line-height: 1.6;
-  }
-
-  /* ─── PARA QUEM ─── */
-  .paraquem {
-    background: var(--black);
-  }
-
-  .paraquem-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 60px;
-  }
-
-  .pq-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 32px;
-    transition: border-color 0.3s, transform 0.3s;
-  }
-
-  .pq-card:hover {
-    border-color: rgba(227,30,36,0.4);
-    transform: translateY(-4px);
-  }
-
-  .pq-icon { font-size: 36px; margin-bottom: 16px; }
-
-  .pq-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  .pq-desc {
-    font-size: 14px;
-    color: var(--gray);
-    line-height: 1.6;
-  }
-
-  /* ─── RESULTADOS ─── */
-  .resultados {
-    background: var(--red);
-    padding: 80px 40px;
-  }
-
-  .resultados .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-  }
-
-  .resultados h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(40px, 5vw, 68px);
-    line-height: 1;
-    color: #FFFFFF;
-  }
-
-  .resultados-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .resultados-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    font-size: 16px;
-    color: rgba(255,255,255,0.9);
-    line-height: 1.5;
-  }
-
-  .resultados-list li::before {
-    content: '✓';
-    color: #FFFFFF;
-    font-size: 18px;
-    font-weight: 900;
-    flex-shrink: 0;
-  }
-
-  /* ─── PLANOS ─── */
-  .planos {
-    background: var(--dark);
-    border-top: 1px solid var(--border);
-  }
-
-  .planos-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 60px;
-  }
-
-  .plano-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 40px 32px;
-    position: relative;
-    transition: border-color 0.3s;
-  }
-
-  .plano-card.destaque {
-    border-color: var(--red);
-    background: linear-gradient(135deg, #FFF3EA, var(--card));
-  }
-
-  .plano-badge {
-    position: absolute;
-    top: -13px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--red);
-    color: var(--white);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 4px 16px;
-    border-radius: 100px;
-    white-space: nowrap;
-  }
-
-  .plano-nome {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--gray);
-    margin-bottom: 16px;
-  }
-
-  .plano-preco {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 56px;
-    color: var(--white);
-    line-height: 1;
-  }
-
-  .plano-preco span {
-    font-family: 'Barlow', sans-serif;
-    font-size: 16px;
-    color: var(--gray);
-    font-weight: 500;
-  }
-
-  .plano-trial {
-    font-size: 13px;
-    color: var(--red);
-    font-weight: 600;
-    margin-top: 6px;
-    margin-bottom: 28px;
-  }
-
-  .plano-features {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .plano-features li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
-    color: var(--light);
-    line-height: 1.45;
-  }
-
-  .plano-features li::before {
-    content: '✓';
-    color: var(--red);
-    font-weight: 900;
-    flex-shrink: 0;
-  }
-
-  .plano-features li.off {
-    color: var(--gray);
-    text-decoration: line-through;
-  }
-
-  .plano-features li.off::before { color: var(--gray); content: '—'; }
-
-  .btn-plano {
-    display: block;
-    text-align: center;
-    padding: 14px;
-    border-radius: 6px;
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-    letter-spacing: 0.3px;
-  }
-
-  .btn-plano-outline {
-    border: 1px solid rgba(0,0,0,0.2);
-    color: var(--white);
-  }
-  .btn-plano-outline:hover {
-    border-color: var(--red);
-    color: var(--red);
-  }
-
-  .btn-plano-red {
-    background: var(--red);
-    color: var(--white);
-  }
-  .btn-plano-red:hover {
-    background: var(--red-dark);
-    box-shadow: 0 6px 24px rgba(227,30,36,0.35);
-  }
-
-  /* ─── FAQ ─── */
-  .faq {
-    background: var(--black);
-    border-top: 1px solid var(--border);
-  }
-
-  .faq-list {
-    margin-top: 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .faq-item {
-    background: var(--card);
-    border-radius: 0;
-    overflow: hidden;
-  }
-
-  .faq-item:first-child { border-radius: 8px 8px 0 0; }
-  .faq-item:last-child { border-radius: 0 0 8px 8px; }
-
-  .faq-q {
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--white);
-    font-family: 'Barlow', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: left;
-    padding: 24px 28px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .faq-q::after {
-    content: '+';
-    font-size: 24px;
-    color: var(--red);
-    flex-shrink: 0;
-    transition: transform 0.3s;
-  }
-
-  .faq-item.open .faq-q::after { transform: rotate(45deg); }
-
-  .faq-a {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-  }
-
-  .faq-item.open .faq-a { max-height: 300px; }
-
-  .faq-a p {
-    padding: 0 28px 24px;
-    font-size: 15px;
-    color: var(--gray);
-    line-height: 1.65;
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
-  }
-
-  /* ─── CTA FINAL ─── */
-  .cta-final {
-    background: var(--dark);
-    border-top: 1px solid var(--border);
-    text-align: center;
-    padding: 120px 40px;
-  }
-
-  .cta-final h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 7vw, 96px);
-    line-height: 0.95;
-    margin-bottom: 28px;
-  }
-
-  .cta-final h2 .red { color: var(--red); }
-
-  .cta-final p {
-    font-size: 18px;
-    color: var(--gray);
-    max-width: 520px;
-    margin: 0 auto 48px;
-    line-height: 1.6;
-  }
-
-  .cta-guarantee {
-    margin-top: 28px;
-    font-size: 14px;
-    color: var(--gray);
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: var(--black);
-    border-top: 1px solid var(--border);
-    padding: 40px;
-    text-align: center;
-  }
-
-  footer .logo { font-size: 22px; margin-bottom: 12px; display: block; }
-
-  footer p {
-    font-size: 13px;
-    color: var(--gray);
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 768px) {
-    nav { padding: 16px 20px; }
-    section { padding: 70px 20px; }
-    .hero { padding: 100px 20px 60px; }
-
-    .problema-grid,
-    .diferenciais-grid,
-    .como-steps,
-    .paraquem-grid,
-    .planos-grid,
-    .resultados .container { grid-template-columns: 1fr; gap: 16px; }
-
-    .hero-stats { gap: 28px; }
-    .hero-actions { flex-direction: column; }
-    .btn-primary, .btn-secondary { text-align: center; justify-content: center; }
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --preto:#0d0d0d;
+  --laranja:#F97316;
+  --laranja2:#fb923c;
+  --branco:#ffffff;
+  --cinza:#f4f4f4;
+  --texto:#1a1a1a;
+  --muted:#666;
+  --verde:#16a34a;
+  --vermelho:#dc2626;
+  --amarelo:#f59e0b;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;color:var(--texto);background:var(--branco);overflow-x:hidden}
+
+/* ── HERO ── */
+.hero{
+  background:var(--preto);
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(249,115,22,0.15) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 20%,rgba(249,115,22,0.08) 0%,transparent 50%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(249,115,22,0.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(249,115,22,0.05) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+nav{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 40px;border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.nav-logo{font-family:'Barlow',sans-serif;font-size:24px;font-weight:900;color:var(--branco);letter-spacing:-0.5px}
+.nav-logo span{color:var(--laranja)}
+.nav-cta{background:var(--laranja);color:var(--branco);border:none;padding:10px 24px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.nav-cta:hover{background:var(--laranja2);transform:translateY(-1px)}
+
+.hero-body{
+  position:relative;z-index:5;
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 40px;text-align:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.3);
+  color:var(--laranja);font-size:12px;font-weight:600;
+  padding:6px 16px;border-radius:20px;margin-bottom:28px;
+  text-transform:uppercase;letter-spacing:1px;
+}
+.hero-titulo{
+  font-family:'Barlow',sans-serif;
+  font-size:clamp(42px,7vw,80px);
+  font-weight:900;line-height:1.0;letter-spacing:-2px;
+  color:var(--branco);margin-bottom:12px;
+}
+.hero-titulo span{color:var(--laranja)}
+.hero-sub{
+  font-size:clamp(16px,2.5vw,22px);color:rgba(255,255,255,0.6);
+  max-width:680px;line-height:1.6;margin-bottom:12px;
+}
+.hero-slogan{
+  font-size:14px;color:rgba(255,255,255,0.35);
+  font-style:italic;margin-bottom:48px;
+}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:60px}
+.btn-hero-primary{
+  background:var(--laranja);color:var(--branco);
+  padding:16px 36px;border-radius:12px;font-size:16px;font-weight:700;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:all 0.2s;font-family:'DM Sans',sans-serif;
+  box-shadow:0 8px 32px rgba(249,115,22,0.4);
+}
+.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(249,115,22,0.5)}
+.btn-hero-sec{
+  background:transparent;color:var(--branco);
+  padding:16px 36px;border-radius:12px;font-size:16px;font-weight:600;
+  text-decoration:none;border:1.5px solid rgba(255,255,255,0.2);cursor:pointer;
+  transition:all 0.2s;font-family:'DM Sans',sans-serif;
+}
+.btn-hero-sec:hover{border-color:var(--laranja);color:var(--laranja)}
+
+.hero-stats{
+  display:flex;gap:48px;flex-wrap:wrap;justify-content:center;
+  border-top:1px solid rgba(255,255,255,0.08);padding-top:40px;
+}
+.stat-item{text-align:center}
+.stat-num{font-family:'Barlow',sans-serif;font-size:36px;font-weight:900;color:var(--laranja)}
+.stat-label{font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* ── SEÇÕES ── */
+section{padding:100px 40px}
+.container{max-width:1100px;margin:0 auto}
+.section-tag{
+  display:inline-block;background:rgba(249,115,22,0.1);
+  color:var(--laranja);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:2px;
+  padding:5px 14px;border-radius:20px;margin-bottom:16px;
+}
+.section-titulo{
+  font-family:'Barlow',sans-serif;font-size:clamp(32px,5vw,52px);
+  font-weight:900;letter-spacing:-1px;line-height:1.1;margin-bottom:16px;
+}
+.section-sub{font-size:18px;color:var(--muted);max-width:600px;line-height:1.6}
+
+/* ── PROBLEMA ── */
+.problema{background:var(--cinza)}
+.problema-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:60px}
+.problema-card{
+  background:var(--branco);border-radius:16px;padding:28px;
+  border-left:4px solid var(--vermelho);box-shadow:0 2px 12px rgba(0,0,0,0.06);
+}
+.problema-emoji{font-size:28px;margin-bottom:12px}
+.problema-titulo{font-family:'Barlow',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px}
+.problema-texto{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* ── DIFERENCIAIS ── */
+.diferenciais{background:var(--preto)}
+.dif-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:60px}
+.dif-card{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;padding:32px;position:relative;overflow:hidden;
+  transition:all 0.3s;
+}
+.dif-card:hover{border-color:rgba(249,115,22,0.3);transform:translateY(-4px)}
+.dif-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--laranja),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.dif-card:hover::before{opacity:1}
+.dif-numero{
+  font-family:'Barlow',sans-serif;font-size:48px;font-weight:900;
+  color:rgba(249,115,22,0.2);line-height:1;margin-bottom:16px;
+}
+.dif-icone{font-size:32px;margin-bottom:16px}
+.dif-titulo{font-family:'Barlow',sans-serif;font-size:20px;font-weight:800;color:var(--branco);margin-bottom:12px}
+.dif-texto{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7}
+.dif-badge{
+  display:inline-block;background:rgba(249,115,22,0.15);
+  color:var(--laranja);font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;margin-top:16px;
+}
+
+/* ── CALCULADORA ── */
+.calculadora{background:linear-gradient(135deg,var(--laranja) 0%,#c2410c 100%)}
+.calc-box{
+  background:rgba(0,0,0,0.2);border-radius:20px;padding:40px;
+  max-width:700px;margin:0 auto;text-align:center;
+}
+.calc-titulo{font-family:'Barlow',sans-serif;font-size:32px;font-weight:900;color:var(--branco);margin-bottom:8px}
+.calc-sub{font-size:16px;color:rgba(255,255,255,0.7);margin-bottom:36px}
+.calc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.calc-input-group label{display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:6px;text-transform:uppercase}
+.calc-input-group input{
+  width:100%;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.2);
+  border-radius:10px;color:var(--branco);font-size:18px;font-weight:700;
+  padding:12px 16px;font-family:'Barlow',sans-serif;outline:none;
+  transition:border-color 0.2s;
+}
+.calc-input-group input:focus{border-color:rgba(255,255,255,0.6)}
+.calc-input-group input::placeholder{color:rgba(255,255,255,0.3)}
+.calc-resultado{
+  background:rgba(0,0,0,0.3);border-radius:14px;padding:24px;margin-top:8px;
+}
+.calc-resultado-num{font-family:'Barlow',sans-serif;font-size:52px;font-weight:900;color:var(--branco);letter-spacing:-2px}
+.calc-resultado-label{font-size:14px;color:rgba(255,255,255,0.6);margin-top:4px}
+.calc-nota{font-size:13px;color:rgba(255,255,255,0.5);margin-top:12px;font-style:italic}
+
+/* ── VS TEMPÁRIO ── */
+.versus{background:var(--cinza)}
+.vs-table{width:100%;border-collapse:collapse;margin-top:48px;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+.vs-table th{padding:18px 24px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.vs-table th:first-child{background:var(--preto);color:rgba(255,255,255,0.5);text-align:left}
+.vs-table th:nth-child(2){background:#e5e7eb;color:var(--muted);text-align:center}
+.vs-table th:nth-child(3){background:var(--laranja);color:var(--branco);text-align:center}
+.vs-table td{padding:16px 24px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:15px}
+.vs-table td:first-child{font-weight:600;background:var(--branco)}
+.vs-table td:nth-child(2){background:var(--branco);text-align:center;color:var(--muted)}
+.vs-table td:nth-child(3){background:#fff8f3;text-align:center;font-weight:600}
+.vs-table tr:last-child td{border-bottom:none}
+.check{color:var(--verde);font-size:20px}
+.cross{color:var(--vermelho);font-size:20px}
+
+/* ── CRIADOR ── */
+.criador{background:var(--preto)}
+.criador-box{
+  display:grid;grid-template-columns:1fr 2fr;gap:60px;align-items:center;
+}
+.criador-avatar{
+  width:200px;height:200px;border-radius:20px;
+  background:linear-gradient(135deg,var(--laranja),#c2410c);
+  display:flex;align-items:center;justify-content:center;
+  font-size:80px;
+}
+.criador-titulo{font-family:'Barlow',sans-serif;font-size:32px;font-weight:900;color:var(--branco);margin-bottom:16px}
+.criador-texto{font-size:16px;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:24px}
+.criador-stats{display:flex;gap:32px}
+.criador-stat-num{font-family:'Barlow',sans-serif;font-size:28px;font-weight:900;color:var(--laranja)}
+.criador-stat-label{font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px}
+
+/* ── PROVA SOCIAL ── */
+.prova{background:var(--cinza)}
+.prova-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:48px}
+.depo-card{
+  background:var(--branco);border-radius:16px;padding:28px;
+  box-shadow:0 2px 16px rgba(0,0,0,0.06);position:relative;
+}
+.depo-card::before{content:'"';position:absolute;top:16px;right:24px;font-size:60px;color:rgba(249,115,22,0.1);font-family:'Barlow',sans-serif;font-weight:900;line-height:1}
+.depo-texto{font-size:15px;color:var(--texto);line-height:1.7;margin-bottom:20px}
+.depo-autor{display:flex;align-items:center;gap:12px}
+.depo-avatar{width:44px;height:44px;border-radius:50%;background:var(--laranja);display:flex;align-items:center;justify-content:center;font-size:18px}
+.depo-nome{font-size:14px;font-weight:700}
+.depo-cargo{font-size:12px;color:var(--muted)}
+
+/* ── PLANOS ── */
+.planos{background:var(--branco)}
+.planos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:60px}
+.plano-card{
+  border-radius:20px;padding:36px;border:2px solid #e5e7eb;
+  position:relative;transition:all 0.2s;
+}
+.plano-card:hover{border-color:var(--laranja);transform:translateY(-4px)}
+.plano-card.destaque{border-color:var(--laranja);background:var(--preto)}
+.plano-tag{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--laranja);color:var(--branco);font-size:11px;font-weight:700;
+  padding:4px 16px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;
+  white-space:nowrap;
+}
+.plano-nome{font-family:'Barlow',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px}
+.plano-card.destaque .plano-nome{color:var(--branco)}
+.plano-preco{font-family:'Barlow',sans-serif;font-size:48px;font-weight:900;color:var(--laranja);letter-spacing:-2px;line-height:1}
+.plano-periodo{font-size:14px;color:var(--muted);margin-bottom:24px}
+.plano-card.destaque .plano-periodo{color:rgba(255,255,255,0.4)}
+.plano-features{list-style:none;margin-bottom:32px}
+.plano-features li{font-size:14px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;gap:10px}
+.plano-card.destaque .plano-features li{color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.08)}
+.plano-features li span{font-size:16px}
+.btn-plano{
+  width:100%;padding:14px;border-radius:12px;font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;
+  text-decoration:none;display:block;text-align:center;
+}
+.btn-plano-outline{background:transparent;border:2px solid var(--laranja);color:var(--laranja)}
+.btn-plano-outline:hover{background:var(--laranja);color:var(--branco)}
+.btn-plano-solid{background:var(--laranja);color:var(--branco);box-shadow:0 4px 16px rgba(249,115,22,0.3)}
+.btn-plano-solid:hover{background:#c2410c}
+.trial-nota{text-align:center;font-size:13px;color:var(--muted);margin-top:16px}
+
+/* ── PROVÉRBIO ── */
+.proverbio{
+  background:linear-gradient(135deg,#1a1a2e,#0f3460);
+  padding:60px 40px;text-align:center;
+}
+.proverbio-texto{
+  font-family:'Barlow',sans-serif;font-size:clamp(22px,4vw,36px);
+  font-weight:700;font-style:italic;color:var(--branco);
+  max-width:700px;margin:0 auto 12px;line-height:1.4;
+}
+.proverbio-ref{font-size:14px;color:rgba(255,255,255,0.4)}
+
+/* ── CTA FINAL ── */
+.cta-final{
+  background:var(--laranja);padding:100px 40px;text-align:center;
+}
+.cta-final-titulo{
+  font-family:'Barlow',sans-serif;font-size:clamp(36px,6vw,64px);
+  font-weight:900;color:var(--branco);letter-spacing:-2px;margin-bottom:16px;
+}
+.cta-final-sub{font-size:18px;color:rgba(255,255,255,0.8);max-width:600px;margin:0 auto 40px}
+.btn-cta-final{
+  background:var(--branco);color:var(--laranja);
+  padding:18px 48px;border-radius:14px;font-size:18px;font-weight:800;
+  text-decoration:none;font-family:'Barlow',sans-serif;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);transition:all 0.2s;display:inline-block;
+}
+.btn-cta-final:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+
+/* ── FOOTER ── */
+footer{background:var(--preto);padding:40px;text-align:center}
+footer .logo{font-family:'Barlow',sans-serif;font-size:20px;font-weight:900;color:var(--branco);margin-bottom:8px}
+footer .logo span{color:var(--laranja)}
+footer p{font-size:13px;color:rgba(255,255,255,0.3)}
+
+/* ── RESPONSIVO ── */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  section{padding:60px 20px}
+  .hero-body{padding:40px 20px}
+  .criador-box{grid-template-columns:1fr}
+  .criador-avatar{width:120px;height:120px;font-size:48px}
+  .calc-inputs{grid-template-columns:1fr}
+  .hero-stats{gap:24px}
+}
+
+/* ── ANIMAÇÕES ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{animation:fadeUp 0.6s ease both}
+.hero-titulo{animation:fadeUp 0.6s 0.1s ease both}
+.hero-sub{animation:fadeUp 0.6s 0.2s ease both}
+.hero-btns{animation:fadeUp 0.6s 0.3s ease both}
+.hero-stats{animation:fadeUp 0.6s 0.4s ease both}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="logo">FB <span>Precifica</span></div>
-  <a href="#planos" class="nav-cta">Testar 7 dias grátis →</a>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
+<!-- ══ HERO ══ -->
+<div class="hero">
   <div class="hero-grid"></div>
-  <div class="hero-content">
-    <div class="hero-badge">Assistente técnico e comercial para mecânicos</div>
-    <h1>
-      SEU NEGÓCIO<br>
-      <span class="red">NA BANCADA.</span><br>
-      <span class="outline">LUCRO NO</span><br>
-      BOLSO.
-    </h1>
-    <p class="hero-sub">
-      O FB Precifica não só calcula o preço do serviço — ele te diz <strong>o que fazer</strong>, <strong>o que evitar</strong>, <strong>o que oferecer a mais</strong> e <strong>como convencer o cliente</strong>. Tudo na hora, na palma da mão.
-    </p>
-    <div class="hero-actions">
-      <a href="#planos" class="btn-primary">Começar grátis por 7 dias →</a>
-      <a href="#diferenciais" class="btn-secondary">Ver como funciona</a>
+  <nav>
+    <div class="nav-logo">FB<span>precifica</span></div>
+    <a href="#planos" class="nav-cta">Testar 7 dias grátis</a>
+  </nav>
+  <div class="hero-body">
+    <div class="hero-badge">🤖 Powered by Inteligência Artificial</div>
+    <h1 class="hero-titulo">Precifique certo.<br><span>Lucre mais.</span></h1>
+    <p class="hero-sub">O único sistema de precificação automotiva com IA especialista que além de calcular o valor do serviço, ainda te diz como vender, o que oferecer e como convencer o cliente.</p>
+    <p class="hero-slogan">"Preço justo para o cliente e para o prestador de serviço"</p>
+    <div class="hero-btns">
+      <a href="#planos" class="btn-hero-primary">Começar 7 dias grátis →</a>
+      <a href="#diferenciais" class="btn-hero-sec">Ver como funciona</a>
     </div>
     <div class="hero-stats">
       <div class="stat-item">
         <div class="stat-num">4</div>
-        <div class="stat-label">Inteligências por serviço</div>
+        <div class="stat-label">Diferenciais exclusivos</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">7</div>
-        <div class="stat-label">Dias grátis para testar</div>
+        <div class="stat-num">R$0</div>
+        <div class="stat-label">Para começar</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">+30%</div>
-        <div class="stat-label">Ticket médio com serviços extras</div>
+        <div class="stat-num">+10 anos</div>
+        <div class="stat-label">Experiência do criador</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">IA</div>
+        <div class="stat-label">Resposta em segundos</div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- PROBLEMA -->
+<!-- ══ PROBLEMA ══ -->
 <section class="problema">
   <div class="container">
-    <div class="section-label">O problema</div>
-    <h2 class="section-title">Mecânico bom na técnica,<br>perdendo dinheiro no comercial</h2>
+    <div class="section-tag">O problema</div>
+    <h2 class="section-titulo">Você está perdendo dinheiro<br>todo dia sem saber.</h2>
+    <p class="section-sub">Enquanto o mecânico cobra no "achismo", a oficina sangra. E o pior: sem perceber.</p>
     <div class="problema-grid">
-      <ul class="problema-list">
-        <li>Cobra mão de obra "no feeling" e às vezes trabalha no prejuízo</li>
-        <li>Faz o serviço certo mas esquece de mencionar o que mais poderia resolver</li>
-        <li>Perde cliente por não saber argumentar o valor do serviço</li>
-        <li>Não tem um padrão — cada serviço é um preço diferente sem critério</li>
-        <li>Desperdiça oportunidade de aumentar o ticket a cada carro que entra</li>
-      </ul>
-      <div class="problema-quote">
-        <p>"A maioria dos mecânicos é excelente tecnicamente. O problema é que ninguém ensinou a cobrar certo, oferecer mais e reter o cliente."</p>
-        <cite>— Diagnóstico real de oficinas independentes no Brasil</cite>
+      <div class="problema-card">
+        <div class="problema-emoji">😰</div>
+        <div class="problema-titulo">Cobra barato por medo</div>
+        <div class="problema-texto">Sem referência de tempo real, o mecânico chuta o preço para não perder o cliente. Resultado: faz o serviço, paga os custos e sobra nada.</div>
+      </div>
+      <div class="problema-card">
+        <div class="problema-emoji">🙈</div>
+        <div class="problema-titulo">Oportunidades passando</div>
+        <div class="problema-texto">Com o veículo desmontado, existem 3, 4 serviços para oferecer. Mas sem orientação técnica, o orçamentista não vê e o cliente vai embora sem fazer.</div>
+      </div>
+      <div class="problema-card">
+        <div class="problema-emoji">😤</div>
+        <div class="problema-titulo">Cliente resistente</div>
+        <div class="problema-texto">O cliente questiona o preço, pede desconto ou vai ver em outro lugar. Sem argumento técnico, a oficina cede. Com argumento certo, fecha.</div>
+      </div>
+      <div class="problema-card">
+        <div class="problema-emoji">🔄</div>
+        <div class="problema-titulo">Retrabalho por descuido</div>
+        <div class="problema-texto">Serviços feitos pela metade por falta de atenção técnica viram retrabalho. Além de prejuízo, mancham a reputação da oficina.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 4 DIFERENCIAIS -->
+<!-- ══ DIFERENCIAIS ══ -->
 <section class="diferenciais" id="diferenciais">
   <div class="container">
-    <div class="section-label">4 inteligências por serviço</div>
-    <h2 class="section-title">Muito mais do que precificação</h2>
-    <p class="section-desc">Para cada serviço consultado, o FB Precifica entrega 4 camadas de inteligência que transformam execução em lucro.</p>
-    <div class="diferenciais-grid">
+    <div class="section-tag" style="background:rgba(249,115,22,0.15);color:var(--laranja)">4 diferenciais exclusivos</div>
+    <h2 class="section-titulo" style="color:var(--branco)">O que nenhum<br><span style="color:var(--laranja)">concorrente tem.</span></h2>
+    <p class="section-sub" style="color:rgba(255,255,255,0.5)">Não é só uma tabela de preços. É um consultor técnico especialista trabalhando para você 24 horas por dia.</p>
+    <div class="dif-grid">
 
       <div class="dif-card">
-        <div class="dif-num">01</div>
-        <div class="dif-icon">🔧</div>
-        <div class="dif-title">Dica Técnica do Serviço</div>
-        <p class="dif-desc">Um lembrete técnico preciso na hora certa. Por mais experiente que seja o mecânico, uma orientação no momento da execução evita erro, retrabalho e prejuízo desnecessário.</p>
-        <span class="dif-tag">Execução mais segura</span>
+        <div class="dif-numero">01</div>
+        <div class="dif-icone">🔧</div>
+        <div class="dif-titulo">Análise técnica do serviço</div>
+        <div class="dif-texto">A IA explica o que está envolvido no serviço para aquele veículo específico. O mecânico lê uma vez e já fica na cabeça — trabalha com mais atenção, menos retrabalho, mais resultado.</div>
+        <div class="dif-badge">Exclusivo FB Precifica</div>
       </div>
 
       <div class="dif-card">
-        <div class="dif-num">02</div>
-        <div class="dif-icon">⚠️</div>
-        <div class="dif-title">Alerta: O Que Não Fazer</div>
-        <p class="dif-desc">Uma lista dos erros mais comuns naquele serviço. Protege o mecânico de dano ao veículo, reclamação do cliente e perda de reputação. Prevenção vale mais que correção.</p>
-        <span class="dif-tag">Proteção e reputação</span>
+        <div class="dif-numero">02</div>
+        <div class="dif-icone">⚠️</div>
+        <div class="dif-titulo">Alertas de risco</div>
+        <div class="dif-texto">Antes de começar, a IA avisa o que pode dar errado naquele serviço naquele modelo. Evita surpresas, protege a oficina de processos e aumenta a credibilidade com o cliente.</div>
+        <div class="dif-badge">Exclusivo FB Precifica</div>
       </div>
 
       <div class="dif-card">
-        <div class="dif-num">03</div>
-        <div class="dif-icon">💡</div>
-        <div class="dif-title">Serviços Complementares</div>
-        <p class="dif-desc">2 a 3 serviços que fazem sentido ser oferecidos junto — de forma natural, sem parecer que está empurrando. O cliente aceita mais, o ticket sobe, e o mecânico lucra mais sem trabalhar mais.</p>
-        <span class="dif-tag">Ticket médio maior</span>
+        <div class="dif-numero">03</div>
+        <div class="dif-icone">💰</div>
+        <div class="dif-titulo">Aumente seu ticket médio</div>
+        <div class="dif-texto">A IA indica quais serviços fazer enquanto o veículo está aberto. Aproveitar o acesso já existente é dinheiro fácil — e a maioria das oficinas deixa passar. R$50 a mais por OS × 150 OS/mês = R$90.000 no ano.</div>
+        <div class="dif-badge">Exclusivo FB Precifica</div>
       </div>
 
       <div class="dif-card">
-        <div class="dif-num">04</div>
-        <div class="dif-icon">🤝</div>
-        <div class="dif-title">Argumento de Retenção</div>
-        <p class="dif-desc">O que falar para o cliente que hesita ou quer desistir do serviço. Um argumento técnico e profissional que demonstra autoridade, retém o cliente e fecha o serviço sem pressão.</p>
-        <span class="dif-tag">Mais fechamentos</span>
+        <div class="dif-numero">04</div>
+        <div class="dif-icone">🗣️</div>
+        <div class="dif-titulo">Argumento para fechar o cliente</div>
+        <div class="dif-texto">Para o cliente que hesita, a IA entrega o argumento certo: o que acontece se não fizer o serviço agora. Consequências reais, linguagem simples. O orçamentista apresenta com confiança e o cliente fecha.</div>
+        <div class="dif-badge">Exclusivo FB Precifica</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- COMO FUNCIONA -->
-<section class="como">
+<!-- ══ CALCULADORA DE IMPACTO ══ -->
+<section class="calculadora">
   <div class="container">
-    <div class="section-label">Como funciona</div>
-    <h2 class="section-title">Simples como deve ser</h2>
-    <div class="como-steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-title">Digite a placa</div>
-        <p class="step-desc">O app identifica automaticamente o veículo — modelo, ano e motorização.</p>
+    <div class="calc-box">
+      <div class="calc-titulo">Calcule seu potencial de ganho</div>
+      <div class="calc-sub">Veja quanto você deixa de ganhar por mês sem o FB Precifica</div>
+      <div class="calc-inputs">
+        <div class="calc-input-group">
+          <label>OS por mês</label>
+          <input type="number" id="calc-os" value="150" oninput="calcImpacto()"/>
+        </div>
+        <div class="calc-input-group">
+          <label>Aumento por OS (R$)</label>
+          <input type="number" id="calc-aumento" value="50" oninput="calcImpacto()"/>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-title">Escolha o serviço</div>
-        <p class="step-desc">Selecione o serviço a ser realizado na lista completa do app.</p>
+      <div class="calc-resultado">
+        <div class="calc-resultado-num" id="calc-resultado-num">R$ 7.500</div>
+        <div class="calc-resultado-label">potencial de receita adicional por mês</div>
       </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-title">Informe seu valor/hora</div>
-        <p class="step-desc">O app calcula as horas estimadas e o valor justo para cobrar.</p>
+      <div class="calc-nota" id="calc-nota">150 OS × R$50 de ticket médio extra = R$7.500/mês → R$90.000/ano</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VS TEMPÁRIO ══ -->
+<section class="versus" id="versus">
+  <div class="container">
+    <div class="section-tag">Comparativo</div>
+    <h2 class="section-titulo">FB Precifica vs<br>concorrência</h2>
+    <p class="section-sub">O Tempário foi o pioneiro. O FB Precifica é a evolução — com IA dinâmica e inteligência consultiva que nenhum banco de dados estático oferece.</p>
+    <table class="vs-table">
+      <thead>
+        <tr>
+          <th>Recurso</th>
+          <th>Concorrência</th>
+          <th>FB Precifica ✦</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Precificação por tempo de serviço</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Consulta automática por placa</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>IA dinâmica — qualquer veículo e serviço</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Análise técnica do serviço</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Alertas de risco técnico</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Sugestão de serviços para aumentar ticket</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Argumento para fechar o cliente</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Veículos novos sem necessidade de atualização</td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+        <tr><td>Preço</td><td>A partir de R$99/mês</td><td><strong>A partir de R$79/mês</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══ CRIADOR ══ -->
+<section class="criador">
+  <div class="container">
+    <div class="criador-box">
+      <div>
+        <div class="criador-avatar">🔧</div>
       </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div class="step-title">Receba as 4 inteligências</div>
-        <p class="step-desc">Preço + dica técnica + alerta + extras + argumento. Tudo de uma vez.</p>
+      <div>
+        <div class="section-tag" style="background:rgba(249,115,22,0.15);color:var(--laranja)">Quem criou</div>
+        <div class="criador-titulo" style="color:var(--branco)">Criado por quem<br>entende do assunto.</div>
+        <div class="criador-texto">O FB Precifica não foi criado por um programador que nunca pisou em uma oficina. Foi criado por alguém que trabalha intensivamente com orçamentos automotivos há mais de 10 anos, conhece a realidade das frotas, sabe onde a oficina perde dinheiro e sabe exatamente o que o mecânico precisa ouvir para trabalhar melhor.</div>
+        <div class="criador-texto">É por isso que as 4 dicas do sistema são cirúrgicas — foram pensadas por quem viveu o problema na prática, não por quem leu sobre ele.</div>
+        <div class="criador-stats">
+          <div>
+            <div class="criador-stat-num">+10 anos</div>
+            <div class="criador-stat-label">no setor automotivo</div>
+          </div>
+          <div>
+            <div class="criador-stat-num">B2B</div>
+            <div class="criador-stat-label">especialista em frotas</div>
+          </div>
+          <div>
+            <div class="criador-stat-num">IA</div>
+            <div class="criador-stat-label">aplicada ao real</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PARA QUEM É -->
-<section class="paraquem">
+<!-- ══ PROVA SOCIAL ══ -->
+<section class="prova">
   <div class="container">
-    <div class="section-label">Para quem é</div>
-    <h2 class="section-title">Todo mecânico que quer cobrar<br>certo e lucrar mais</h2>
-    <div class="paraquem-grid">
-      <div class="pq-card">
-        <div class="pq-icon">🏪</div>
-        <div class="pq-title">Oficina Independente</div>
-        <p class="pq-desc">Pequena ou grande, capital ou interior. Se você é o dono e quer padronizar preços e aumentar ticket, o FB Precifica é para você.</p>
+    <div class="section-tag">Validado no mercado</div>
+    <h2 class="section-titulo">Oficinas já testaram<br>e aprovaram.</h2>
+    <div class="prova-grid">
+      <div class="depo-card">
+        <div class="depo-texto">"Testei no primeiro dia e já vi valor. As dicas de serviços relacionados me fizeram oferecer três coisas que eu não teria lembrado. O cliente fez tudo."</div>
+        <div class="depo-autor">
+          <div class="depo-avatar">🚛</div>
+          <div>
+            <div class="depo-nome">Oficina Diesel Pesado</div>
+            <div class="depo-cargo">Região dos Lagos, RJ</div>
+          </div>
+        </div>
       </div>
-      <div class="pq-card">
-        <div class="pq-icon">🔩</div>
-        <div class="pq-title">Mecânico Autônomo</div>
-        <p class="pq-desc">Trabalha por conta própria e quer cobrar com segurança, sem chute. Tenha um padrão profissional de precificação no celular.</p>
+      <div class="depo-card">
+        <div class="depo-texto">"A parte do argumento para o cliente é ouro. Aquele cliente que sempre diz 'depois eu volto' — agora fecha na hora quando mostramos o que pode acontecer se deixar."</div>
+        <div class="depo-autor">
+          <div class="depo-avatar">🔧</div>
+          <div>
+            <div class="depo-nome">Oficina Mecânica Leve</div>
+            <div class="depo-cargo">Cabo Frio, RJ</div>
+          </div>
+        </div>
       </div>
-      <div class="pq-card">
-        <div class="pq-icon">🚗</div>
-        <div class="pq-title">Especialista em Veículos Novos</div>
-        <p class="pq-desc">Atende carros 2015 em diante e precisa de precisão técnica e comercial na hora do atendimento ao cliente.</p>
+      <div class="depo-card">
+        <div class="depo-texto">"Coloquei a placa, o sistema puxou o carro, informei o serviço e em segundos tive o preço, os alertas e ainda o que oferecer junto. Isso vale muito mais que R$99."</div>
+        <div class="depo-autor">
+          <div class="depo-avatar">⚙️</div>
+          <div>
+            <div class="depo-nome">Auto Center</div>
+            <div class="depo-cargo">Búzios, RJ</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- RESULTADOS -->
-<section class="resultados">
-  <div class="container">
-    <h2>O que muda<br>na sua oficina</h2>
-    <ul class="resultados-list">
-      <li>Preço justo e calculado — nunca mais cobrar no feeling</li>
-      <li>Ticket médio maior com serviços complementares sugeridos automaticamente</li>
-      <li>Menos erros na execução com dicas técnicas na hora certa</li>
-      <li>Cliente retido com argumento profissional e técnico</li>
-      <li>Imagem de profissionalismo e autoridade técnica</li>
-      <li>Processo padronizado — funciona com qualquer mecânico da equipe</li>
-    </ul>
-  </div>
-</section>
-
-<!-- PLANOS -->
+<!-- ══ PLANOS ══ -->
 <section class="planos" id="planos">
-  <div class="container">
-    <div class="section-label">Planos</div>
-    <h2 class="section-title">7 dias grátis.<br>Cancele quando quiser.</h2>
+  <div class="container" style="text-align:center">
+    <div class="section-tag">Planos</div>
+    <h2 class="section-titulo">Comece grátis.<br>Cresça com o FB Precifica.</h2>
+    <p class="section-sub" style="margin:0 auto 16px">7 dias completos sem cartão. Cancele quando quiser.</p>
     <div class="planos-grid">
-
       <div class="plano-card">
         <div class="plano-nome">Básico</div>
-        <div class="plano-preco">R$59<span>,90/mês</span></div>
-        <div class="plano-trial">7 dias grátis para testar</div>
+        <div class="plano-preco">R$79</div>
+        <div class="plano-periodo">/mês</div>
         <ul class="plano-features">
-          <li>Precificação por placa e serviço</li>
-          <li>Horas estimadas por tipo de veículo</li>
-          <li>Valor calculado pelo seu preço/hora</li>
-          <li class="off">Dica técnica do serviço</li>
-          <li class="off">Alerta do que não fazer</li>
-          <li class="off">Serviços complementares</li>
-          <li class="off">Argumento de retenção</li>
-          <li>Suporte por e-mail</li>
+          <li><span>✓</span> Consulta de placa automática</li>
+          <li><span>✓</span> Precificação por IA</li>
+          <li><span>✓</span> Histórico de consultas</li>
+          <li><span>✓</span> Todos os setores</li>
+          <li><span style="color:#ccc">—</span> <span style="color:#ccc">Análise técnica</span></li>
+          <li><span style="color:#ccc">—</span> <span style="color:#ccc">Alertas de risco</span></li>
+          <li><span style="color:#ccc">—</span> <span style="color:#ccc">Aumento de ticket</span></li>
+          <li><span style="color:#ccc">—</span> <span style="color:#ccc">Argumento de venda</span></li>
         </ul>
-        <a href="#" class="btn-plano btn-plano-outline">Começar grátis</a>
+        <a href="/login.html" class="btn-plano btn-plano-outline">Testar 7 dias grátis</a>
       </div>
 
       <div class="plano-card destaque">
-        <div class="plano-badge">Mais popular</div>
+        <div class="plano-tag">Mais popular</div>
         <div class="plano-nome">Pro</div>
-        <div class="plano-preco">R$99<span>,90/mês</span></div>
-        <div class="plano-trial">7 dias grátis para testar</div>
+        <div class="plano-preco">R$99</div>
+        <div class="plano-periodo">/mês</div>
         <ul class="plano-features">
-          <li>Tudo do Básico</li>
-          <li>✦ Dica técnica do serviço</li>
-          <li>✦ Alerta do que não fazer</li>
-          <li>✦ Serviços complementares (↑ ticket)</li>
-          <li class="off">Argumento de retenção</li>
-          <li class="off">Acesso multiusuário</li>
-          <li>Suporte via WhatsApp</li>
+          <li><span>✓</span> Consulta de placa automática</li>
+          <li><span>✓</span> Precificação por IA</li>
+          <li><span>✓</span> Histórico de consultas</li>
+          <li><span>✓</span> Todos os setores</li>
+          <li><span style="color:var(--laranja)">✓</span> Análise técnica do serviço</li>
+          <li><span style="color:var(--laranja)">✓</span> Alertas de risco</li>
+          <li><span style="color:#ccc">—</span> <span style="color:#ccc">Aumento de ticket</span></li>
+          <li><span style="color:#ccc">—</span> <span style="color:#ccc">Argumento de venda</span></li>
         </ul>
-        <a href="#" class="btn-plano btn-plano-red">Começar grátis</a>
+        <a href="/login.html" class="btn-plano btn-plano-solid">Testar 7 dias grátis</a>
       </div>
 
       <div class="plano-card">
         <div class="plano-nome">Premium</div>
-        <div class="plano-preco">R$129<span>,90/mês</span></div>
-        <div class="plano-trial">7 dias grátis para testar</div>
+        <div class="plano-preco">R$129</div>
+        <div class="plano-periodo">/mês</div>
         <ul class="plano-features">
-          <li>Tudo do Pro</li>
-          <li>✦ Argumento de retenção do cliente</li>
-          <li>✦ Acesso multiusuário (até 3 — mesma oficina)</li>
-          <li>✦ Relatório mensal de ticket médio</li>
-          <li>✦ Serviços mais realizados no mês</li>
-          <li>✦ Envio de OS via planilha ou PDF</li>
-          <li>Atualizações antecipadas</li>
-          <li>Suporte dedicado</li>
+          <li><span>✓</span> Consulta de placa automática</li>
+          <li><span>✓</span> Precificação por IA</li>
+          <li><span>✓</span> Histórico de consultas</li>
+          <li><span>✓</span> Todos os setores</li>
+          <li><span style="color:var(--laranja)">✓</span> Análise técnica do serviço</li>
+          <li><span style="color:var(--laranja)">✓</span> Alertas de risco</li>
+          <li><span style="color:var(--laranja)">✓</span> Serviços para aumentar ticket</li>
+          <li><span style="color:var(--laranja)">✓</span> Argumento para fechar o cliente</li>
+          <li><span style="color:var(--laranja)">✓</span> Até 3 usuários</li>
+          <li><span style="color:var(--laranja)">✓</span> Relatório mensal de serviços</li>
+          <li><span style="color:var(--laranja)">✓</span> Suporte prioritário</li>
         </ul>
-        <a href="#" class="btn-plano btn-plano-outline">Começar grátis</a>
+        <a href="/login.html" class="btn-plano btn-plano-outline">Testar 7 dias grátis</a>
+        <p style="font-size:11px;color:var(--muted);margin-top:12px">* Para o relatório mensal, envie as OS do mês em PDF para nossa equipe</p>
       </div>
 
-    </div>
+    <div class="trial-nota">🔒 Sem cartão de crédito · Cancele quando quiser · 7 dias completos</div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="faq">
-  <div class="container">
-    <div class="section-label">Dúvidas frequentes</div>
-    <h2 class="section-title">Perguntas e respostas</h2>
-    <div class="faq-list">
+<!-- ══ PROVÉRBIO ══ -->
+<div class="proverbio">
+  <div class="proverbio-texto">"Quem anda com integridade, anda seguro."</div>
+  <div class="proverbio-ref">Provérbios 10:9</div>
+</div>
 
-      <div class="faq-item">
-        <button class="faq-q">Preciso instalar algum aplicativo?</button>
-        <div class="faq-a"><p>Não. O FB Precifica funciona direto no navegador do celular ou computador. Acesse, faça login e use. Sem instalação.</p></div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q">Funciona para qualquer tipo de veículo?</button>
-        <div class="faq-a"><p>Sim. O app identifica o veículo pela placa e ajusta as informações técnicas e comerciais de acordo com o modelo e ano. Atende veículos nacionais e importados.</p></div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q">As dicas técnicas são confiáveis?</button>
-        <div class="faq-a"><p>Sim. O conteúdo técnico é baseado em boas práticas consolidadas do mercado automotivo. Serve como um reforço de boas práticas e lembrete técnico no momento da execução.</p></div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q">Posso cancelar a qualquer momento?</button>
-        <div class="faq-a"><p>Sim. Não existe fidelidade. Você cancela quando quiser, sem burocracia e sem multa. O acesso continua até o fim do período pago.</p></div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q">O trial de 7 dias exige cartão de crédito?</button>
-        <div class="faq-a"><p>Não é necessário cartão para começar. Você testa os 7 dias grátis e só informa o pagamento se quiser continuar.</p></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- CTA FINAL -->
+<!-- ══ CTA FINAL ══ -->
 <section class="cta-final">
   <div class="container">
-    <h2>COMECE HOJE.<br><span class="red">GRÁTIS POR 7 DIAS.</span></h2>
-    <p>Teste sem compromisso. Veja na prática o que as 4 inteligências do FB Precifica fazem pela sua oficina.</p>
-    <a href="#planos" class="btn-primary" style="font-size:18px; padding: 20px 48px; display:inline-flex;">
-      Criar minha conta grátis →
-    </a>
-    <div class="cta-guarantee">🔒 Sem cartão necessário · Cancele quando quiser · Suporte via WhatsApp</div>
+    <div class="cta-final-titulo">Sua oficina merece<br>precificar certo.</div>
+    <p class="cta-final-sub">Comece agora. 7 dias grátis. Sem cartão. Sem complicação. Só resultado.</p>
+    <a href="/login.html" class="btn-cta-final">Acessar o FB Precifica →</a>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ══ FOOTER ══ -->
 <footer>
-  <span class="logo">FB <span style="color:var(--red)">Precifica</span></span>
-  <p>© 2025 FBE Tecnologia Ltda · CNPJ em registro · fbprecifica.com.br</p>
+  <div class="logo">FB<span>precifica</span></div>
+  <p style="margin-top:8px">www.fbprecifica.com.br · Preço justo para o cliente e para o prestador de serviço</p>
 </footer>
 
 <script>
-  // FAQ accordion
-  document.querySelectorAll('.faq-q').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const item = btn.parentElement;
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    });
-  });
-
-  // Smooth reveal on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.dif-card, .step, .pq-card, .plano-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
-  });
+function calcImpacto() {
+  const os = parseFloat(document.getElementById('calc-os').value) || 0;
+  const aumento = parseFloat(document.getElementById('calc-aumento').value) || 0;
+  const total = os * aumento;
+  const anual = total * 12;
+  document.getElementById('calc-resultado-num').textContent = 'R$ ' + total.toLocaleString('pt-BR');
+  document.getElementById('calc-nota').textContent =
+    os + ' OS × R$' + aumento + ' de ticket médio extra = R$' +
+    total.toLocaleString('pt-BR') + '/mês → R$' + anual.toLocaleString('pt-BR') + '/ano';
+}
+calcImpacto();
 </script>
-
 </body>
 </html>
