@@ -2012,14 +2012,6 @@ window.adicionarPeca = () => {
   
   alert(`✅ "${nome}" adicionada ao orçamento!`);
 };
-  
-  // Limpar campos
-  document.getElementById("nova-peca-nome").value = "";
-  document.getElementById("nova-peca-qtd").value = "1";
-  document.getElementById("nova-peca-valor").value = "";
-  
-  renderizarListaPecas();
-};
 
 window.removerPeca = (index) => {
   window._pecasOrcamento.splice(index, 1);
