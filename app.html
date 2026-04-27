@@ -603,6 +603,8 @@ input::placeholder{color:#aaa}
         </div>
       </div>
 
+      <div id="opcoes-finais" style="display:none"></div>
+
       <div id="orcamento-actions" style="display:none;margin-top:16px">
         <div style="background:#e7f3ff;padding:12px;border-radius:8px;margin-bottom:12px;font-size:13px">
           <strong>🎯 Escolha uma opção:</strong><br>
@@ -1823,14 +1825,8 @@ window.finalizarOrcamento = () => {
     </div>
   `;
   
-  // Mostrar na área de opções finais
-  if (!document.getElementById('opcoes-finais')) {
-    const opcoesFinais = document.createElement('div');
-    opcoesFinais.id = 'opcoes-finais';
-    document.getElementById('orcamento-consolidado').parentNode.insertBefore(opcoesFinais, document.getElementById('orcamento-consolidado').nextSibling);
-  }
-  
   document.getElementById('opcoes-finais').style.display = 'block';
+  document.getElementById('opcoes-finais').scrollIntoView({ behavior: 'smooth' });
 };
 
 window.novoOrcamento = () => {
