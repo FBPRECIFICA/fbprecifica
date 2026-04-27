@@ -991,13 +991,15 @@ window.recalcularCompleto = () => {
   const escSalario = g("esc-salario");
   const prolabore = g("prolabore");
   
-  // Calcular encargos (35% do salário)
-  const mecEncargos = mecSalario * 0.35;
-  const escEncargos = escSalario * 0.35;
+  // Encargos CLT reais:
+  // INSS patronal: 20% | FGTS: 8% | 13º: 8,33% | Férias+1/3: 11,11% | RAT+outros: 3% = 50,44%
+  const ENCARGOS_CLT = 0.5044;
+  const mecEncargos = mecSalario * ENCARGOS_CLT;
+  const escEncargos = escSalario * ENCARGOS_CLT;
   
   // Atualizar displays de encargos
-  document.getElementById("mec-encargo").textContent = `Encargos (INSS + FGTS + Férias + 13º): R$ ${fmt(mecEncargos)}`;
-  document.getElementById("esc-encargo").textContent = `Encargos (INSS + FGTS + Férias + 13º): R$ ${fmt(escEncargos)}`;
+  document.getElementById("mec-encargo").textContent = `Encargos CLT (INSS 20% + FGTS 8% + 13º + Férias): R$ ${fmt(mecEncargos)}`;
+  document.getElementById("esc-encargo").textContent = `Encargos CLT (INSS 20% + FGTS 8% + 13º + Férias): R$ ${fmt(escEncargos)}`;
   
   // Custos fixos
   const aluguel = g("aluguel");
