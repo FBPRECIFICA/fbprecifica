@@ -710,10 +710,18 @@ if (!sessao) {
     usuario = dadosSessao;
     isAdmin = dadosSessao.isAdmin || false;
 
-    // Restaurar configUsuario salvo
-    if (dadosSessao.perfil) configUsuario.perfil = dadosSessao.perfil;
-    if (dadosSessao.maoDeObra) configUsuario.maoDeObra = dadosSessao.maoDeObra;
-    if (dadosSessao.setores) configUsuario.setores = dadosSessao.setores;
+    // Restaurar configUsuario — lê de chaves dedicadas (não dependem do login)
+    try {
+      const perfilSalvo = localStorage.getItem('fb_perfil');
+      const moSalvo = localStorage.getItem('fb_mo');
+      const setoresSalvo = localStorage.getItem('fb_setores');
+      if (perfilSalvo) configUsuario.perfil = JSON.parse(perfilSalvo);
+      else if (dadosSessao.perfil) configUsuario.perfil = dadosSessao.perfil;
+      if (moSalvo) configUsuario.maoDeObra = JSON.parse(moSalvo);
+      else if (dadosSessao.maoDeObra) configUsuario.maoDeObra = dadosSessao.maoDeObra;
+      if (setoresSalvo) configUsuario.setores = JSON.parse(setoresSalvo);
+      else if (dadosSessao.setores) configUsuario.setores = dadosSessao.setores;
+    } catch(e) { console.warn("Erro ao restaurar config:", e); }
 
     if(isAdmin) {
       document.getElementById("admin-panel").style.display = "block";
@@ -828,11 +836,9 @@ window.avancarParaMO = async () => {
       logoBase64: window._logoBase64 || null
     };
     
-    // Salvar no localStorage - persiste entre sessões
-    const sessao = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
-    sessao.perfil = perfil;
-    sessao.setores = setoresSelecionados;
-    localStorage.setItem('fb_sessao', JSON.stringify(sessao));
+    // Salvar em chaves dedicadas — sobrevivem a qualquer novo login
+    localStorage.setItem('fb_perfil', JSON.stringify(perfil));
+    localStorage.setItem('fb_setores', JSON.stringify(setoresSelecionados));
 
     configUsuario.setores = setoresSelecionados;
     configUsuario.perfil = perfil;
@@ -1100,11 +1106,9 @@ window.salvarModoCompleto = async () => {
 };
 
 async function salvarMO(maoDeObra) {
-  // Salvar localmente SEMPRE
+  // Salvar em chave dedicada — sobrevive a qualquer novo login
   try {
-    const sessao = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
-    sessao.maoDeObra = maoDeObra;
-    localStorage.setItem('fb_sessao', JSON.stringify(sessao));
+    localStorage.setItem('fb_mo', JSON.stringify(maoDeObra));
   } catch(e) {}
 
   configUsuario.maoDeObra = maoDeObra;
@@ -1227,11 +1231,9 @@ window.editarModoCompleto = () => {
 };
 
 async function salvarModalMO(maoDeObra) {
-  // Salvar localmente SEMPRE
+  // Salvar em chave dedicada
   try {
-    const sessao = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
-    sessao.maoDeObra = maoDeObra;
-    localStorage.setItem('fb_sessao', JSON.stringify(sessao));
+    localStorage.setItem('fb_mo', JSON.stringify(maoDeObra));
   } catch(e) {}
 
   configUsuario.maoDeObra = maoDeObra;
@@ -1425,6 +1427,16 @@ function renderizarResultado(dados,servico,valorHora,margem){
   if(alertas.length){html+=`<div class="is"><div class="ih">⚠️ Alertas de risco</div>`;alertas.forEach(a=>{html+=`<div class="ic al">${a}</div>`;});html+=`</div>`;}
   if(verif.length){html+=`<div class="is"><div class="ih">💡 Verificar junto</div>`;verif.forEach(v=>{html+=`<div class="ic op">${v}</div>`;});html+=`</div>`;}
   if(seNao)html+=`<div class="is"><div class="ih">🚨 Se não trocar</div><div class="ic al">${seNao}</div></div>`;
+  // Argumento de fechamento — sempre visível
+  html+=`<div style="background:#fff8e1;border:1.5px solid #f59e0b;border-radius:12px;padding:14px 16px;margin-top:12px">
+    <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px">💬 ARGUMENTO DE FECHAMENTO</div>
+    <div style="font-size:13px;color:#78350f;line-height:1.6">
+      Este orçamento foi elaborado com base no diagnóstico do veículo e no padrão de horas do serviço.
+      O valor já considera sua mão de obra qualificada e a garantia do trabalho executado.
+      <strong>Aprovar agora garante o agendamento e a reserva das peças.</strong>
+      Quanto antes fechar, mais rápido o veículo volta para o cliente.
+    </div>
+  </div>`;
   document.getElementById("res-content").innerHTML=html;
   // Mostrar opções após calcular
   document.getElementById("orcamento-actions").style.display = "block";
@@ -1450,6 +1462,71 @@ window.novaConsultaCompleta=()=>{
 };
 
 // ── HISTÓRICO ──
+function gerarPDFHistorico(idx) {
+  try {
+    const hist = JSON.parse(localStorage.getItem('fb_historico') || '[]');
+    const dt = hist[idx];
+    if (!dt) return;
+    const perfil = configUsuario.perfil || {};
+    const mo = configUsuario.maoDeObra || {};
+    const horas = dt.resultado?.horas_estimadas || 0;
+    const valorHora = dt.valorHora || mo.valorHora || 0;
+    const margem = dt.margem || mo.margem || 0;
+    const custo = horas * valorHora;
+    const preco = custo * (1 + margem/100);
+    const hoje = new Date(dt.timestamp || Date.now());
+    const logoHTML = perfil.logoBase64 ?
+      `<img src="${perfil.logoBase64}" style="max-height:60px;margin-bottom:10px">` :
+      `<div style="font-size:28px;font-weight:bold;color:#F97316">${perfil.oficina || 'FB PRECIFICA'}</div>`;
+    const just = dt.resultado?.justificativa || '';
+    const alertas = dt.resultado?.alertas_risco || [];
+    const seNao = dt.resultado?.se_nao_trocar || '';
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Orçamento</title>
+<style>body{font-family:Arial,sans-serif;margin:40px;color:#333}.header{text-align:center;border-bottom:2px solid #F97316;padding-bottom:20px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}.box{border:1px solid #ddd;padding:15px;border-radius:8px}
+.tit{font-weight:bold;color:#F97316;margin-bottom:8px}.val{font-size:28px;font-weight:bold;color:#F97316;text-align:center;margin:20px 0}
+.linha{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+.arg{background:#fff8e1;border:1.5px solid #f59e0b;border-radius:8px;padding:14px;margin-top:16px}
+.footer{margin-top:40px;text-align:center;font-size:12px;color:#666;border-top:1px solid #ddd;padding-top:20px}
+</style></head><body>
+<div class="header">${logoHTML}<div style="font-size:14px;color:#666">Orçamento Automotivo</div></div>
+<div class="grid">
+  <div class="box"><div class="tit">📋 DADOS DO ORÇAMENTO</div>
+    <strong>Data:</strong> ${hoje.toLocaleDateString('pt-BR')}<br>
+    <strong>Orçamentista:</strong> ${perfil.nome || 'Não informado'}<br>
+    ${perfil.oficina ? `<strong>Oficina:</strong> ${perfil.oficina}<br>` : ''}
+    <strong>Serviço:</strong> ${dt.servico || ''}
+  </div>
+  <div class="box"><div class="tit">🚗 DADOS DO VEÍCULO</div>
+    <strong>Placa:</strong> ${dt.placa || ''}<br>
+    <strong>Modelo:</strong> ${dt.modelo || ''} ${dt.ano || ''}<br>
+    ${dt.motor ? `<strong>Motor:</strong> ${dt.motor}<br>` : ''}
+  </div>
+</div>
+<div class="val">VALOR TOTAL: R$ ${fmt(preco)}</div>
+<div class="linha"><span>Horas estimadas</span><span><strong>${horas}h</strong></span></div>
+<div class="linha"><span>Valor por hora</span><span><strong>R$ ${fmt(valorHora)}</strong></span></div>
+<div class="linha" style="font-weight:bold"><span>TOTAL MÃO DE OBRA</span><span>R$ ${fmt(preco)}</span></div>
+${just ? `<div style="margin-top:16px;padding:12px;background:#f8f9fa;border-radius:8px"><strong style="color:#F97316">🔧 Análise técnica</strong><p style="margin:8px 0 0">${just}</p></div>` : ''}
+${alertas.length ? `<div style="margin-top:12px;padding:12px;background:#fff3cd;border-radius:8px"><strong style="color:#856404">⚠️ Alertas</strong><ul>${alertas.map(a=>`<li>${a}</li>`).join('')}</ul></div>` : ''}
+${seNao ? `<div style="margin-top:12px;padding:12px;background:#fde8e8;border-radius:8px"><strong style="color:#c0392b">🚨 Se não trocar</strong><p style="margin:8px 0 0">${seNao}</p></div>` : ''}
+<div class="arg"><strong style="color:#92400e">💬 ARGUMENTO DE FECHAMENTO</strong>
+<p style="color:#78350f;margin:8px 0 0">Este orçamento foi elaborado com base no diagnóstico do veículo e no padrão de horas do serviço. O valor já considera mão de obra qualificada e garantia do trabalho. <strong>Aprovar agora garante o agendamento e a reserva das peças.</strong> Quanto antes fechar, mais rápido o veículo volta para o cliente.</p></div>
+<div class="footer"><p><strong>${perfil.oficina || 'FB Precifica'}</strong></p><p>fbprecifica.com.br • Orçamento válido por 30 dias</p></div>
+</body></html>`;
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `orcamento_${dt.placa||'historico'}_${dt.servico?.replace(/\s+/g,'_')||'servico'}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    alert("Erro ao gerar PDF: " + e.message);
+  }
+}
+window.gerarPDFHistorico = gerarPDFHistorico;
+
 function renderHistoricoLocal(lista) {
   try {
     const hist = JSON.parse(localStorage.getItem('fb_historico') || '[]');
@@ -1458,13 +1535,26 @@ function renderHistoricoLocal(lista) {
       return;
     }
     let html="";
-    hist.slice(0,20).forEach(dt => {
+    hist.slice(0,20).forEach((dt, idx) => {
       const data = new Date(dt.timestamp || Date.now());
-      html+=`<div class="hist-item">
-        <div class="hist-placa">${dt.placa||""}</div>
-        <div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div>
-        <div class="hist-servico">${dt.servico||""}</div>
-        <div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})} às ${data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
+      const mo = configUsuario.maoDeObra || {};
+      const horas = dt.resultado?.horas_estimadas || 0;
+      const valorHora = dt.valorHora || mo.valorHora || 0;
+      const margem = dt.margem || mo.margem || 0;
+      const preco = horas * valorHora * (1 + margem/100);
+      html+=`<div class="hist-item" onclick="gerarPDFHistorico(${idx})" style="cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background=''">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="hist-placa">${dt.placa||""}</div>
+            <div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div>
+            <div class="hist-servico">${dt.servico||""}</div>
+            <div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})} às ${data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
+          </div>
+          <div style="text-align:right;min-width:80px">
+            <div style="font-weight:700;color:#F97316;font-size:14px">R$ ${fmt(preco)}</div>
+            <div style="font-size:11px;color:#888;margin-top:4px">📄 ver PDF</div>
+          </div>
+        </div>
       </div>`;
     });
     lista.innerHTML=html;
