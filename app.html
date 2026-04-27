@@ -563,6 +563,10 @@ input::placeholder{color:#aaa}
         <input type="text" id="inp-cliente" placeholder="Ex: João da Silva"/>
         <div class="hint">Nome que aparecerá no orçamento. Deixe vazio se não souber ainda.</div>
         
+        <label>Telefone (WhatsApp)</label>
+        <input type="tel" id="inp-telefone" placeholder="(22) 99999-9999" oninput="formatarTelefone(this)"/>
+        <div class="hint">Para envio automático do orçamento pelo WhatsApp</div>
+        
         <label>Serviço a calcular</label>
         <input type="text" id="inp-servico" placeholder="Ex: Troca de pastilha de freio dianteira" onkeydown="if(event.key==='Enter')calcular()"/>
         <div class="er" id="er-servico" style="display:none"></div>
@@ -587,6 +591,7 @@ input::placeholder{color:#aaa}
       <div id="res-content"></div>
       <div id="orcamento-actions" style="display:none;margin-top:16px">
         <button class="btn btn-s" onclick="adicionarPecas()" style="margin-bottom:8px">🔧 Adicionar peças ao orçamento</button>
+        <button class="btn btn-s" onclick="adicionarServicoOrcamento()" style="margin-bottom:8px;background:#28a745">➕ Adicionar serviço ao orçamento</button>
         <button class="btn btn-p" onclick="gerarOrcamentoPDF()" style="margin-bottom:8px">📄 Gerar orçamento em PDF</button>
         <button class="btn btn-primary" onclick="enviarWhatsApp()" style="margin-bottom:8px;background:#25d366">📱 Enviar pelo WhatsApp</button>
         <div id="status-orcamento" style="display:none;margin-top:12px;padding:12px;border-radius:8px;text-align:center;font-weight:600"></div>
@@ -1419,6 +1424,14 @@ window.trocarTab=(tab)=>{
 
 window.setServ=v=>{document.getElementById("inp-servico").value=v;};
 window.formatarPlaca=inp=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,"");};
+window.formatarTelefone=inp=>{
+  let v=inp.value.replace(/\D/g,'');
+  if(v.length<=11){
+    v=v.replace(/(\d{2})(\d)/,'($1) $2');
+    v=v.replace(/(\d{5})(\d)/,'$1-$2');
+  }
+  inp.value=v;
+};
 
 function mostrarTela(id){document.querySelectorAll(".screen,.main-s").forEach(el=>el.classList.remove("active"));document.getElementById(id)?.classList.add("active");}
 function mostrarErro(id,txt){const el=document.getElementById(id);if(el){el.textContent=txt;el.style.display="block";}}
@@ -1605,19 +1618,69 @@ ${dados.verificar_junto?.length ? `
   alert("📄 Orçamento gerado! Abra o arquivo baixado e imprima em PDF.");
 };
 
+// ── CONTROLE DE ORÇAMENTO MÚLTIPLO ──
+window._servicosOrcamento = [];
+window._pecasOrcamento = [];
+
+window.adicionarServicoOrcamento = () => {
+  if (!window._ultimoOrcamento || !veiculoAtual) {
+    alert("Nenhum serviço calculado para adicionar");
+    return;
+  }
+  
+  const { dados, servico, preco, horas } = window._ultimoOrcamento;
+  
+  // Verificar se já existe
+  const existe = window._servicosOrcamento.find(s => s.servico === servico);
+  if (existe) {
+    alert("Este serviço já está no orçamento");
+    return;
+  }
+  
+  // Adicionar ao orçamento
+  window._servicosOrcamento.push({
+    servico: servico,
+    horas: horas,
+    preco: preco,
+    detalhes: dados
+  });
+  
+  alert(`✅ "${servico}" adicionado ao orçamento!\n\nServiços no orçamento: ${window._servicosOrcamento.length}`);
+  
+  // Limpar para próximo serviço
+  document.getElementById("inp-servico").value = "";
+  document.getElementById("bloco-servico").style.display = "block";
+  document.getElementById("orcamento-actions").style.display = "none";
+  trocarTab("calc");
+};
+
 // ── ENVIO WHATSAPP E STATUS ──
 window.enviarWhatsApp = () => {
-  if (!window._ultimoOrcamento || !veiculoAtual) {
+  const telefone = document.getElementById("inp-telefone")?.value.replace(/\D/g, '');
+  
+  if (!telefone || telefone.length < 10) {
+    alert("⚠️ Informe o telefone (WhatsApp) do cliente para envio automático");
+    return;
+  }
+  
+  // Verificar se tem serviços ou último orçamento
+  const servicosParaEnvio = window._servicosOrcamento.length > 0 ? 
+    window._servicosOrcamento : 
+    (window._ultimoOrcamento ? [window._ultimoOrcamento] : []);
+  
+  if (servicosParaEnvio.length === 0) {
     alert("Nenhum orçamento disponível para envio");
     return;
   }
   
-  const { dados, servico, valorHora, margem, custo, preco, horas } = window._ultimoOrcamento;
   const perfil = configUsuario.perfil || {};
   const nomeCliente = document.getElementById("inp-cliente")?.value.trim() || "Cliente";
   const pecas = window._pecasOrcamento || [];
   const totalPecas = pecas.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
-  const valorFinal = preco + totalPecas;
+  
+  // Calcular total dos serviços
+  const totalServicos = servicosParaEnvio.reduce((total, s) => total + (s.preco || 0), 0);
+  const valorFinal = totalServicos + totalPecas;
   
   // Gerar ID único do orçamento
   const orcamentoId = Date.now().toString();
@@ -1627,10 +1690,10 @@ window.enviarWhatsApp = () => {
   orcamentos[orcamentoId] = {
     id: orcamentoId,
     cliente: nomeCliente,
+    telefone: telefone,
     veiculo: veiculoAtual,
-    servico: servico,
+    servicos: servicosParaEnvio,
     valorFinal: valorFinal,
-    detalhes: dados,
     pecas: pecas,
     status: 'pendente',
     criadoEm: new Date().toISOString(),
@@ -1642,31 +1705,38 @@ window.enviarWhatsApp = () => {
   // Link para aprovação
   const linkAprovacao = `${window.location.origin}/aprovacao.html?id=${orcamentoId}`;
   
+  // Criar lista de serviços para mensagem
+  const listaServicos = servicosParaEnvio.map(s => 
+    `• ${s.servico}: R$ ${fmt(s.preco || 0)}`
+  ).join('\n');
+  
   // Criar mensagem WhatsApp
   const mensagem = `🔧 *Orçamento ${perfil.oficina || 'Oficina'}*
 
 👤 *Cliente:* ${nomeCliente}
 🚗 *Veículo:* ${veiculoAtual.modelo} ${veiculoAtual.ano} (${veiculoAtual.placa})
-⚙️ *Serviço:* ${servico}
 
+⚙️ *Serviços:*
+${listaServicos}
+
+${pecas.length > 0 ? `🔧 *Peças:* R$ ${fmt(totalPecas)}\n` : ''}
 💰 *VALOR TOTAL: R$ ${fmt(valorFinal)}*
-
-📋 *Detalhes:*
-• Mão de obra: ${horas}h × R$ ${fmt(valorHora)} = R$ ${fmt(preco)}
-${pecas.length > 0 ? `• Peças: R$ ${fmt(totalPecas)}` : ''}
-
-${dados.justificativa ? `🔧 *Análise Técnica:*\n${dados.justificativa}\n` : ''}
 
 ✅ *Aprovar orçamento:* ${linkAprovacao}
 
 _Orçamento válido por 30 dias_`;
 
-  // Abrir WhatsApp
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
+  // Abrir WhatsApp com número automático
+  const whatsappUrl = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
   window.open(whatsappUrl, '_blank');
   
   // Mostrar status
   mostrarStatusOrcamento(orcamentoId, 'pendente');
+  
+  // Limpar orçamento atual
+  window._servicosOrcamento = [];
+  window._pecasOrcamento = [];
+  alert("✅ Orçamento enviado! WhatsApp aberto automaticamente.");
 };
 
 function mostrarStatusOrcamento(id, status) {
