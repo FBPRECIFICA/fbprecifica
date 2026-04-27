@@ -706,13 +706,32 @@ if (!sessao) {
   window.location.href = "/login.html";
 } else {
   try {
-    usuario = JSON.parse(sessao);
-    isAdmin = usuario.isAdmin || false;
+    const dadosSessao = JSON.parse(sessao);
+    usuario = dadosSessao;
+    isAdmin = dadosSessao.isAdmin || false;
+
+    // Restaurar configUsuario salvo
+    if (dadosSessao.perfil) configUsuario.perfil = dadosSessao.perfil;
+    if (dadosSessao.maoDeObra) configUsuario.maoDeObra = dadosSessao.maoDeObra;
+    if (dadosSessao.setores) configUsuario.setores = dadosSessao.setores;
+
     if(isAdmin) {
       document.getElementById("admin-panel").style.display = "block";
     }
-    document.getElementById("nav-nome").textContent = usuario.nome || usuario.email;
-    mostrarTela("s-main");
+    // Mostrar nome do orçamentista se já configurado
+    const nomeExibir = dadosSessao.perfil?.nome || dadosSessao.nome || dadosSessao.email;
+    document.getElementById("nav-nome").textContent = nomeExibir;
+
+    // Se já tem perfil e MO configurados, vai direto pro app
+    if (dadosSessao.perfil?.nome && dadosSessao.maoDeObra?.valorHora) {
+      mostrarTela("s-main");
+      setTimeout(() => {
+        atualizarInfoOrcamentista();
+        atualizarBadgeCusto();
+      }, 100);
+    } else {
+      mostrarTela("s-main");
+    }
   } catch(e) {
     console.error("Sessão inválida:", e);
     localStorage.removeItem('fb_sessao');
@@ -809,11 +828,12 @@ window.avancarParaMO = async () => {
       logoBase64: window._logoBase64 || null
     };
     
-    // Salvar no localStorage
+    // Salvar no localStorage - persiste entre sessões
     const sessao = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
     sessao.perfil = perfil;
+    sessao.setores = setoresSelecionados;
     localStorage.setItem('fb_sessao', JSON.stringify(sessao));
-    
+
     configUsuario.setores = setoresSelecionados;
     configUsuario.perfil = perfil;
     
@@ -1347,12 +1367,23 @@ window.calcular=async()=>{
       criadoEm: new Date()
     };
     
+    // Salvar histórico no localStorage SEMPRE
     try {
-      // Usar addDoc ao invés de setDoc para histórico
+      const hist = JSON.parse(localStorage.getItem('fb_historico') || '[]');
+      hist.unshift(histItem); // mais recente primeiro
+      if (hist.length > 50) hist.length = 50; // limite 50 itens
+      localStorage.setItem('fb_historico', JSON.stringify(hist));
+      // Atualizar sessao tb
+      const s = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
+      localStorage.setItem('fb_sessao', JSON.stringify(s));
+    } catch(e) { console.warn("Erro salvar histórico local:", e); }
+
+    // Tentar Firebase em segundo plano
+    try {
       const histRef = collection(db, "usuarios", usuario.uid, "historico");
       await addDoc(histRef, histItem);
     } catch(e) {
-      console.error("Erro ao salvar histórico:", e);
+      console.warn("Firebase histórico falhou (salvo local):", e.message);
     }
     
     // Cache da placa
@@ -1419,18 +1450,43 @@ window.novaConsultaCompleta=()=>{
 };
 
 // ── HISTÓRICO ──
+function renderHistoricoLocal(lista) {
+  try {
+    const hist = JSON.parse(localStorage.getItem('fb_historico') || '[]');
+    if (hist.length === 0) {
+      lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;
+      return;
+    }
+    let html="";
+    hist.slice(0,20).forEach(dt => {
+      const data = new Date(dt.timestamp || Date.now());
+      html+=`<div class="hist-item">
+        <div class="hist-placa">${dt.placa||""}</div>
+        <div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div>
+        <div class="hist-servico">${dt.servico||""}</div>
+        <div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})} às ${data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
+      </div>`;
+    });
+    lista.innerHTML=html;
+  } catch(e) {
+    lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;
+  }
+}
+
 async function carregarHistorico(){
   const lista=document.getElementById("hist-lista");
   lista.innerHTML=`<div class="load"><div class="spin"></div><div class="lt">Carregando...</div></div>`;
+
+  // Primeiro mostra local imediatamente
+  renderHistoricoLocal(lista);
+
+  // Tenta sincronizar com Firebase em segundo plano
   try{
     const histRef = collection(db, "usuarios", usuario.uid, "historico");
     const q = query(histRef, orderBy("timestamp", "desc"), limit(20));
     const snap = await getDocs(q);
     
-    if(snap.empty){
-      lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;
-      return;
-    }
+    if(snap.empty) return; // já mostrou local, não sobrescreve
     
     let html="";
     snap.forEach(docSnap => {
@@ -1443,11 +1499,10 @@ async function carregarHistorico(){
         <div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})} às ${data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
       </div>`;
     });
-    
     lista.innerHTML=html;
   }catch(e){
-    console.error("Histórico:",e);
-    lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;
+    console.warn("Firebase histórico leitura falhou, usando local:", e.message);
+    // já está mostrando o local, não precisa fazer nada
   }
 }
 
