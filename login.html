@@ -11,6 +11,9 @@ body{font-family:Arial,sans-serif;background:#d6d6d6;min-height:100vh;display:fl
 .logo{font-size:36px;font-weight:900;color:#111;margin-bottom:8px}
 .logo span{color:#F97316}
 .tagline{color:#666;font-size:14px;margin-bottom:32px}
+.tabs{display:flex;background:#d6d6d6;border-radius:12px;margin-bottom:24px;overflow:hidden}
+.tab{flex:1;padding:12px;background:transparent;border:none;color:#666;cursor:pointer;font-weight:600}
+.tab.active{background:#F97316;color:white}
 .form-group{margin-bottom:16px;text-align:left}
 .form-group label{display:block;margin-bottom:5px;font-weight:600;color:#666;font-size:12px}
 .form-group input{width:100%;padding:14px;border:1.5px solid #c2c2c2;border-radius:12px;background:#d6d6d6;color:#111;font-size:15px}
@@ -18,14 +21,10 @@ body{font-family:Arial,sans-serif;background:#d6d6d6;min-height:100vh;display:fl
 .btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
 .btn-primary{background:#F97316;color:white;margin-bottom:16px}
 .btn-primary:hover{background:#ea6c0a;transform:translateY(-1px)}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
 .error{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.2);color:#dc2626;padding:12px;border-radius:12px;margin-bottom:16px;font-size:14px;display:none}
-.loading{display:none;text-align:center;padding:20px;color:#666}
-.divider{margin:20px 0;text-align:center;color:#666;font-size:12px;position:relative}
-.divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:#c2c2c2}
-.divider span{background:#eaeaea;padding:0 12px}
-.link{color:#F97316;cursor:pointer;font-size:13px;text-decoration:none}
-.link:hover{text-decoration:underline}
+.success{background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.2);color:#16a34a;padding:12px;border-radius:12px;margin-bottom:16px;font-size:14px;display:none}
+.form{display:none}
+.form.active{display:block}
 </style>
 </head>
 <body>
@@ -34,133 +33,141 @@ body{font-family:Arial,sans-serif;background:#d6d6d6;min-height:100vh;display:fl
   <div class="logo">FB<span>precifica</span></div>
   <div class="tagline">Preço justo para o cliente e para o prestador de serviço</div>
   
+  <div class="tabs">
+    <button class="tab active" onclick="trocarAba('login')">Entrar</button>
+    <button class="tab" onclick="trocarAba('cadastro')">Cadastrar</button>
+  </div>
+  
   <div class="error" id="error"></div>
+  <div class="success" id="success"></div>
   
-  <div id="form-login">
+  <!-- FORM LOGIN -->
+  <div class="form active" id="form-login">
     <div class="form-group">
       <label>Email</label>
-      <input type="email" id="email" placeholder="Seu email" autocomplete="email">
+      <input type="email" id="login-email" placeholder="Seu email">
     </div>
     
     <div class="form-group">
       <label>Senha</label>
-      <input type="password" id="senha" placeholder="Sua senha" autocomplete="current-password">
+      <input type="password" id="login-senha" placeholder="Sua senha">
     </div>
     
-    <button class="btn btn-primary" id="btn-entrar" onclick="entrar()">Entrar</button>
-    
-    <div class="divider"><span>ou</span></div>
-    
-    <div style="margin-bottom:16px">
-      <a class="link" onclick="mostrarCadastro()">Não tem conta? Cadastre-se aqui</a>
-    </div>
+    <button class="btn btn-primary" onclick="fazerLogin()">Entrar</button>
   </div>
   
-  <div id="form-cadastro" style="display:none">
+  <!-- FORM CADASTRO -->
+  <div class="form" id="form-cadastro">
     <div class="form-group">
-      <label>Nome completo</label>
-      <input type="text" id="nome" placeholder="Seu nome completo">
-    </div>
-    
-    <div class="form-group">
-      <label>CPF</label>
-      <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="formatarCPF(this)">
+      <label>Nome</label>
+      <input type="text" id="cad-nome" placeholder="Seu nome completo">
     </div>
     
     <div class="form-group">
       <label>Email</label>
-      <input type="email" id="email-cad" placeholder="Seu email">
+      <input type="email" id="cad-email" placeholder="Seu email">
     </div>
     
     <div class="form-group">
       <label>Senha</label>
-      <input type="password" id="senha-cad" placeholder="Mínimo 6 dígitos">
+      <input type="password" id="cad-senha" placeholder="Mínimo 6 dígitos">
     </div>
     
-    <button class="btn btn-primary" onclick="cadastrar()">Criar conta</button>
-    
-    <div class="divider"><span>ou</span></div>
-    
-    <div>
-      <a class="link" onclick="mostrarLogin()">Já tem conta? Faça login</a>
-    </div>
-  </div>
-  
-  <div class="loading" id="loading">
-    <div>⏳ Processando...</div>
+    <button class="btn btn-primary" onclick="fazerCadastro()">Criar conta</button>
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script>
+// Contas válidas (simulando banco de dados)
+let usuarios = JSON.parse(localStorage.getItem('fb_usuarios') || '{}');
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAFLxVIoPzCKiXcgZV_s7dyOr7N-HlUHEk",
-  authDomain: "fb-precifica.firebaseapp.com",
-  projectId: "fb-precifica",
-  storageBucket: "fb-precifica.appspot.com",
-  messagingSenderId: "636655637162",
-  appId: "1:636655637162:web:8189ede5cc9f1a5c8036d3"
-};
+// Se não tem usuários, criar alguns padrão
+if (Object.keys(usuarios).length === 0) {
+  usuarios = {
+    'contato@mmservicecar.com.br': {
+      nome: 'Fábio',
+      senha: '123456',
+      plano: 'premium',
+      isAdmin: true
+    },
+    'fabio@mmservicecar.com.br': {
+      nome: 'Fábio Admin', 
+      senha: '123456',
+      plano: 'premium',
+      isAdmin: true
+    },
+    'teste@teste.com': {
+      nome: 'Usuário Teste',
+      senha: '123456',
+      plano: 'trial',
+      isAdmin: false
+    }
+  };
+  localStorage.setItem('fb_usuarios', JSON.stringify(usuarios));
+}
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+function trocarAba(aba) {
+  // Reset abas
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+  
+  // Ativar selecionada
+  event.target.classList.add('active');
+  document.getElementById('form-' + aba).classList.add('active');
+  
+  esconderMensagens();
+}
 
-// Verificar se já está logado
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    window.location.href = "/app.html";
-  }
-});
-
-// Entrar
-window.entrar = async () => {
-  const email = document.getElementById('email').value.trim();
-  const senha = document.getElementById('senha').value;
+function fazerLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const senha = document.getElementById('login-senha').value;
   
   if (!email || !senha) {
     mostrarErro("Preencha email e senha");
     return;
   }
   
-  mostrarLoading(true);
-  
-  try {
-    await signInWithEmailAndPassword(auth, email, senha);
-    // onAuthStateChanged vai redirecionar
-  } catch (error) {
-    mostrarLoading(false);
-    
-    let msg = "Erro ao fazer login";
-    if (error.code === 'auth/user-not-found') {
-      msg = "Email não encontrado. Cadastre-se primeiro.";
-    } else if (error.code === 'auth/wrong-password') {
-      msg = "Senha incorreta.";
-    } else if (error.code === 'auth/invalid-email') {
-      msg = "Email inválido.";
-    }
-    
-    mostrarErro(msg);
+  if (!usuarios[email]) {
+    mostrarErro("Email não encontrado. Cadastre-se primeiro.");
+    return;
   }
-};
-
-// Cadastrar
-window.cadastrar = async () => {
-  const nome = document.getElementById('nome').value.trim();
-  const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-  const email = document.getElementById('email-cad').value.trim();
-  const senha = document.getElementById('senha-cad').value;
   
-  if (!nome || !cpf || !email || !senha) {
+  if (usuarios[email].senha !== senha) {
+    mostrarErro("Senha incorreta");
+    return;
+  }
+  
+  // Login válido
+  const user = usuarios[email];
+  
+  // Salvar sessão
+  localStorage.setItem('fb_sessao', JSON.stringify({
+    email: email,
+    nome: user.nome,
+    plano: user.plano,
+    isAdmin: user.isAdmin || false,
+    loginTime: new Date().toISOString()
+  }));
+  
+  mostrarSucesso("Login realizado! Redirecionando...");
+  
+  setTimeout(() => {
+    window.location.href = '/app.html';
+  }, 1000);
+}
+
+function fazerCadastro() {
+  const nome = document.getElementById('cad-nome').value.trim();
+  const email = document.getElementById('cad-email').value.trim().toLowerCase();
+  const senha = document.getElementById('cad-senha').value;
+  
+  if (!nome || !email || !senha) {
     mostrarErro("Preencha todos os campos");
     return;
   }
   
-  if (!validarCPF(cpf)) {
-    mostrarErro("CPF inválido");
+  if (!email.includes('@')) {
+    mostrarErro("Email inválido");
     return;
   }
   
@@ -169,112 +176,60 @@ window.cadastrar = async () => {
     return;
   }
   
-  mostrarLoading(true);
+  if (usuarios[email]) {
+    mostrarErro("Este email já está cadastrado");
+    return;
+  }
   
-  try {
-    // Verificar se CPF já existe
-    const cpfQuery = query(collection(db, "usuarios"), where("cpf", "==", cpf));
-    const cpfSnap = await getDocs(cpfQuery);
-    
-    if (!cpfSnap.empty) {
-      mostrarLoading(false);
-      mostrarErro("Este CPF já está cadastrado");
-      return;
-    }
-    
-    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-    const user = userCredential.user;
-    
-    await updateProfile(user, { displayName: nome });
-    
-    await setDoc(doc(db, "usuarios", user.uid), {
-      nome: nome,
-      cpf: cpf,
-      email: user.email,
-      plano: "trial",
-      setores: [],
-      maoDeObra: {},
-      perfil: {},
-      criadoEm: new Date(),
-      trialExpiraEm: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    });
-    
-    // onAuthStateChanged vai redirecionar
-  } catch (error) {
-    mostrarLoading(false);
-    
-    let msg = "Erro ao criar conta";
-    if (error.code === 'auth/email-already-in-use') {
-      msg = "Este email já está em uso";
-    } else if (error.code === 'auth/weak-password') {
-      msg = "Senha muito fraca";
-    }
-    
-    mostrarErro(msg);
-  }
-};
-
-// Alternar formulários
-window.mostrarCadastro = () => {
-  document.getElementById('form-login').style.display = 'none';
-  document.getElementById('form-cadastro').style.display = 'block';
-  esconderErro();
-};
-
-window.mostrarLogin = () => {
-  document.getElementById('form-cadastro').style.display = 'none';
-  document.getElementById('form-login').style.display = 'block';
-  esconderErro();
-};
-
-// Formatação CPF
-window.formatarCPF = (input) => {
-  let value = input.value.replace(/\D/g, '');
-  if (value.length <= 11) {
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-  }
-  input.value = value;
-};
-
-// Validação CPF
-function validarCPF(cpf) {
-  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  // Criar conta
+  usuarios[email] = {
+    nome: nome,
+    senha: senha,
+    plano: 'trial',
+    isAdmin: false,
+    criadoEm: new Date().toISOString()
+  };
   
-  let soma = 0;
-  for (let i = 0; i < 9; i++) {
-    soma += parseInt(cpf.charAt(i)) * (10 - i);
-  }
-  let resto = (soma * 10) % 11;
-  if (resto === 10 || resto === 11) resto = 0;
-  if (resto !== parseInt(cpf.charAt(9))) return false;
+  // Salvar
+  localStorage.setItem('fb_usuarios', JSON.stringify(usuarios));
   
-  soma = 0;
-  for (let i = 0; i < 10; i++) {
-    soma += parseInt(cpf.charAt(i)) * (11 - i);
-  }
-  resto = (soma * 10) % 11;
-  if (resto === 10 || resto === 11) resto = 0;
-  return resto === parseInt(cpf.charAt(10));
-}
-
-// Utilidades
-function mostrarLoading(show) {
-  document.getElementById('loading').style.display = show ? 'block' : 'none';
-  document.getElementById('form-login').style.display = show ? 'none' : (document.getElementById('form-cadastro').style.display === 'block' ? 'none' : 'block');
-  document.getElementById('form-cadastro').style.display = show ? 'none' : (document.getElementById('form-login').style.display === 'block' ? 'none' : document.getElementById('form-cadastro').style.display);
+  mostrarSucesso("Conta criada! Faça login para continuar.");
+  
+  // Voltar para login
+  setTimeout(() => {
+    trocarAba('login');
+    document.getElementById('login-email').value = email;
+  }, 1500);
 }
 
 function mostrarErro(msg) {
-  const erro = document.getElementById('error');
-  erro.textContent = msg;
-  erro.style.display = 'block';
+  document.getElementById('error').textContent = msg;
+  document.getElementById('error').style.display = 'block';
+  document.getElementById('success').style.display = 'none';
 }
 
-function esconderErro() {
+function mostrarSucesso(msg) {
+  document.getElementById('success').textContent = msg;
+  document.getElementById('success').style.display = 'block';
   document.getElementById('error').style.display = 'none';
 }
+
+function esconderMensagens() {
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('success').style.display = 'none';
+}
+
+// Enter para submeter
+document.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    const loginAtivo = document.getElementById('form-login').classList.contains('active');
+    if (loginAtivo) {
+      fazerLogin();
+    } else {
+      fazerCadastro();
+    }
+  }
+});
 
 </script>
 
