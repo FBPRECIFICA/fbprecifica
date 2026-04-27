@@ -3,70 +3,236 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FB Precifica - Preço justo para o cliente e prestador</title>
+<title>FB Precifica - Seu Assistente Técnico e Comercial na Bancada</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#d6d6d6;--white:#eaeaea;--surf:#d6d6d6;--border:#c2c2c2;--acc:#F97316;--acc2:#ea6c0a;--accl:#ffeedd;--text:#111;--muted:#666;--ok:#16a34a;--err:#dc2626;--warn:#f59e0b;--sh:0 2px 12px rgba(0,0,0,0.12);--shl:0 8px 32px rgba(0,0,0,0.18)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column}
-.hero{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;text-align:center}
-.container{max-width:600px}
-.logo{font-family:'Barlow',sans-serif;font-size:48px;font-weight:900;color:var(--text);letter-spacing:-2px;margin-bottom:12px}
-.logo span{color:var(--acc)}
-.tagline{font-size:20px;color:var(--muted);margin-bottom:8px;font-weight:500}
-.subtitle{font-size:16px;color:var(--muted);margin-bottom:40px;line-height:1.6}
-.cta-container{display:flex;flex-direction:column;gap:16px;align-items:center}
-.btn{padding:16px 32px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:200px}
-.btn-primary{background:var(--acc);color:#fff;border:2px solid var(--acc)}
-.btn-primary:hover{background:var(--acc2);transform:translateY(-2px);box-shadow:var(--shl)}
-.btn-secondary{background:transparent;color:var(--text);border:2px solid var(--border)}
-.btn-secondary:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-1px)}
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;margin-top:60px;padding:0 20px}
-.feature{background:var(--white);border-radius:16px;padding:24px;text-align:center;box-shadow:var(--sh)}
-.feature-icon{font-size:40px;margin-bottom:16px}
-.feature-title{font-family:'Barlow',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px}
-.feature-desc{font-size:14px;color:var(--muted);line-height:1.5}
-.footer{background:var(--white);border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--muted)}
+:root{--black:#0a0a0a;--white:#ffffff;--orange:#F97316;--orange-light:#ffeedd;--orange-dark:#ea6c0a;--gray:#666;--gray-light:#f8f9fa;--border:#e5e5e5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;line-height:1.6;color:var(--black);background:var(--black)}
+.hero{background:linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);color:var(--white);min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="g"><stop offset="0%" stop-color="%23F97316" stop-opacity="0.1"/><stop offset="100%" stop-color="%23F97316" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="300" fill="url(%23g)"/><circle cx="800" cy="800" r="400" fill="url(%23g)"/></svg>') no-repeat center;background-size:cover;opacity:0.3}
+.container{max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.logo{font-family:'Barlow',sans-serif;font-size:72px;font-weight:900;margin-bottom:16px;letter-spacing:-3px}
+.logo span{color:var(--orange)}
+.tagline{font-size:28px;font-weight:700;color:var(--orange);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.subtitle{font-size:22px;color:#ccc;margin-bottom:16px;font-weight:500}
+.highlight{background:var(--orange);color:var(--white);padding:24px 32px;border-radius:16px;font-size:20px;font-weight:700;margin:32px auto;max-width:800px;box-shadow:0 8px 32px rgba(249,115,22,0.3)}
+.cta-section{margin-top:48px;display:flex;flex-direction:column;gap:20px;align-items:center}
+.btn{padding:20px 40px;border-radius:16px;font-family:'Inter',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:12px;min-width:280px;border:none}
+.btn-primary{background:linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);color:var(--white);box-shadow:0 8px 32px rgba(249,115,22,0.4)}
+.btn-primary:hover{transform:translateY(-4px);box-shadow:0 12px 48px rgba(249,115,22,0.6)}
+.btn-secondary{background:transparent;color:var(--white);border:2px solid var(--white)}
+.btn-secondary:hover{background:var(--white);color:var(--black);transform:translateY(-2px)}
+.features{background:var(--white);padding:80px 20px;color:var(--black)}
+.features-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:40px}
+.feature{background:var(--gray-light);padding:32px;border-radius:20px;border-left:6px solid var(--orange);transition:transform .3s;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.feature:hover{transform:translateY(-8px);box-shadow:0 12px 40px rgba(0,0,0,0.15)}
+.feature-number{background:var(--orange);color:var(--white);width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;margin-bottom:20px}
+.feature-title{font-family:'Barlow',sans-serif;font-size:20px;font-weight:800;color:var(--black);margin-bottom:12px;text-transform:uppercase}
+.feature-desc{color:var(--gray);line-height:1.7;margin-bottom:16px}
+.feature-benefits{background:var(--orange-light);padding:16px;border-radius:12px}
+.feature-benefits strong{color:var(--orange);font-size:14px}
+.roi-section{background:linear-gradient(135deg, var(--black) 0%, #2a2a2a 100%);color:var(--white);padding:80px 20px;text-align:center}
+.roi-title{font-family:'Barlow',sans-serif;font-size:42px;font-weight:900;color:var(--orange);margin-bottom:40px;text-transform:uppercase}
+.roi-grid{max-width:800px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px}
+.roi-card{background:rgba(255,255,255,0.05);padding:32px 20px;border-radius:16px;border:2px solid var(--orange)}
+.roi-number{font-size:36px;font-weight:900;color:var(--orange);margin-bottom:8px}
+.roi-label{font-size:14px;color:#ccc;text-transform:uppercase;font-weight:600}
+.plans{background:var(--white);padding:80px 20px;color:var(--black)}
+.plans-title{text-align:center;font-family:'Barlow',sans-serif;font-size:42px;font-weight:900;color:var(--black);margin-bottom:16px;text-transform:uppercase}
+.plans-subtitle{text-align:center;font-size:18px;color:var(--gray);margin-bottom:48px}
+.plans-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px}
+.plan{background:var(--gray-light);padding:40px 32px;border-radius:20px;text-align:center;position:relative;transition:transform .3s;border:3px solid transparent}
+.plan.popular{border-color:var(--orange);transform:scale(1.05);background:var(--orange-light)}
+.plan:hover{transform:scale(1.02)}
+.plan.popular .plan-badge{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:var(--orange);color:var(--white);padding:8px 24px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase}
+.plan-name{font-family:'Barlow',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;text-transform:uppercase}
+.plan-price{font-size:48px;font-weight:900;color:var(--orange);margin-bottom:24px}
+.plan-features{text-align:left;margin-bottom:32px}
+.plan-features li{margin-bottom:12px;padding-left:24px;position:relative;list-style:none}
+.plan-features li::before{content:'✓';position:absolute;left:0;color:var(--orange);font-weight:900}
+.cta-final{background:linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);color:var(--white);padding:80px 20px;text-align:center}
+.cta-final-title{font-family:'Barlow',sans-serif;font-size:48px;font-weight:900;margin-bottom:16px;text-transform:uppercase}
+.cta-final-subtitle{font-size:20px;margin-bottom:32px;opacity:0.9}
+.cta-steps{max-width:600px;margin:0 auto 40px;text-align:left}
+.cta-steps li{margin-bottom:12px;padding-left:32px;position:relative;font-size:18px;font-weight:500}
+.cta-steps li::before{content:attr(data-step);position:absolute;left:0;top:0;background:rgba(255,255,255,0.2);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px}
+.footer{background:var(--black);color:var(--white);padding:40px 20px;text-align:center;border-top:1px solid #333}
+.footer-content{max-width:1200px;margin:0 auto}
+.footer-brand{font-family:'Barlow',sans-serif;font-size:24px;font-weight:900;margin-bottom:16px}
+.footer-brand span{color:var(--orange)}
+.footer-tagline{color:var(--orange);font-style:italic;margin-bottom:24px}
+.footer-info{font-size:14px;color:#ccc;line-height:1.6}
+@media (max-width: 768px){
+.logo{font-size:48px}
+.tagline{font-size:20px}
+.subtitle{font-size:18px}
+.highlight{font-size:16px;padding:20px 24px}
+.btn{min-width:100%;font-size:16px;padding:16px 32px}
+.features-grid{grid-template-columns:1fr}
+.roi-grid{grid-template-columns:1fr;gap:16px}
+.plans-grid{grid-template-columns:1fr}
+.cta-final-title{font-size:32px}
+}
 </style>
 </head>
 <body>
 
-<div class="hero">
+<section class="hero">
   <div class="container">
-    <div class="logo">FB<span>precifica</span></div>
-    <div class="tagline">Preço justo para o cliente e para o prestador de serviço</div>
-    <div class="subtitle">Sistema inteligente de precificação automotiva com IA.<br>Calcule mão de obra, analise riscos e gere orçamentos profissionais.</div>
+    <div class="logo">FB<span>PRECIFICA</span></div>
+    <div class="tagline">Seu Assistente Técnico e Comercial na Bancada</div>
+    <div class="subtitle">Mais do que precificação — uma revolução na forma como oficinas vendem e lucram</div>
     
-    <div class="cta-container">
-      <a href="/app.html" class="btn btn-primary">🚀 Começar teste gratuito (7 dias)</a>
-      <a href="/login.html" class="btn btn-secondary">🔐 Já tenho conta</a>
+    <div class="highlight">
+      Em 30 segundos: preço justo + análise técnica + alertas de segurança + serviços extras + argumento de fechamento
     </div>
     
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon">🤖</div>
-        <div class="feature-title">IA Automotiva</div>
-        <div class="feature-desc">Análise inteligente de serviços, tempo estimado e alertas de risco</div>
+    <div class="cta-section">
+      <a href="/login.html" class="btn btn-primary">🚀 COMEÇAR 7 DIAS GRÁTIS</a>
+      <a href="/login.html" class="btn btn-secondary">🔐 Já tenho conta</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-number">1</div>
+      <div class="feature-title">Precificação Inteligente com IA</div>
+      <div class="feature-desc">Pare de cobrar no achismo. A IA calcula o tempo real do serviço específico para aquele veículo, aplica seu custo de mão de obra e entrega o preço justo.</div>
+      <div class="feature-benefits">
+        <strong>✓ Consulta por placa automática ✓ Cálculo de tempo especializado ✓ Preço final em segundos</strong>
       </div>
-      
-      <div class="feature">
-        <div class="feature-icon">💰</div>
-        <div class="feature-title">Precificação Didática</div>
-        <div class="feature-desc">Calculadora completa de custos ou modo rápido para quem já sabe</div>
+    </div>
+    
+    <div class="feature">
+      <div class="feature-number">2</div>
+      <div class="feature-title">Análise Técnica Personalizada</div>
+      <div class="feature-desc">Mais que o preço — entenda o serviço. A IA explica o que está envolvido tecnicamente, orientações específicas para aquele modelo.</div>
+      <div class="feature-benefits">
+        <strong>✓ Explicação técnica detalhada ✓ Orientações por modelo ✓ Conhecimento via IA</strong>
       </div>
-      
-      <div class="feature">
-        <div class="feature-icon">📄</div>
-        <div class="feature-title">Orçamentos Profissionais</div>
-        <div class="feature-desc">PDF com logo da oficina, detalhamento de peças e análise técnica</div>
+    </div>
+    
+    <div class="feature">
+      <div class="feature-number">3</div>
+      <div class="feature-title">Alertas de Segurança</div>
+      <div class="feature-desc">Evite problemas antes que aconteçam. A IA identifica os erros mais comuns naquele serviço e alerta sobre o que não fazer.</div>
+      <div class="feature-benefits">
+        <strong>✓ Alertas por veículo ✓ Prevenção de erros ✓ Proteção contra retrabalho</strong>
+      </div>
+    </div>
+    
+    <div class="feature">
+      <div class="feature-number">4</div>
+      <div class="feature-title">Aumento Automático de Ticket</div>
+      <div class="feature-desc">A IA sugere 2-3 serviços que fazem sentido técnico ser oferecidos junto. R$50 a mais por OS × 150 OS/mês = R$90.000/ano extra.</div>
+      <div class="feature-benefits">
+        <strong>✓ Sugestões inteligentes ✓ ROI comprovado ✓ Aumento natural do ticket</strong>
+      </div>
+    </div>
+    
+    <div class="feature">
+      <div class="feature-number">5</div>
+      <div class="feature-title">Argumento Técnico para Retenção</div>
+      <div class="feature-desc">Transforme 'vou pensar' em 'pode fazer'. A IA fornece o argumento técnico sobre consequências de não executar o serviço.</div>
+      <div class="feature-benefits">
+        <strong>✓ Argumentos baseados em consequências ✓ Linguagem acessível ✓ Maior fechamento</strong>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="footer">
-  <strong>FB Precifica</strong> - Sistema de precificação automotiva | Desenvolvido para mecânicos e oficinas
-</div>
+<section class="roi-section">
+  <div class="roi-title">Impacto Real no Seu Negócio</div>
+  <div class="roi-grid">
+    <div class="roi-card">
+      <div class="roi-number">+25%</div>
+      <div class="roi-label">Ticket Médio</div>
+    </div>
+    <div class="roi-card">
+      <div class="roi-number">+40%</div>
+      <div class="roi-label">Aprovação Orçamentos</div>
+    </div>
+    <div class="roi-card">
+      <div class="roi-number">1200%</div>
+      <div class="roi-label">ROI Médio/Ano</div>
+    </div>
+  </div>
+  <a href="/login.html" class="btn btn-primary">🎯 QUERO ESSES RESULTADOS</a>
+</section>
+
+<section class="plans">
+  <div class="plans-title">Planos e Preços</div>
+  <div class="plans-subtitle">Trial gratuito de 7 dias • Sem cartão necessário • Cancele quando quiser</div>
+  
+  <div class="plans-grid">
+    <div class="plan">
+      <div class="plan-name">Básico</div>
+      <div class="plan-price">R$ 59<small>,90/mês</small></div>
+      <ul class="plan-features">
+        <li>Precificação por placa</li>
+        <li>Identificação automática</li>
+        <li>Cálculo de tempo + preço</li>
+        <li>1 segmento de veículo</li>
+        <li>Suporte por e-mail</li>
+      </ul>
+    </div>
+    
+    <div class="plan popular">
+      <div class="plan-badge">Mais Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">R$ 99<small>,90/mês</small></div>
+      <ul class="plan-features">
+        <li>Tudo do Básico +</li>
+        <li>Análise técnica IA</li>
+        <li>Alertas de segurança</li>
+        <li>Serviços complementares</li>
+        <li>2 segmentos de veículo</li>
+        <li>Suporte via WhatsApp</li>
+      </ul>
+    </div>
+    
+    <div class="plan">
+      <div class="plan-name">Premium</div>
+      <div class="plan-price">R$ 129<small>,90/mês</small></div>
+      <ul class="plan-features">
+        <li>Tudo do Pro +</li>
+        <li>Argumentos de retenção</li>
+        <li>Até 3 usuários</li>
+        <li>Relatório mensal</li>
+        <li>Todos os segmentos</li>
+        <li>Suporte prioritário</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="cta-final-title">Comece Agora</div>
+  <div class="cta-final-subtitle">7 dias completos • Sem cartão necessário • Cancele quando quiser</div>
+  
+  <ol class="cta-steps">
+    <li data-step="1">Clique em "Começar 7 dias grátis"</li>
+    <li data-step="2">Cadastre-se em 30 segundos</li>
+    <li data-step="3">Teste todos os 5 diferenciais</li>
+    <li data-step="4">Veja o impacto no seu faturamento</li>
+  </ol>
+  
+  <a href="/login.html" class="btn btn-primary" style="background:white;color:var(--orange);font-size:20px">🚀 COMEÇAR TESTE GRATUITO AGORA</a>
+</section>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-brand">FB<span>PRECIFICA</span></div>
+    <div class="footer-tagline">"Preço justo para o cliente e para o prestador de serviço"</div>
+    <div class="footer-info">
+      FBE Tecnologia Ltda • São Pedro da Aldeia, RJ<br>
+      Sistema de precificação automotiva desenvolvido por quem vive a realidade das oficinas
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
