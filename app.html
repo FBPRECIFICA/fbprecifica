@@ -1080,21 +1080,26 @@ window.salvarModoCompleto = async () => {
 };
 
 async function salvarMO(maoDeObra) {
+  // Salvar localmente SEMPRE
   try {
-    await setDoc(doc(db,"usuarios",usuario.uid), { 
-      maoDeObra
-    }, {merge:true});
-    
-    configUsuario.maoDeObra = maoDeObra;
-    document.getElementById("nav-nome").textContent = configUsuario.perfil.nome || usuario.displayName || usuario.email;
-    mostrarTela("s-main");
-    atualizarInfoOrcamentista();
+    const sessao = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
+    sessao.maoDeObra = maoDeObra;
+    localStorage.setItem('fb_sessao', JSON.stringify(sessao));
+  } catch(e) {}
+
+  configUsuario.maoDeObra = maoDeObra;
+  const navNome = document.getElementById("nav-nome");
+  if (navNome) navNome.textContent = configUsuario.perfil?.nome || usuario?.displayName || usuario?.email || '';
+  mostrarTela("s-main");
+  atualizarInfoOrcamentista();
+
+  // Firebase em segundo plano, sem bloquear
+  try {
+    if (usuario?.uid) {
+      await setDoc(doc(db,"usuarios",usuario.uid), { maoDeObra }, {merge:true});
+    }
   } catch(e) {
-    const btnS = document.getElementById("btn-salvar-simples");
-    const btnC = document.getElementById("btn-salvar-completo");
-    if(btnS) btnS.disabled = false;
-    if(btnC) btnC.disabled = false;
-    alert("Erro ao salvar. Tente novamente.");
+    console.warn("Firebase sync M.O. falhou (dados salvos local):", e.message);
   }
 }
 
@@ -1202,17 +1207,25 @@ window.editarModoCompleto = () => {
 };
 
 async function salvarModalMO(maoDeObra) {
+  // Salvar localmente SEMPRE
   try {
-    await setDoc(doc(db,"usuarios",usuario.uid), { 
-      maoDeObra
-    }, {merge:true});
-    
-    configUsuario.maoDeObra = maoDeObra;
-    fecharModalMO();
-    atualizarBadgeCusto();
-    alert("✅ Salvo!");
+    const sessao = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
+    sessao.maoDeObra = maoDeObra;
+    localStorage.setItem('fb_sessao', JSON.stringify(sessao));
+  } catch(e) {}
+
+  configUsuario.maoDeObra = maoDeObra;
+  fecharModalMO();
+  atualizarBadgeCusto();
+  alert("✅ Salvo!");
+
+  // Firebase em segundo plano
+  try {
+    if (usuario?.uid) {
+      await setDoc(doc(db,"usuarios",usuario.uid), { maoDeObra }, {merge:true});
+    }
   } catch(e) {
-    alert("Erro ao salvar.");
+    console.warn("Firebase sync M.O. modal falhou (dados salvos local):", e.message);
   }
 }
 
@@ -1464,27 +1477,30 @@ function fmt(v){return(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,max
 
 // ── GERADOR DE ORÇAMENTO PDF ──
 window.gerarOrcamentoPDF = () => {
-  if (!window._ultimoOrcamento || !veiculoAtual) {
+  const temServicos = window._orcamentoAtual?.servicos?.length > 0;
+  if (!temServicos || !veiculoAtual) {
     alert("Nenhum orçamento disponível para gerar PDF");
     return;
   }
-  
-  const { dados, servico, valorHora, margem, custo, preco, horas } = window._ultimoOrcamento;
+
   const perfil = configUsuario.perfil || {};
   const hoje = new Date();
-  const nomeCliente = document.getElementById("inp-cliente")?.value.trim() || "";
-  const pecas = window._pecasOrcamento || [];
-  
-  // Calcular total das peças
-  const totalPecas = pecas.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
-  const valorFinalComPecas = preco + totalPecas;
+  const nomeCliente = window._orcamentoAtual.cliente || document.getElementById("inp-cliente")?.value.trim() || "";
+  const servicos = window._orcamentoAtual.servicos;
+  const pecas = window._orcamentoAtual.pecas || [];
+
+  // Calcular totais consolidados
+  const totalMO = servicos.reduce((t, s) => t + (s.preco || 0), 0);
+  const totalHoras = servicos.reduce((t, s) => t + (s.horas || 0), 0);
+  const totalPecas = pecas.reduce((t, p) => t + (p.qtd * p.valor), 0);
+  const valorFinalComPecas = totalMO + totalPecas;
+  const valorHora = configUsuario.maoDeObra?.valorHora || (totalHoras > 0 ? totalMO / totalHoras : 0);
   
   // Cabeçalho com logo se existir
-  const logoHTML = perfil.logoBase64 ? 
-    `<img src="${perfil.logoBase64}" style="max-height: 60px; margin-bottom: 10px;">` : 
+  const logoHTML = perfil.logoBase64 ?
+    `<img src="${perfil.logoBase64}" style="max-height: 60px; margin-bottom: 10px;">` :
     `<div class="logo">${perfil.oficina || 'FB PRECIFICA'}</div>`;
-  
-  // Criar conteúdo HTML do orçamento
+
   const orcamentoHTML = `
 <!DOCTYPE html>
 <html>
@@ -1502,10 +1518,9 @@ body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
 .valor-principal { font-size: 32px; font-weight: bold; color: #F97316; text-align: center; margin: 20px 0; }
 .detalhes { margin: 20px 0; }
 .linha { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-.tabela-pecas { width: 100%; border-collapse: collapse; margin: 15px 0; }
-.tabela-pecas th, .tabela-pecas td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-.tabela-pecas th { background: #f8f9fa; font-weight: bold; }
-.observacoes { margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+.tabela { width: 100%; border-collapse: collapse; margin: 15px 0; }
+.tabela th, .tabela td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+.tabela th { background: #f8f9fa; font-weight: bold; }
 .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 20px; }
 </style>
 </head>
@@ -1523,9 +1538,7 @@ body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
     <strong>Orçamentista:</strong> ${perfil.nome || 'Não informado'}<br>
     ${perfil.cargo ? `<strong>Cargo:</strong> ${perfil.cargo}<br>` : ''}
     ${perfil.oficina ? `<strong>Oficina:</strong> ${perfil.oficina}<br>` : ''}
-    <strong>Serviço:</strong> ${servico}
   </div>
-  
   <div class="info-box">
     <div class="info-title">🚗 DADOS DO VEÍCULO</div>
     <strong>Placa:</strong> ${veiculoAtual.placa}<br>
@@ -1535,45 +1548,40 @@ body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
   </div>
 </div>
 
-<div class="valor-principal">
-  VALOR TOTAL: R$ ${fmt(valorFinalComPecas)}
-</div>
+<div class="valor-principal">VALOR TOTAL: R$ ${fmt(valorFinalComPecas)}</div>
 
 <div class="detalhes">
-  <h3 style="color: #F97316;">💰 DETALHAMENTO DO ORÇAMENTO</h3>
-  <div class="linha">
-    <span>Tempo estimado de serviço</span>
-    <span><strong>${horas} hora${horas !== 1 ? 's' : ''}</strong></span>
-  </div>
-  <div class="linha">
-    <span>Valor por hora de mão de obra</span>
-    <span><strong>R$ ${fmt(valorHora)}</strong></span>
-  </div>
-  <div class="linha" style="font-weight: bold;">
-    <span>TOTAL MÃO DE OBRA</span>
-    <span>R$ ${fmt(preco)}</span>
-  </div>
+  <h3 style="color:#F97316">⚙️ SERVIÇOS (${totalHoras}h total)</h3>
+  <table class="tabela">
+    <thead><tr><th>Serviço</th><th style="text-align:center">Horas</th><th style="text-align:right">Valor MO</th></tr></thead>
+    <tbody>
+      ${servicos.map(s => `
+        <tr>
+          <td>${s.servico}</td>
+          <td style="text-align:center">${s.horas}h</td>
+          <td style="text-align:right">R$ ${fmt(s.preco || 0)}</td>
+        </tr>
+      `).join('')}
+      <tr style="font-weight:bold;background:#f8f9fa">
+        <td colspan="2" style="text-align:right">TOTAL MÃO DE OBRA:</td>
+        <td style="text-align:right">R$ ${fmt(totalMO)}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 ${pecas.length > 0 ? `
 <div class="detalhes">
-  <h3 style="color: #F97316;">🔧 PEÇAS E MATERIAIS</h3>
-  <table class="tabela-pecas">
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th style="text-align:center">Qtd</th>
-        <th style="text-align:right">Valor Unit.</th>
-        <th style="text-align:right">Total</th>
-      </tr>
-    </thead>
+  <h3 style="color:#F97316">🔧 PEÇAS E MATERIAIS</h3>
+  <table class="tabela">
+    <thead><tr><th>Item</th><th style="text-align:center">Qtd</th><th style="text-align:right">Valor Unit.</th><th style="text-align:right">Total</th></tr></thead>
     <tbody>
-      ${pecas.map(peca => `
+      ${pecas.map(p => `
         <tr>
-          <td>${peca.nome}</td>
-          <td style="text-align:center">${peca.qtd}</td>
-          <td style="text-align:right">R$ ${fmt(peca.valor)}</td>
-          <td style="text-align:right">R$ ${fmt(peca.qtd * peca.valor)}</td>
+          <td>${p.nome}</td>
+          <td style="text-align:center">${p.qtd}</td>
+          <td style="text-align:right">R$ ${fmt(p.valor)}</td>
+          <td style="text-align:right">R$ ${fmt(p.qtd * p.valor)}</td>
         </tr>
       `).join('')}
       <tr style="font-weight:bold;background:#f8f9fa">
@@ -1585,47 +1593,20 @@ ${pecas.length > 0 ? `
 </div>
 ` : ''}
 
-<div class="detalhes" style="border-top: 2px solid #F97316; padding-top: 15px">
-  <div class="linha" style="font-weight: bold; font-size: 18px; color: #F97316;">
+<div class="detalhes" style="border-top:2px solid #F97316;padding-top:15px">
+  <div class="linha" style="font-weight:bold;font-size:18px;color:#F97316">
     <span>VALOR FINAL DO ORÇAMENTO</span>
     <span>R$ ${fmt(valorFinalComPecas)}</span>
   </div>
 </div>
 
-${dados.justificativa ? `
-<div class="observacoes">
-  <h4 style="margin-top: 0; color: #F97316;">🔧 ANÁLISE TÉCNICA</h4>
-  <p>${dados.justificativa}</p>
-</div>
-` : ''}
-
-${dados.alertas_risco?.length ? `
-<div class="observacoes" style="background: #fff3cd; border-left: 4px solid #ffc107;">
-  <h4 style="margin-top: 0; color: #856404;">⚠️ ALERTAS IMPORTANTES</h4>
-  <ul>
-    ${dados.alertas_risco.map(alerta => `<li>${alerta}</li>`).join('')}
-  </ul>
-</div>
-` : ''}
-
-${dados.verificar_junto?.length ? `
-<div class="observacoes" style="background: #d1ecf1; border-left: 4px solid #17a2b8;">
-  <h4 style="margin-top: 0; color: #0c5460;">💡 VERIFICAR JUNTO AO CLIENTE</h4>
-  <ul>
-    ${dados.verificar_junto.map(item => `<li>${item}</li>`).join('')}
-  </ul>
-</div>
-` : ''}
-
 <div class="footer">
-  <p><strong>${perfil.oficina || 'Este orçamento foi gerado pelo FB Precifica'}</strong></p>
+  <p><strong>${perfil.oficina || 'FB Precifica'}</strong></p>
   <p>Sistema de precificação automotiva com IA • fbprecifica.com.br</p>
   <p>Orçamento válido por 30 dias • Gerado em ${hoje.toLocaleDateString('pt-BR')} às ${hoje.toLocaleTimeString('pt-BR')}</p>
 </div>
-
 </body>
-</html>
-  `.trim();
+</html>`.trim();
   
   // Criar e baixar o arquivo
   const blob = new Blob([orcamentoHTML], { type: 'text/html' });
@@ -1918,7 +1899,7 @@ ${pecas.length > 0 ? `🔧 *Peças:* R$ ${fmt(totalPecas)}\n` : ''}💰 *VALOR T
 _Orçamento válido por 30 dias_`;
 
   // Abrir WhatsApp com número automático
-  const whatsappUrl = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=55${telefone}&text=${encodeURIComponent(mensagem)}`;
   window.open(whatsappUrl, '_blank');
   
   // Mostrar status
@@ -2118,7 +2099,7 @@ ${listaPecas ? `🔧 *Peças:*\n${listaPecas}\n*Subtotal Peças: R$ ${fmt(totalP
 _Orçamento válido por 30 dias_`;
 
   // Abrir WhatsApp com número automático
-  const whatsappUrl = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=55${telefone}&text=${encodeURIComponent(mensagem)}`;
   window.open(whatsappUrl, '_blank');
   
   // Mostrar status
