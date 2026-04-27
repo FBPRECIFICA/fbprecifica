@@ -589,11 +589,28 @@ input::placeholder{color:#aaa}
     <!-- RESULTADO -->
     <div id="pn-res" style="display:none">
       <div id="res-content"></div>
+      <div id="orcamento-consolidado" style="display:none;background:var(--white);border-radius:16px;padding:20px;margin:20px 0;border:2px solid var(--acc)">
+        <div style="font-size:16px;font-weight:700;color:var(--acc);margin-bottom:16px">📋 ORÇAMENTO EM CONSTRUÇÃO</div>
+        <div id="resumo-orcamento">
+          <div id="lista-servicos-orcamento"></div>
+          <div id="lista-pecas-orcamento"></div>
+          <div id="total-orcamento" style="margin-top:16px;padding:12px;background:var(--accl);border-radius:8px;text-align:center;font-weight:700;color:var(--acc)"></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-s" onclick="adicionarServicoManual()" style="background:#28a745">➕ Serviço Manual</button>
+          <button class="btn btn-s" onclick="adicionarPecas()" style="background:#6f42c1">🔧 Adicionar Peças</button>
+          <button class="btn btn-p" onclick="finalizarOrcamento()" style="background:#dc3545;color:white">✅ Finalizar Orçamento</button>
+        </div>
+      </div>
+
       <div id="orcamento-actions" style="display:none;margin-top:16px">
-        <button class="btn btn-s" onclick="adicionarPecas()" style="margin-bottom:8px">🔧 Adicionar peças ao orçamento</button>
-        <button class="btn btn-s" onclick="adicionarServicoOrcamento()" style="margin-bottom:8px;background:#28a745">➕ Adicionar serviço ao orçamento</button>
-        <button class="btn btn-p" onclick="gerarOrcamentoPDF()" style="margin-bottom:8px">📄 Gerar orçamento em PDF</button>
-        <button class="btn btn-primary" onclick="enviarWhatsApp()" style="margin-bottom:8px;background:#25d366">📱 Enviar pelo WhatsApp</button>
+        <div style="background:#e7f3ff;padding:12px;border-radius:8px;margin-bottom:12px;font-size:13px">
+          <strong>🎯 Escolha uma opção:</strong><br>
+          • <strong>Adicionar ao orçamento:</strong> Acumula este serviço com outros<br>
+          • <strong>Usar só este serviço:</strong> Gera orçamento apenas com este serviço
+        </div>
+        <button class="btn btn-s" onclick="adicionarServicoOrcamento()" style="margin-bottom:8px;background:#28a745;width:100%">➕ ADICIONAR AO ORÇAMENTO MÚLTIPLO</button>
+        <button class="btn btn-primary" onclick="usarServicoSozinho()" style="margin-bottom:8px;background:#007bff;width:100%">🎯 USAR SÓ ESTE SERVIÇO</button>
         <div id="status-orcamento" style="display:none;margin-top:12px;padding:12px;border-radius:8px;text-align:center;font-weight:600"></div>
       </div>
       <button class="btn-nova-consulta" id="btn-nova-consulta" style="display:none" onclick="novaConsultaMesmaPlaca()">🔄 Consultar outro serviço com esta placa</button>
@@ -799,7 +816,7 @@ window.avancarParaMO = async () => {
     configUsuario.perfil = perfil;
     
     // Se já tem M.O. configurada, vai direto para o app
-    if(configUsuario.maoDeObra.valorHora) {
+    if(configUsuario.maoDeObra && configUsuario.maoDeObra.valorHora) {
       document.getElementById("nav-nome").textContent = nome;
       mostrarTela("s-main");
       atualizarInfoOrcamentista();
@@ -1363,7 +1380,12 @@ function renderizarResultado(dados,servico,valorHora,margem){
   if(verif.length){html+=`<div class="is"><div class="ih">💡 Verificar junto</div>`;verif.forEach(v=>{html+=`<div class="ic op">${v}</div>`;});html+=`</div>`;}
   if(seNao)html+=`<div class="is"><div class="ih">🚨 Se não trocar</div><div class="ic al">${seNao}</div></div>`;
   document.getElementById("res-content").innerHTML=html;
-  document.getElementById("orcamento-actions").style.display="block";
+  // Mostrar opções após calcular
+  document.getElementById("orcamento-actions").style.display = "block";
+  document.getElementById("btn-nova-consulta").style.display = "block";
+  
+  // Sempre mostrar orçamento consolidado se houver itens
+  mostrarOrcamentoConsolidado();
   
   // Salvar dados para PDF
   window._ultimoOrcamento = { dados, servico, valorHora, margem, custo, preco, horas };
@@ -1618,12 +1640,79 @@ ${dados.verificar_junto?.length ? `
   alert("📄 Orçamento gerado! Abra o arquivo baixado e imprima em PDF.");
 };
 
-// ── CONTROLE DE ORÇAMENTO MÚLTIPLO ──
-window._servicosOrcamento = [];
-window._pecasOrcamento = [];
+// ── SISTEMA DE ORÇAMENTO CONSOLIDADO ──
+window._orcamentoAtual = {
+  servicos: [],
+  pecas: [],
+  cliente: '',
+  telefone: ''
+};
+
+// Mostrar orçamento consolidado sempre que houver itens
+function mostrarOrcamentoConsolidado() {
+  const temItens = window._orcamentoAtual.servicos.length > 0 || window._orcamentoAtual.pecas.length > 0;
+  document.getElementById('orcamento-consolidado').style.display = temItens ? 'block' : 'none';
+  
+  if (temItens) {
+    atualizarResumoOrcamento();
+  }
+}
+
+function atualizarResumoOrcamento() {
+  const servicos = window._orcamentoAtual.servicos;
+  const pecas = window._orcamentoAtual.pecas;
+  
+  // Lista de serviços
+  const listaServicos = document.getElementById('lista-servicos-orcamento');
+  if (servicos.length > 0) {
+    listaServicos.innerHTML = `
+      <div style="font-weight:600;margin-bottom:8px">⚙️ Serviços (${servicos.length}):</div>
+      ${servicos.map((s, i) => `
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px">
+          <span>${s.servico} (${s.horas || 0}h)</span>
+          <div>
+            <span>R$ ${fmt(s.preco || 0)}</span>
+            <button onclick="removerServicoOrcamento(${i})" style="margin-left:8px;background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:11px">×</button>
+          </div>
+        </div>
+      `).join('')}
+    `;
+  } else {
+    listaServicos.innerHTML = '';
+  }
+  
+  // Lista de peças
+  const listaPecas = document.getElementById('lista-pecas-orcamento');
+  if (pecas.length > 0) {
+    listaPecas.innerHTML = `
+      <div style="font-weight:600;margin-bottom:8px;margin-top:12px">🔧 Peças (${pecas.length}):</div>
+      ${pecas.map((p, i) => `
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px">
+          <span>${p.nome} (${p.qtd}x)</span>
+          <div>
+            <span>R$ ${fmt(p.qtd * p.valor)}</span>
+            <button onclick="removerPecaOrcamento(${i})" style="margin-left:8px;background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:11px">×</button>
+          </div>
+        </div>
+      `).join('')}
+    `;
+  } else {
+    listaPecas.innerHTML = '';
+  }
+  
+  // Total
+  const totalServicos = servicos.reduce((sum, s) => sum + (s.preco || 0), 0);
+  const totalPecas = pecas.reduce((sum, p) => sum + (p.qtd * p.valor), 0);
+  const totalGeral = totalServicos + totalPecas;
+  const totalHoras = servicos.reduce((sum, s) => sum + (s.horas || 0), 0);
+  
+  document.getElementById('total-orcamento').innerHTML = `
+    Mão de Obra: R$ ${fmt(totalServicos)} (${totalHoras}h) | Peças: R$ ${fmt(totalPecas)} | <strong>TOTAL: R$ ${fmt(totalGeral)}</strong>
+  `;
+}
 
 window.adicionarServicoOrcamento = () => {
-  if (!window._ultimoOrcamento || !veiculoAtual) {
+  if (!window._ultimoOrcamento) {
     alert("Nenhum serviço calculado para adicionar");
     return;
   }
@@ -1631,27 +1720,125 @@ window.adicionarServicoOrcamento = () => {
   const { dados, servico, preco, horas } = window._ultimoOrcamento;
   
   // Verificar se já existe
-  const existe = window._servicosOrcamento.find(s => s.servico === servico);
+  const existe = window._orcamentoAtual.servicos.find(s => s.servico === servico);
   if (existe) {
     alert("Este serviço já está no orçamento");
     return;
   }
   
   // Adicionar ao orçamento
-  window._servicosOrcamento.push({
+  window._orcamentoAtual.servicos.push({
     servico: servico,
-    horas: horas,
-    preco: preco,
+    horas: horas || 0,
+    preco: preco || 0,
     detalhes: dados
   });
   
-  alert(`✅ "${servico}" adicionado ao orçamento!\n\nServiços no orçamento: ${window._servicosOrcamento.length}`);
-  
-  // Limpar para próximo serviço
+  // Limpar serviço atual
   document.getElementById("inp-servico").value = "";
-  document.getElementById("bloco-servico").style.display = "block";
   document.getElementById("orcamento-actions").style.display = "none";
+  
+  // Mostrar orçamento consolidado e abrir aba orçamento
+  mostrarOrcamentoConsolidado();
+  
+  alert(`✅ "${servico}" adicionado ao orçamento!\n\nTotal de serviços no orçamento: ${window._orcamentoAtual.servicos.length}\n\nAgora você pode:\n• Consultar outro serviço\n• Adicionar peças\n• Finalizar o orçamento`);
+  
+  // Voltar para permitir adicionar mais serviços
+  document.getElementById("bloco-servico").style.display = "block";
   trocarTab("calc");
+};
+
+window.usarServicoSozinho = () => {
+  if (!window._ultimoOrcamento) {
+    alert("Nenhum serviço calculado");
+    return;
+  }
+  
+  // Limpar orçamento atual e usar só este serviço
+  window._orcamentoAtual = {
+    servicos: [{
+      servico: window._ultimoOrcamento.servico,
+      horas: window._ultimoOrcamento.horas || 0,
+      preco: window._ultimoOrcamento.preco || 0,
+      detalhes: window._ultimoOrcamento.dados
+    }],
+    pecas: [],
+    cliente: document.getElementById("inp-cliente")?.value.trim() || '',
+    telefone: document.getElementById("inp-telefone")?.value || ''
+  };
+  
+  mostrarOrcamentoConsolidado();
+  finalizarOrcamento();
+};
+
+window.adicionarServicoManual = () => {
+  const servico = prompt("Nome do serviço:");
+  if (!servico) return;
+  
+  const horas = parseFloat(prompt("Horas de mão de obra:") || "0");
+  const valorHora = configUsuario.maoDeObra?.valorHora || 50;
+  const preco = horas * valorHora;
+  
+  window._orcamentoAtual.servicos.push({
+    servico: servico,
+    horas: horas,
+    preco: preco,
+    detalhes: { justificativa: "Serviço adicionado manualmente" }
+  });
+  
+  mostrarOrcamentoConsolidado();
+  alert(`✅ "${servico}" adicionado manualmente!`);
+};
+
+window.removerServicoOrcamento = (index) => {
+  window._orcamentoAtual.servicos.splice(index, 1);
+  mostrarOrcamentoConsolidado();
+};
+
+window.removerPecaOrcamento = (index) => {
+  window._orcamentoAtual.pecas.splice(index, 1);
+  mostrarOrcamentoConsolidado();
+};
+
+window.finalizarOrcamento = () => {
+  if (window._orcamentoAtual.servicos.length === 0) {
+    alert("Adicione pelo menos um serviço ao orçamento");
+    return;
+  }
+  
+  // Pegar dados do cliente
+  window._orcamentoAtual.cliente = document.getElementById("inp-cliente")?.value.trim() || 'Cliente';
+  window._orcamentoAtual.telefone = document.getElementById("inp-telefone")?.value || '';
+  
+  // Mostrar opções finais
+  document.getElementById('opcoes-finais').innerHTML = `
+    <div style="background:var(--white);border-radius:16px;padding:20px;margin:20px 0">
+      <h3 style="color:var(--acc);margin-bottom:16px">🎯 Orçamento Finalizado!</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-p" onclick="gerarOrcamentoPDF()">📄 Gerar PDF</button>
+        <button class="btn btn-primary" onclick="enviarWhatsAppConsolidado()" style="background:#25d366">📱 Enviar WhatsApp</button>
+        <button class="btn btn-s" onclick="novoOrcamento()" style="background:#6c757d">🔄 Novo Orçamento</button>
+      </div>
+      <div id="status-orcamento-final" style="margin-top:16px"></div>
+    </div>
+  `;
+  
+  // Mostrar na área de opções finais
+  if (!document.getElementById('opcoes-finais')) {
+    const opcoesFinais = document.createElement('div');
+    opcoesFinais.id = 'opcoes-finais';
+    document.getElementById('orcamento-consolidado').parentNode.insertBefore(opcoesFinais, document.getElementById('orcamento-consolidado').nextSibling);
+  }
+  
+  document.getElementById('opcoes-finais').style.display = 'block';
+};
+
+window.novoOrcamento = () => {
+  window._orcamentoAtual = { servicos: [], pecas: [], cliente: '', telefone: '' };
+  mostrarOrcamentoConsolidado();
+  document.getElementById('opcoes-finais').style.display = 'none';
+  document.getElementById("inp-cliente").value = '';
+  document.getElementById("inp-telefone").value = '';
 };
 
 // ── ENVIO WHATSAPP E STATUS ──
@@ -1807,7 +1994,24 @@ window.adicionarPeca = () => {
     return;
   }
   
-  window._pecasOrcamento.push({ nome, qtd, valor });
+  // Usar orçamento consolidado ao invés de variável separada
+  window._orcamentoAtual.pecas.push({ 
+    id: Date.now(),
+    nome, 
+    qtd, 
+    valor 
+  });
+  
+  // Limpar campos
+  document.getElementById("nova-peca-nome").value = "";
+  document.getElementById("nova-peca-qtd").value = "1";
+  document.getElementById("nova-peca-valor").value = "";
+  
+  renderizarListaPecas();
+  mostrarOrcamentoConsolidado(); // Atualizar resumo do orçamento
+  
+  alert(`✅ "${nome}" adicionada ao orçamento!`);
+};
   
   // Limpar campos
   document.getElementById("nova-peca-nome").value = "";
@@ -1825,14 +2029,14 @@ window.removerPeca = (index) => {
 function renderizarListaPecas() {
   const lista = document.getElementById("lista-pecas");
   
-  if (window._pecasOrcamento.length === 0) {
+  if (window._orcamentoAtual.pecas.length === 0) {
     lista.innerHTML = `<div style="text-align:center;color:var(--muted);padding:20px">Nenhuma peça adicionada</div>`;
     return;
   }
   
   let html = `<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px">PEÇAS ADICIONADAS:</div>`;
   
-  window._pecasOrcamento.forEach((peca, index) => {
+  window._orcamentoAtual.pecas.forEach((peca, index) => {
     const total = peca.qtd * peca.valor;
     html += `
       <div style="background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
@@ -1840,12 +2044,99 @@ function renderizarListaPecas() {
           <div style="font-weight:600">${peca.nome}</div>
           <div style="font-size:12px;color:var(--muted)">${peca.qtd}x R$ ${fmt(peca.valor)} = R$ ${fmt(total)}</div>
         </div>
-        <button onclick="removerPeca(${index})" style="background:var(--err);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">✕</button>
+        <button onclick="removerPecaConsolidada(${index})" style="background:var(--err);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">✕</button>
       </div>
     `;
   });
   
-  const totalGeral = window._pecasOrcamento.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
+  window.enviarWhatsAppConsolidado = () => {
+  const telefone = window._orcamentoAtual.telefone || document.getElementById("inp-telefone")?.value.replace(/\D/g, '');
+  
+  if (!telefone || telefone.length < 10) {
+    alert("⚠️ Informe o telefone (WhatsApp) do cliente para envio automático");
+    return;
+  }
+  
+  if (window._orcamentoAtual.servicos.length === 0) {
+    alert("Nenhum serviço no orçamento para envio");
+    return;
+  }
+  
+  const perfil = configUsuario.perfil || {};
+  const nomeCliente = window._orcamentoAtual.cliente || 'Cliente';
+  
+  // Calcular totais
+  const totalServicos = window._orcamentoAtual.servicos.reduce((total, s) => total + (s.preco || 0), 0);
+  const totalHoras = window._orcamentoAtual.servicos.reduce((total, s) => total + (s.horas || 0), 0);
+  const totalPecas = window._orcamentoAtual.pecas.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
+  const valorFinal = totalServicos + totalPecas;
+  
+  // Gerar ID único do orçamento
+  const orcamentoId = Date.now().toString();
+  
+  // Salvar orçamento no localStorage para aprovação
+  const orcamentos = JSON.parse(localStorage.getItem('fb_orcamentos') || '{}');
+  orcamentos[orcamentoId] = {
+    id: orcamentoId,
+    cliente: nomeCliente,
+    telefone: telefone,
+    veiculo: veiculoAtual,
+    servicos: window._orcamentoAtual.servicos,
+    totalHoras: totalHoras,
+    totalServicos: totalServicos,
+    valorFinal: valorFinal,
+    pecas: window._orcamentoAtual.pecas,
+    status: 'pendente',
+    criadoEm: new Date().toISOString(),
+    oficina: perfil.oficina || 'Oficina',
+    orçamentista: perfil.nome || 'Orçamentista'
+  };
+  localStorage.setItem('fb_orcamentos', JSON.stringify(orcamentos));
+  
+  // Link para aprovação
+  const linkAprovacao = `${window.location.origin}/aprovacao.html?id=${orcamentoId}`;
+  
+  // Criar lista de serviços para mensagem
+  const listaServicos = window._orcamentoAtual.servicos.map(s => 
+    `• ${s.servico}: ${s.horas}h = R$ ${fmt(s.preco || 0)}`
+  ).join('\n');
+  
+  // Lista de peças se houver
+  const listaPecas = window._orcamentoAtual.pecas.length > 0 ? 
+    window._orcamentoAtual.pecas.map(p => `• ${p.nome} (${p.qtd}x): R$ ${fmt(p.qtd * p.valor)}`).join('\n') : '';
+  
+  // Criar mensagem WhatsApp
+  const mensagem = `🔧 *Orçamento ${perfil.oficina || 'Oficina'}*
+
+👤 *Cliente:* ${nomeCliente}
+🚗 *Veículo:* ${veiculoAtual?.modelo || 'N/A'} ${veiculoAtual?.ano || ''} (${veiculoAtual?.placa || 'N/A'})
+
+⚙️ *Serviços (${totalHoras}h total):*
+${listaServicos}
+*Subtotal Mão de Obra: R$ ${fmt(totalServicos)}*
+
+${listaPecas ? `🔧 *Peças:*\n${listaPecas}\n*Subtotal Peças: R$ ${fmt(totalPecas)}*\n\n` : ''}💰 *VALOR TOTAL: R$ ${fmt(valorFinal)}*
+
+✅ *Aprovar orçamento:* ${linkAprovacao}
+
+_Orçamento válido por 30 dias_`;
+
+  // Abrir WhatsApp com número automático
+  const whatsappUrl = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
+  window.open(whatsappUrl, '_blank');
+  
+  // Mostrar status
+  document.getElementById('status-orcamento-final').innerHTML = `
+    <div style="background:#dcf3e1;border:1px solid #28a745;color:#155724;padding:12px;border-radius:8px;text-align:center">
+      ✅ Orçamento enviado! WhatsApp aberto automaticamente.<br>
+      <small>Status: Aguardando resposta do cliente | ID: #${orcamentoId}</small>
+    </div>
+  `;
+  
+  alert("✅ Orçamento enviado! WhatsApp aberto automaticamente.");
+};
+
+const totalGeral = window._pecasOrcamento.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
   html += `<div style="text-align:right;font-weight:700;margin-top:8px;color:var(--acc)">Total peças: R$ ${fmt(totalGeral)}</div>`;
   
   lista.innerHTML = html;
