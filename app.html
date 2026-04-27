@@ -1426,17 +1426,7 @@ function renderizarResultado(dados,servico,valorHora,margem){
   if(just)html+=`<div class="is"><div class="ih">Análise técnica</div><div class="ic rs">${just}</div></div>`;
   if(alertas.length){html+=`<div class="is"><div class="ih">⚠️ Alertas de risco</div>`;alertas.forEach(a=>{html+=`<div class="ic al">${a}</div>`;});html+=`</div>`;}
   if(verif.length){html+=`<div class="is"><div class="ih">💡 Verificar junto</div>`;verif.forEach(v=>{html+=`<div class="ic op">${v}</div>`;});html+=`</div>`;}
-  if(seNao)html+=`<div class="is"><div class="ih">🚨 Se não trocar</div><div class="ic al">${seNao}</div></div>`;
-  // Argumento de fechamento — sempre visível
-  html+=`<div style="background:#fff8e1;border:1.5px solid #f59e0b;border-radius:12px;padding:14px 16px;margin-top:12px">
-    <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px">💬 ARGUMENTO DE FECHAMENTO</div>
-    <div style="font-size:13px;color:#78350f;line-height:1.6">
-      Este orçamento foi elaborado com base no diagnóstico do veículo e no padrão de horas do serviço.
-      O valor já considera sua mão de obra qualificada e a garantia do trabalho executado.
-      <strong>Aprovar agora garante o agendamento e a reserva das peças.</strong>
-      Quanto antes fechar, mais rápido o veículo volta para o cliente.
-    </div>
-  </div>`;
+  if(seNao)html+=`<div class="is" style="border:2px solid #e74c3c;background:#fde8e8"><div class="ih" style="color:#c0392b;font-size:13px">🚨 SE NÃO TROCAR — USE ISSO PARA FECHAR O SERVIÇO</div><div class="ic al" style="font-weight:600">${seNao}</div></div>`;
   document.getElementById("res-content").innerHTML=html;
   // Mostrar opções após calcular
   document.getElementById("orcamento-actions").style.display = "block";
