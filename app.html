@@ -1894,7 +1894,7 @@ window.enviarWhatsApp = () => {
   localStorage.setItem('fb_orcamentos', JSON.stringify(orcamentos));
   
   // Link para aprovação
-  const linkAprovacao = `${window.location.origin}/aprovacao.html?id=${orcamentoId}`;
+  const linkAprovacao = `Responda *SIM* para aprovar ou *NÃO* para recusar`;
   
   // Criar lista de serviços para mensagem
   const listaServicos = servicosParaEnvio.map(s => 
@@ -2010,20 +2010,22 @@ window.adicionarPeca = () => {
 };
 
 window.removerPeca = (index) => {
-  window._pecasOrcamento.splice(index, 1);
+  window._orcamentoAtual.pecas.splice(index, 1);
   renderizarListaPecas();
+  mostrarOrcamentoConsolidado();
 };
 
 function renderizarListaPecas() {
   const lista = document.getElementById("lista-pecas");
-  
+  if (!lista) return;
+
   if (window._orcamentoAtual.pecas.length === 0) {
     lista.innerHTML = `<div style="text-align:center;color:var(--muted);padding:20px">Nenhuma peça adicionada</div>`;
     return;
   }
-  
+
   let html = `<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px">PEÇAS ADICIONADAS:</div>`;
-  
+
   window._orcamentoAtual.pecas.forEach((peca, index) => {
     const total = peca.qtd * peca.valor;
     html += `
@@ -2032,12 +2034,18 @@ function renderizarListaPecas() {
           <div style="font-weight:600">${peca.nome}</div>
           <div style="font-size:12px;color:var(--muted)">${peca.qtd}x R$ ${fmt(peca.valor)} = R$ ${fmt(total)}</div>
         </div>
-        <button onclick="removerPecaConsolidada(${index})" style="background:var(--err);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">✕</button>
+        <button onclick="removerPeca(${index})" style="background:var(--err);color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">✕</button>
       </div>
     `;
   });
-  
-  window.enviarWhatsAppConsolidado = () => {
+
+  const totalGeral = window._orcamentoAtual.pecas.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
+  html += `<div style="text-align:right;font-weight:700;margin-top:8px;color:var(--acc)">Total peças: R$ ${fmt(totalGeral)}</div>`;
+
+  lista.innerHTML = html;
+}
+
+window.enviarWhatsAppConsolidado = () => {
   const telefone = window._orcamentoAtual.telefone || document.getElementById("inp-telefone")?.value.replace(/\D/g, '');
   
   if (!telefone || telefone.length < 10) {
@@ -2082,7 +2090,7 @@ function renderizarListaPecas() {
   localStorage.setItem('fb_orcamentos', JSON.stringify(orcamentos));
   
   // Link para aprovação
-  const linkAprovacao = `${window.location.origin}/aprovacao.html?id=${orcamentoId}`;
+  const linkAprovacao = `Responda *SIM* para aprovar ou *NÃO* para recusar`;
   
   // Criar lista de serviços para mensagem
   const listaServicos = window._orcamentoAtual.servicos.map(s => 
@@ -2124,11 +2132,7 @@ _Orçamento válido por 30 dias_`;
   alert("✅ Orçamento enviado! WhatsApp aberto automaticamente.");
 };
 
-const totalGeral = window._pecasOrcamento.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
-  html += `<div style="text-align:right;font-weight:700;margin-top:8px;color:var(--acc)">Total peças: R$ ${fmt(totalGeral)}</div>`;
-  
-  lista.innerHTML = html;
-}
+
 
 </script>
 </body>
