@@ -710,35 +710,34 @@ if (!sessao) {
     usuario = dadosSessao;
     isAdmin = dadosSessao.isAdmin || false;
 
-    // Restaurar configUsuario — lê de chaves dedicadas (não dependem do login)
+    // Restaurar configUsuario — chaves dedicadas independentes do login
     try {
       const perfilSalvo = localStorage.getItem('fb_perfil');
       const moSalvo = localStorage.getItem('fb_mo');
       const setoresSalvo = localStorage.getItem('fb_setores');
       if (perfilSalvo) configUsuario.perfil = JSON.parse(perfilSalvo);
-      else if (dadosSessao.perfil) configUsuario.perfil = dadosSessao.perfil;
       if (moSalvo) configUsuario.maoDeObra = JSON.parse(moSalvo);
-      else if (dadosSessao.maoDeObra) configUsuario.maoDeObra = dadosSessao.maoDeObra;
       if (setoresSalvo) configUsuario.setores = JSON.parse(setoresSalvo);
-      else if (dadosSessao.setores) configUsuario.setores = dadosSessao.setores;
     } catch(e) { console.warn("Erro ao restaurar config:", e); }
 
     if(isAdmin) {
       document.getElementById("admin-panel").style.display = "block";
     }
-    // Mostrar nome do orçamentista se já configurado
-    const nomeExibir = dadosSessao.perfil?.nome || dadosSessao.nome || dadosSessao.email;
+
+    // Nome usa configUsuario já restaurado
+    const nomeExibir = configUsuario.perfil?.nome || dadosSessao.nome || dadosSessao.email;
     document.getElementById("nav-nome").textContent = nomeExibir;
 
-    // Se já tem perfil e MO configurados, vai direto pro app
-    if (dadosSessao.perfil?.nome && dadosSessao.maoDeObra?.valorHora) {
-      mostrarTela("s-main");
+    // Verificar usando configUsuario (já restaurado das chaves dedicadas)
+    const temPerfil = configUsuario.perfil?.nome;
+    const temMO = configUsuario.maoDeObra?.valorHora;
+
+    mostrarTela("s-main");
+    if (temPerfil && temMO) {
       setTimeout(() => {
         atualizarInfoOrcamentista();
         atualizarBadgeCusto();
       }, 100);
-    } else {
-      mostrarTela("s-main");
     }
   } catch(e) {
     console.error("Sessão inválida:", e);
@@ -795,10 +794,14 @@ window.avancarParaPerfil = () => {
   }
   document.getElementById("er-setor").style.display="none";
   
-  if (configUsuario.perfil.nome) {
-    document.getElementById("perfil-nome").value = configUsuario.perfil.nome;
+  if (configUsuario.perfil?.nome) {
+    document.getElementById("perfil-nome").value = configUsuario.perfil.nome || "";
     document.getElementById("perfil-cargo").value = configUsuario.perfil.cargo || "";
-    document.getElementById("perfil-telefone").value = configUsuario.perfil.telefone || "";
+    document.getElementById("perfil-oficina").value = configUsuario.perfil.oficina || "";
+    if (configUsuario.perfil.logoBase64) {
+      document.getElementById("logo-preview").style.display = "block";
+      document.getElementById("logo-img").src = configUsuario.perfil.logoBase64;
+    }
   }
   
   mostrarTela("s-perfil");
