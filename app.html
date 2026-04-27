@@ -1429,7 +1429,7 @@ function renderizarResultado(dados,servico,valorHora,margem){
   if(just)html+=`<div class="is"><div class="ih">Análise técnica</div><div class="ic rs">${just}</div></div>`;
   if(alertas.length){html+=`<div class="is"><div class="ih">⚠️ Alertas de risco</div>`;alertas.forEach(a=>{html+=`<div class="ic al">${a}</div>`;});html+=`</div>`;}
   if(verif.length){html+=`<div class="is"><div class="ih">💡 Verificar junto</div>`;verif.forEach(v=>{html+=`<div class="ic op">${v}</div>`;});html+=`</div>`;}
-  if(seNao)html+=`<div class="is" style="border:2px solid #e74c3c;background:#fde8e8"><div class="ih" style="color:#c0392b;font-size:13px">🚨 SE NÃO TROCAR — USE ISSO PARA FECHAR O SERVIÇO</div><div class="ic al" style="font-weight:600">${seNao}</div></div>`;
+  if(seNao)html+=`<div class="is" style="border:2px solid #e74c3c;background:#fde8e8"><div class="ih" style="color:#c0392b">🚨 Argumento para o cliente sobre o serviço</div><div class="ic al">${seNao}</div></div>`;
   document.getElementById("res-content").innerHTML=html;
   // Mostrar opções após calcular
   document.getElementById("orcamento-actions").style.display = "block";
