@@ -588,6 +588,8 @@ input::placeholder{color:#aaa}
       <div id="orcamento-actions" style="display:none;margin-top:16px">
         <button class="btn btn-s" onclick="adicionarPecas()" style="margin-bottom:8px">🔧 Adicionar peças ao orçamento</button>
         <button class="btn btn-p" onclick="gerarOrcamentoPDF()" style="margin-bottom:8px">📄 Gerar orçamento em PDF</button>
+        <button class="btn btn-primary" onclick="enviarWhatsApp()" style="margin-bottom:8px;background:#25d366">📱 Enviar pelo WhatsApp</button>
+        <div id="status-orcamento" style="display:none;margin-top:12px;padding:12px;border-radius:8px;text-align:center;font-weight:600"></div>
       </div>
       <button class="btn-nova-consulta" id="btn-nova-consulta" style="display:none" onclick="novaConsultaMesmaPlaca()">🔄 Consultar outro serviço com esta placa</button>
       <button class="btn btn-s" style="margin-top:8px" onclick="novaConsultaCompleta()">+ Nova consulta (outra placa)</button>
@@ -782,10 +784,12 @@ window.avancarParaMO = async () => {
       oficina,
       logoBase64: window._logoBase64 || null
     };
-    await setDoc(doc(db,"usuarios",usuario.uid), { 
-      setores: setoresSelecionados, 
-      perfil 
-    }, {merge:true});
+    
+    // Salvar no localStorage
+    const sessao = JSON.parse(localStorage.getItem('fb_sessao') || '{}');
+    sessao.perfil = perfil;
+    localStorage.setItem('fb_sessao', JSON.stringify(sessao));
+    
     configUsuario.setores = setoresSelecionados;
     configUsuario.perfil = perfil;
     
@@ -799,7 +803,9 @@ window.avancarParaMO = async () => {
     
     mostrarTela("s-mo");
   } catch(e) {
-    alert("Erro ao salvar perfil. Tente novamente.");
+    console.error("Erro ao salvar perfil:", e);
+    document.getElementById("er-perfil").textContent = "Erro ao salvar. Tente novamente.";
+    document.getElementById("er-perfil").style.display = "block";
   }
 };
 
@@ -1607,8 +1613,105 @@ ${dados.verificar_junto?.length ? `
   alert("📄 Orçamento gerado! Abra o arquivo baixado e imprima em PDF.");
 };
 
-// ── GESTÃO DE PEÇAS ──
-window._pecasOrcamento = [];
+// ── ENVIO WHATSAPP E STATUS ──
+window.enviarWhatsApp = () => {
+  if (!window._ultimoOrcamento || !veiculoAtual) {
+    alert("Nenhum orçamento disponível para envio");
+    return;
+  }
+  
+  const { dados, servico, valorHora, margem, custo, preco, horas } = window._ultimoOrcamento;
+  const perfil = configUsuario.perfil || {};
+  const nomeCliente = document.getElementById("inp-cliente")?.value.trim() || "Cliente";
+  const pecas = window._pecasOrcamento || [];
+  const totalPecas = pecas.reduce((total, peca) => total + (peca.qtd * peca.valor), 0);
+  const valorFinal = preco + totalPecas;
+  
+  // Gerar ID único do orçamento
+  const orcamentoId = Date.now().toString();
+  
+  // Salvar orçamento no localStorage para aprovação
+  const orcamentos = JSON.parse(localStorage.getItem('fb_orcamentos') || '{}');
+  orcamentos[orcamentoId] = {
+    id: orcamentoId,
+    cliente: nomeCliente,
+    veiculo: veiculoAtual,
+    servico: servico,
+    valorFinal: valorFinal,
+    detalhes: dados,
+    pecas: pecas,
+    status: 'pendente',
+    criadoEm: new Date().toISOString(),
+    oficina: perfil.oficina || 'Oficina',
+    orçamentista: perfil.nome || 'Orçamentista'
+  };
+  localStorage.setItem('fb_orcamentos', JSON.stringify(orcamentos));
+  
+  // Link para aprovação
+  const linkAprovacao = `${window.location.origin}/aprovacao.html?id=${orcamentoId}`;
+  
+  // Criar mensagem WhatsApp
+  const mensagem = `🔧 *Orçamento ${perfil.oficina || 'Oficina'}*
+
+👤 *Cliente:* ${nomeCliente}
+🚗 *Veículo:* ${veiculoAtual.modelo} ${veiculoAtual.ano} (${veiculoAtual.placa})
+⚙️ *Serviço:* ${servico}
+
+💰 *VALOR TOTAL: R$ ${fmt(valorFinal)}*
+
+📋 *Detalhes:*
+• Mão de obra: ${horas}h × R$ ${fmt(valorHora)} = R$ ${fmt(preco)}
+${pecas.length > 0 ? `• Peças: R$ ${fmt(totalPecas)}` : ''}
+
+${dados.justificativa ? `🔧 *Análise Técnica:*\n${dados.justificativa}\n` : ''}
+
+✅ *Aprovar orçamento:* ${linkAprovacao}
+
+_Orçamento válido por 30 dias_`;
+
+  // Abrir WhatsApp
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
+  window.open(whatsappUrl, '_blank');
+  
+  // Mostrar status
+  mostrarStatusOrcamento(orcamentoId, 'pendente');
+};
+
+function mostrarStatusOrcamento(id, status) {
+  const statusDiv = document.getElementById('status-orcamento');
+  
+  let statusText = '';
+  let statusColor = '';
+  
+  switch(status) {
+    case 'pendente':
+      statusText = '⏳ Orçamento enviado - Aguardando resposta do cliente';
+      statusColor = '#f59e0b';
+      break;
+    case 'aprovado':
+      statusText = '✅ Orçamento APROVADO pelo cliente';
+      statusColor = '#16a34a';
+      break;
+    case 'rejeitado':
+      statusText = '❌ Orçamento rejeitado pelo cliente';
+      statusColor = '#dc2626';
+      break;
+  }
+  
+  statusDiv.innerHTML = `
+    <div style="color: ${statusColor}; background: rgba(${status === 'aprovado' ? '22,163,74' : status === 'rejeitado' ? '220,38,38' : '245,158,11'}, 0.1); border: 1px solid ${statusColor};">
+      ${statusText}
+      ${status === 'pendente' ? `<br><small>ID: #${id}</small>` : ''}
+    </div>
+  `;
+  statusDiv.style.display = 'block';
+}
+
+// Verificar status dos orçamentos periodicamente
+setInterval(() => {
+  const orcamentos = JSON.parse(localStorage.getItem('fb_orcamentos') || '{}');
+  // Aqui você pode implementar verificação de status via API no futuro
+}, 30000); // Verifica a cada 30 segundos
 
 window.adicionarPecas = () => {
   renderizarListaPecas();
