@@ -1666,7 +1666,12 @@ window.enviarWhatsApp = () => {
   // Verificar se tem serviços ou último orçamento
   const servicosParaEnvio = window._servicosOrcamento.length > 0 ? 
     window._servicosOrcamento : 
-    (window._ultimoOrcamento ? [window._ultimoOrcamento] : []);
+    (window._ultimoOrcamento ? [{
+      servico: window._ultimoOrcamento.servico,
+      horas: window._ultimoOrcamento.horas, 
+      preco: window._ultimoOrcamento.preco,
+      detalhes: window._ultimoOrcamento.dados
+    }] : []);
   
   if (servicosParaEnvio.length === 0) {
     alert("Nenhum orçamento disponível para envio");
@@ -1680,6 +1685,7 @@ window.enviarWhatsApp = () => {
   
   // Calcular total dos serviços
   const totalServicos = servicosParaEnvio.reduce((total, s) => total + (s.preco || 0), 0);
+  const totalHoras = servicosParaEnvio.reduce((total, s) => total + (s.horas || 0), 0);
   const valorFinal = totalServicos + totalPecas;
   
   // Gerar ID único do orçamento
@@ -1693,6 +1699,8 @@ window.enviarWhatsApp = () => {
     telefone: telefone,
     veiculo: veiculoAtual,
     servicos: servicosParaEnvio,
+    totalHoras: totalHoras,
+    totalServicos: totalServicos,
     valorFinal: valorFinal,
     pecas: pecas,
     status: 'pendente',
@@ -1707,7 +1715,7 @@ window.enviarWhatsApp = () => {
   
   // Criar lista de serviços para mensagem
   const listaServicos = servicosParaEnvio.map(s => 
-    `• ${s.servico}: R$ ${fmt(s.preco || 0)}`
+    `• ${s.servico}: ${s.horas}h = R$ ${fmt(s.preco || 0)}`
   ).join('\n');
   
   // Criar mensagem WhatsApp
@@ -1716,11 +1724,11 @@ window.enviarWhatsApp = () => {
 👤 *Cliente:* ${nomeCliente}
 🚗 *Veículo:* ${veiculoAtual.modelo} ${veiculoAtual.ano} (${veiculoAtual.placa})
 
-⚙️ *Serviços:*
+⚙️ *Serviços (${totalHoras}h total):*
 ${listaServicos}
+*Subtotal Mão de Obra: R$ ${fmt(totalServicos)}*
 
-${pecas.length > 0 ? `🔧 *Peças:* R$ ${fmt(totalPecas)}\n` : ''}
-💰 *VALOR TOTAL: R$ ${fmt(valorFinal)}*
+${pecas.length > 0 ? `🔧 *Peças:* R$ ${fmt(totalPecas)}\n` : ''}💰 *VALOR TOTAL: R$ ${fmt(valorFinal)}*
 
 ✅ *Aprovar orçamento:* ${linkAprovacao}
 

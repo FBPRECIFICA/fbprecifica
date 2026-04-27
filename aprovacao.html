@@ -85,7 +85,7 @@ function carregarOrcamento() {
 }
 
 function renderizarOrcamento(orcamento) {
-  const { cliente, veiculo, servico, valorFinal, detalhes, pecas, status, oficina, orçamentista } = orcamento;
+  const { cliente, veiculo, servicos, totalHoras, totalServicos, valorFinal, pecas, status, oficina, orçamentista } = orcamento;
   
   if (status !== 'pendente') {
     const statusClass = status === 'aprovado' ? 'aprovado' : 'rejeitado';
@@ -100,6 +100,23 @@ function renderizarOrcamento(orcamento) {
     return;
   }
   
+  // Lista de serviços
+  const servicosHtml = servicos && servicos.length > 0 ? `
+    <div class="info-section">
+      <div class="info-title">⚙️ Serviços</div>
+      ${servicos.map(servico => `
+        <div class="linha">
+          <span>${servico.servico} (${servico.horas}h)</span>
+          <span>R$ ${fmt(servico.preco)}</span>
+        </div>
+      `).join('')}
+      <div class="linha" style="font-weight:bold;background:#f8f9fa;margin-top:8px">
+        <span>TOTAL MÃO DE OBRA (${totalHoras || 0}h)</span>
+        <span>R$ ${fmt(totalServicos || 0)}</span>
+      </div>
+    </div>
+  ` : '';
+  
   const pecasHtml = pecas && pecas.length > 0 ? `
     <div class="info-section">
       <div class="info-title">🔧 Peças e Materiais</div>
@@ -109,13 +126,6 @@ function renderizarOrcamento(orcamento) {
           <span>R$ ${fmt(peca.qtd * peca.valor)}</span>
         </div>
       `).join('')}
-    </div>
-  ` : '';
-  
-  const analiseHtml = detalhes.justificativa ? `
-    <div class="info-section">
-      <div class="info-title">🔧 Análise Técnica</div>
-      <p>${detalhes.justificativa}</p>
     </div>
   ` : '';
   
@@ -131,12 +141,7 @@ function renderizarOrcamento(orcamento) {
       <p>Placa: ${veiculo.placa}</p>
     </div>
     
-    <div class="info-section">
-      <div class="info-title">⚙️ Serviço</div>
-      <p><strong>${servico}</strong></p>
-    </div>
-    
-    ${analiseHtml}
+    ${servicosHtml}
     ${pecasHtml}
     
     <div class="valor-destaque">
