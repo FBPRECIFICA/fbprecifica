@@ -41,80 +41,60 @@ body{font-family:Arial,sans-serif;background:#d6d6d6;min-height:100vh;display:fl
   <div class="error" id="error"></div>
   <div class="success" id="success"></div>
   
-  <!-- FORM LOGIN -->
   <div class="form active" id="form-login">
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="login-email" placeholder="Seu email">
     </div>
-    
     <div class="form-group">
       <label>Senha</label>
       <input type="password" id="login-senha" placeholder="Sua senha">
     </div>
-    
     <button class="btn btn-primary" onclick="fazerLogin()">Entrar</button>
   </div>
   
-  <!-- FORM CADASTRO -->
   <div class="form" id="form-cadastro">
     <div class="form-group">
       <label>Nome</label>
       <input type="text" id="cad-nome" placeholder="Seu nome completo">
     </div>
-    
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="cad-email" placeholder="Seu email">
     </div>
-    
     <div class="form-group">
       <label>Senha</label>
       <input type="password" id="cad-senha" placeholder="Mínimo 6 dígitos">
     </div>
-    
     <button class="btn btn-primary" onclick="fazerCadastro()">Criar conta</button>
   </div>
 </div>
 
 <script>
-// Contas válidas (simulando banco de dados)
+// Usuários padrão do sistema — sempre garantidos
+const USUARIOS_PADRAO = {
+  'contato@mmservicecar.com.br': { nome: 'Fábio', senha: '123456', plano: 'premium', isAdmin: true },
+  'fabio@mmservicecar.com.br':   { nome: 'Fábio Admin', senha: '123456', plano: 'premium', isAdmin: true },
+  'fabio@sistemas3.com.br':      { nome: 'Fábio', senha: 'sony2010', plano: 'premium', isAdmin: true },
+  'teste@teste.com':             { nome: 'Usuário Teste', senha: '123456', plano: 'trial', isAdmin: false }
+};
+
+// Carregar usuários salvos e garantir que padrões sempre existam
 let usuarios = JSON.parse(localStorage.getItem('fb_usuarios') || '{}');
 
-// Se não tem usuários, criar alguns padrão
-if (Object.keys(usuarios).length === 0) {
-  usuarios = {
-    'contato@mmservicecar.com.br': {
-      nome: 'Fábio',
-      senha: '123456',
-      plano: 'premium',
-      isAdmin: true
-    },
-    'fabio@mmservicecar.com.br': {
-      nome: 'Fábio Admin', 
-      senha: '123456',
-      plano: 'premium',
-      isAdmin: true
-    },
-    'teste@teste.com': {
-      nome: 'Usuário Teste',
-      senha: '123456',
-      plano: 'trial',
-      isAdmin: false
-    }
-  };
-  localStorage.setItem('fb_usuarios', JSON.stringify(usuarios));
-}
+// Mesclar padrões sem sobrescrever cadastros existentes
+Object.entries(USUARIOS_PADRAO).forEach(([email, dados]) => {
+  if (!usuarios[email]) usuarios[email] = dados;
+  // Atualizar senha dos admins padrão sempre
+  if (dados.isAdmin) usuarios[email].senha = dados.senha;
+});
+localStorage.setItem('fb_usuarios', JSON.stringify(usuarios));
 
 function trocarAba(aba) {
-  // Reset abas
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
-  
-  // Ativar selecionada
   event.target.classList.add('active');
   document.getElementById('form-' + aba).classList.add('active');
-  
   esconderMensagens();
 }
 
@@ -122,25 +102,11 @@ function fazerLogin() {
   const email = document.getElementById('login-email').value.trim().toLowerCase();
   const senha = document.getElementById('login-senha').value;
   
-  if (!email || !senha) {
-    mostrarErro("Preencha email e senha");
-    return;
-  }
+  if (!email || !senha) { mostrarErro("Preencha email e senha"); return; }
+  if (!usuarios[email]) { mostrarErro("Email não encontrado. Cadastre-se primeiro."); return; }
+  if (usuarios[email].senha !== senha) { mostrarErro("Senha incorreta"); return; }
   
-  if (!usuarios[email]) {
-    mostrarErro("Email não encontrado. Cadastre-se primeiro.");
-    return;
-  }
-  
-  if (usuarios[email].senha !== senha) {
-    mostrarErro("Senha incorreta");
-    return;
-  }
-  
-  // Login válido
   const user = usuarios[email];
-  
-  // Salvar sessão
   localStorage.setItem('fb_sessao', JSON.stringify({
     email: email,
     nome: user.nome,
@@ -150,10 +116,7 @@ function fazerLogin() {
   }));
   
   mostrarSucesso("Login realizado! Redirecionando...");
-  
-  setTimeout(() => {
-    window.location.href = '/app.html';
-  }, 1000);
+  setTimeout(() => { window.location.href = '/app.html'; }, 1000);
 }
 
 function fazerCadastro() {
@@ -161,41 +124,15 @@ function fazerCadastro() {
   const email = document.getElementById('cad-email').value.trim().toLowerCase();
   const senha = document.getElementById('cad-senha').value;
   
-  if (!nome || !email || !senha) {
-    mostrarErro("Preencha todos os campos");
-    return;
-  }
+  if (!nome || !email || !senha) { mostrarErro("Preencha todos os campos"); return; }
+  if (!email.includes('@')) { mostrarErro("Email inválido"); return; }
+  if (senha.length < 6) { mostrarErro("Senha deve ter pelo menos 6 dígitos"); return; }
+  if (usuarios[email]) { mostrarErro("Este email já está cadastrado"); return; }
   
-  if (!email.includes('@')) {
-    mostrarErro("Email inválido");
-    return;
-  }
-  
-  if (senha.length < 6) {
-    mostrarErro("Senha deve ter pelo menos 6 dígitos");
-    return;
-  }
-  
-  if (usuarios[email]) {
-    mostrarErro("Este email já está cadastrado");
-    return;
-  }
-  
-  // Criar conta
-  usuarios[email] = {
-    nome: nome,
-    senha: senha,
-    plano: 'trial',
-    isAdmin: false,
-    criadoEm: new Date().toISOString()
-  };
-  
-  // Salvar
+  usuarios[email] = { nome, senha, plano: 'trial', isAdmin: false, criadoEm: new Date().toISOString() };
   localStorage.setItem('fb_usuarios', JSON.stringify(usuarios));
   
   mostrarSucesso("Conta criada! Faça login para continuar.");
-  
-  // Voltar para login
   setTimeout(() => {
     trocarAba('login');
     document.getElementById('login-email').value = email;
@@ -219,18 +156,11 @@ function esconderMensagens() {
   document.getElementById('success').style.display = 'none';
 }
 
-// Enter para submeter
 document.addEventListener('keypress', function(e) {
   if (e.key === 'Enter') {
-    const loginAtivo = document.getElementById('form-login').classList.contains('active');
-    if (loginAtivo) {
-      fazerLogin();
-    } else {
-      fazerCadastro();
-    }
+    document.getElementById('form-login').classList.contains('active') ? fazerLogin() : fazerCadastro();
   }
 });
-
 </script>
 
 </body>
