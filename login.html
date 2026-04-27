@@ -4,118 +4,97 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FB Precifica - Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#d6d6d6;--white:#eaeaea;--surf:#d6d6d6;--border:#c2c2c2;--acc:#F97316;--acc2:#ea6c0a;--accl:#ffeedd;--text:#111;--muted:#666;--ok:#16a34a;--err:#dc2626;--warn:#f59e0b;--sh:0 2px 12px rgba(0,0,0,0.12);--shl:0 8px 32px rgba(0,0,0,0.18)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.card{background:var(--white);border-radius:20px;padding:40px 32px;width:100%;max-width:420px;box-shadow:var(--shl);text-align:center}
-.logo{font-family:'Barlow',sans-serif;font-size:36px;font-weight:900;color:var(--text);letter-spacing:-1px;margin-bottom:8px}
-.logo span{color:var(--acc)}
-.tag{color:var(--muted);font-size:14px;margin-bottom:32px;line-height:1.5}
-.tabs{display:flex;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:20px}
-.tab{flex:1;padding:8px;border:none;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;transition:all .2s}
-.tab.active{background:var(--acc);color:#fff}
-.form{display:none}
-.form.active{display:block}
-input{width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--surf);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;margin-bottom:12px;outline:none;transition:all .2s}
-input:focus{border-color:var(--acc);background:var(--white)}
-.btn{width:100%;padding:14px;border-radius:12px;border:none;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:12px}
-.btn-primary{background:var(--acc);color:#fff}
-.btn-primary:hover{background:var(--acc2);transform:translateY(-1px)}
-.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.btn-google{background:var(--white);color:var(--text);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-google:hover{border-color:var(--acc);background:var(--accl)}
-.google-icon{width:18px;height:18px}
-.divider{margin:16px 0;text-align:center;color:var(--muted);font-size:12px;position:relative}
-.divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
-.divider span{background:var(--white);padding:0 12px}
-.link{color:var(--acc);text-decoration:none;font-size:13px;cursor:pointer}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#d6d6d6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#eaeaea;padding:40px;border-radius:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
+.logo{font-size:36px;font-weight:900;color:#111;margin-bottom:8px}
+.logo span{color:#F97316}
+.tagline{color:#666;font-size:14px;margin-bottom:32px}
+.form-group{margin-bottom:16px;text-align:left}
+.form-group label{display:block;margin-bottom:5px;font-weight:600;color:#666;font-size:12px}
+.form-group input{width:100%;padding:14px;border:1.5px solid #c2c2c2;border-radius:12px;background:#d6d6d6;color:#111;font-size:15px}
+.form-group input:focus{outline:none;border-color:#F97316;background:#eaeaea}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:#F97316;color:white;margin-bottom:16px}
+.btn-primary:hover{background:#ea6c0a;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
+.error{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.2);color:#dc2626;padding:12px;border-radius:12px;margin-bottom:16px;font-size:14px;display:none}
+.loading{display:none;text-align:center;padding:20px;color:#666}
+.divider{margin:20px 0;text-align:center;color:#666;font-size:12px;position:relative}
+.divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:#c2c2c2}
+.divider span{background:#eaeaea;padding:0 12px}
+.link{color:#F97316;cursor:pointer;font-size:13px;text-decoration:none}
 .link:hover{text-decoration:underline}
-.error{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:12px 16px;color:var(--err);font-size:14px;margin-bottom:16px;display:none}
-.loading{display:none;align-items:center;justify-content:center;gap:12px;padding:20px}
-.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
-.modal-content{background:var(--white);border-radius:20px;padding:32px;width:90%;max-width:400px;text-align:center}
 </style>
 </head>
 <body>
 
 <div class="card">
   <div class="logo">FB<span>precifica</span></div>
-  <div class="tag">Preço justo para o cliente e para o prestador de serviço</div>
+  <div class="tagline">Preço justo para o cliente e para o prestador de serviço</div>
   
-  <div class="tabs">
-    <button class="tab active" id="tab-entrar" onclick="trocarTab('entrar')">Entrar</button>
-    <button class="tab" id="tab-cadastrar" onclick="trocarTab('cadastrar')">Cadastrar</button>
-  </div>
+  <div class="error" id="error"></div>
   
-  <div class="error" id="error-msg"></div>
-  
-  <!-- FORM ENTRAR -->
-  <div class="form active" id="form-entrar">
-    <input type="email" id="email-entrar" placeholder="Seu email"/>
-    <input type="password" id="senha-entrar" placeholder="Sua senha"/>
-    <button class="btn btn-primary" onclick="fazerLogin()">Entrar</button>
+  <div id="form-login">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="Seu email" autocomplete="email">
+    </div>
+    
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="Sua senha" autocomplete="current-password">
+    </div>
+    
+    <button class="btn btn-primary" id="btn-entrar" onclick="entrar()">Entrar</button>
     
     <div class="divider"><span>ou</span></div>
     
-    <button class="btn btn-google" onclick="loginGoogle()">
-      <svg class="google-icon" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Entrar com Google
-    </button>
+    <div style="margin-bottom:16px">
+      <a class="link" onclick="mostrarCadastro()">Não tem conta? Cadastre-se aqui</a>
+    </div>
   </div>
   
-  <!-- FORM CADASTRAR -->
-  <div class="form" id="form-cadastrar">
-    <input type="text" id="nome-cadastro" placeholder="Seu nome completo"/>
-    <input type="text" id="cpf-cadastro" placeholder="Seu CPF" maxlength="14" oninput="formatarCPF(this)"/>
-    <input type="email" id="email-cadastro" placeholder="Seu email"/>
-    <input type="password" id="senha-cadastro" placeholder="Criar senha (min. 6 dígitos)" minlength="6"/>
-    <button class="btn btn-primary" onclick="fazerCadastro()">Criar conta</button>
+  <div id="form-cadastro" style="display:none">
+    <div class="form-group">
+      <label>Nome completo</label>
+      <input type="text" id="nome" placeholder="Seu nome completo">
+    </div>
+    
+    <div class="form-group">
+      <label>CPF</label>
+      <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="formatarCPF(this)">
+    </div>
+    
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email-cad" placeholder="Seu email">
+    </div>
+    
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" id="senha-cad" placeholder="Mínimo 6 dígitos">
+    </div>
+    
+    <button class="btn btn-primary" onclick="cadastrar()">Criar conta</button>
     
     <div class="divider"><span>ou</span></div>
     
-    <button class="btn btn-google" onclick="loginGoogle()">
-      <svg class="google-icon" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Cadastrar com Google
-    </button>
+    <div>
+      <a class="link" onclick="mostrarLogin()">Já tem conta? Faça login</a>
+    </div>
   </div>
   
   <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <span>Processando...</span>
-  </div>
-</div>
-
-<!-- MODAL CPF GOOGLE -->
-<div class="modal" id="modal-cpf">
-  <div class="modal-content">
-    <div style="font-family:'Barlow',sans-serif;font-size:24px;font-weight:900;margin-bottom:8px;color:var(--text)">📋 Dados para cadastro</div>
-    <div style="color:var(--muted);font-size:14px;margin-bottom:20px">Precisamos do seu CPF para completar o cadastro</div>
-    
-    <input type="text" id="cpf-google" placeholder="Seu CPF" maxlength="14" oninput="formatarCPF(this)" style="width:100%;padding:14px;border-radius:12px;border:1.5px solid var(--border);margin-bottom:16px;font-size:15px"/>
-    
-    <button onclick="concluirCadastroGoogle()" style="width:100%;padding:14px;border-radius:12px;border:none;background:var(--acc);color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px">Completar cadastro</button>
-    <button onclick="cancelarCadastroGoogle()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:14px;cursor:pointer">Cancelar</button>
+    <div>⏳ Processando...</div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAFLxVIoPzCKiXcgZV_s7dyOr7N-HlUHEk",
@@ -129,7 +108,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
 
 // Verificar se já está logado
 onAuthStateChanged(auth, (user) => {
@@ -138,55 +116,43 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// Trocar abas
-window.trocarTab = (tab) => {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
-  
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  document.getElementById(`form-${tab}`).classList.add('active');
-  
-  esconderErro();
-};
-
-// Login com email/senha
-window.fazerLogin = async () => {
-  const email = document.getElementById('email-entrar').value.trim();
-  const senha = document.getElementById('senha-entrar').value;
+// Entrar
+window.entrar = async () => {
+  const email = document.getElementById('email').value.trim();
+  const senha = document.getElementById('senha').value;
   
   if (!email || !senha) {
     mostrarErro("Preencha email e senha");
     return;
   }
   
-  mostrarLoading();
+  mostrarLoading(true);
   
   try {
     await signInWithEmailAndPassword(auth, email, senha);
+    // onAuthStateChanged vai redirecionar
   } catch (error) {
-    esconderLoading();
+    mostrarLoading(false);
     
-    let errorText = "Erro ao fazer login";
+    let msg = "Erro ao fazer login";
     if (error.code === 'auth/user-not-found') {
-      errorText = "Email não encontrado. Verifique ou cadastre-se.";
+      msg = "Email não encontrado. Cadastre-se primeiro.";
     } else if (error.code === 'auth/wrong-password') {
-      errorText = "Senha incorreta. Tente novamente.";
+      msg = "Senha incorreta.";
     } else if (error.code === 'auth/invalid-email') {
-      errorText = "Email inválido.";
-    } else if (error.code === 'auth/too-many-requests') {
-      errorText = "Muitas tentativas. Tente novamente em alguns minutos.";
+      msg = "Email inválido.";
     }
     
-    mostrarErro(errorText);
+    mostrarErro(msg);
   }
 };
 
-// Cadastro com email/senha
-window.fazerCadastro = async () => {
-  const nome = document.getElementById('nome-cadastro').value.trim();
-  const cpf = document.getElementById('cpf-cadastro').value.replace(/\D/g, '');
-  const email = document.getElementById('email-cadastro').value.trim();
-  const senha = document.getElementById('senha-cadastro').value;
+// Cadastrar
+window.cadastrar = async () => {
+  const nome = document.getElementById('nome').value.trim();
+  const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+  const email = document.getElementById('email-cad').value.trim();
+  const senha = document.getElementById('senha-cad').value;
   
   if (!nome || !cpf || !email || !senha) {
     mostrarErro("Preencha todos os campos");
@@ -203,7 +169,7 @@ window.fazerCadastro = async () => {
     return;
   }
   
-  mostrarLoading();
+  mostrarLoading(true);
   
   try {
     // Verificar se CPF já existe
@@ -211,8 +177,8 @@ window.fazerCadastro = async () => {
     const cpfSnap = await getDocs(cpfQuery);
     
     if (!cpfSnap.empty) {
-      esconderLoading();
-      mostrarErro("Este CPF já está cadastrado. Use o login.");
+      mostrarLoading(false);
+      mostrarErro("Este CPF já está cadastrado");
       return;
     }
     
@@ -220,117 +186,48 @@ window.fazerCadastro = async () => {
     const user = userCredential.user;
     
     await updateProfile(user, { displayName: nome });
-    await criarUsuarioFirestore(user, nome, cpf);
     
+    await setDoc(doc(db, "usuarios", user.uid), {
+      nome: nome,
+      cpf: cpf,
+      email: user.email,
+      plano: "trial",
+      setores: [],
+      maoDeObra: {},
+      perfil: {},
+      criadoEm: new Date(),
+      trialExpiraEm: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    });
+    
+    // onAuthStateChanged vai redirecionar
   } catch (error) {
-    esconderLoading();
+    mostrarLoading(false);
     
-    let errorText = "Erro ao criar conta";
+    let msg = "Erro ao criar conta";
     if (error.code === 'auth/email-already-in-use') {
-      errorText = "Este email já está em uso. Faça login.";
-    } else if (error.code === 'auth/invalid-email') {
-      errorText = "Email inválido.";
+      msg = "Este email já está em uso";
     } else if (error.code === 'auth/weak-password') {
-      errorText = "Senha muito fraca. Use pelo menos 6 dígitos.";
+      msg = "Senha muito fraca";
     }
     
-    mostrarErro(errorText);
+    mostrarErro(msg);
   }
 };
 
-// Login com Google
-window.loginGoogle = async () => {
-  mostrarLoading();
-  
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    
-    // Verificar se é admin
-    const emailsAdmin = ['fabio@mmservicecar.com.br', 'contato@mmservicecar.com.br'];
-    const isAdmin = emailsAdmin.includes(user.email);
-    
-    const userRef = doc(db, "usuarios", user.uid);
-    const userSnap = await getDoc(userRef);
-    
-    if (!userSnap.exists()) {
-      if (isAdmin) {
-        await criarUsuarioFirestore(user, user.displayName || "");
-      } else {
-        esconderLoading();
-        window._usuarioGoogleTemp = user;
-        document.getElementById('modal-cpf').style.display = 'flex';
-        return;
-      }
-    }
-    
-  } catch (error) {
-    esconderLoading();
-    
-    let errorText = "Erro ao entrar com Google";
-    if (error.code === 'auth/popup-closed-by-user') {
-      errorText = "Login cancelado. Tente novamente.";
-    } else if (error.code === 'auth/popup-blocked') {
-      errorText = "Popup bloqueado. Permita popups e tente novamente.";
-    }
-    
-    mostrarErro(errorText);
-  }
+// Alternar formulários
+window.mostrarCadastro = () => {
+  document.getElementById('form-login').style.display = 'none';
+  document.getElementById('form-cadastro').style.display = 'block';
+  esconderErro();
 };
 
-// Completar cadastro Google com CPF
-window.concluirCadastroGoogle = async () => {
-  const cpf = document.getElementById('cpf-google').value.replace(/\D/g, '');
-  
-  if (!validarCPF(cpf)) {
-    alert("CPF inválido");
-    return;
-  }
-  
-  try {
-    const cpfQuery = query(collection(db, "usuarios"), where("cpf", "==", cpf));
-    const cpfSnap = await getDocs(cpfQuery);
-    
-    if (!cpfSnap.empty) {
-      alert("Este CPF já está cadastrado. Use o login com email/senha.");
-      return;
-    }
-    
-    await criarUsuarioFirestore(window._usuarioGoogleTemp, window._usuarioGoogleTemp.displayName || "", cpf);
-    document.getElementById('modal-cpf').style.display = 'none';
-    
-  } catch (error) {
-    alert("Erro ao completar cadastro: " + error.message);
-  }
+window.mostrarLogin = () => {
+  document.getElementById('form-cadastro').style.display = 'none';
+  document.getElementById('form-login').style.display = 'block';
+  esconderErro();
 };
 
-window.cancelarCadastroGoogle = async () => {
-  await auth.signOut();
-  document.getElementById('modal-cpf').style.display = 'none';
-  esconderLoading();
-};
-
-// Criar usuário no Firestore
-async function criarUsuarioFirestore(user, nome, cpf = null) {
-  const userData = {
-    nome: nome || "",
-    email: user.email,
-    plano: "trial",
-    setores: [],
-    maoDeObra: {},
-    perfil: {},
-    criadoEm: new Date(),
-    trialExpiraEm: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  };
-  
-  if (cpf) {
-    userData.cpf = cpf;
-  }
-  
-  await setDoc(doc(db, "usuarios", user.uid), userData);
-}
-
-// Formatação e validação CPF
+// Formatação CPF
 window.formatarCPF = (input) => {
   let value = input.value.replace(/\D/g, '');
   if (value.length <= 11) {
@@ -341,12 +238,9 @@ window.formatarCPF = (input) => {
   input.value = value;
 };
 
+// Validação CPF
 function validarCPF(cpf) {
-  cpf = cpf.replace(/\D/g, '');
-  
-  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
-    return false;
-  }
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
   
   let soma = 0;
   for (let i = 0; i < 9; i++) {
@@ -365,25 +259,21 @@ function validarCPF(cpf) {
   return resto === parseInt(cpf.charAt(10));
 }
 
-// Funções auxiliares
-function mostrarLoading() {
-  document.querySelectorAll('.form').forEach(f => f.style.display = 'none');
-  document.getElementById('loading').style.display = 'flex';
+// Utilidades
+function mostrarLoading(show) {
+  document.getElementById('loading').style.display = show ? 'block' : 'none';
+  document.getElementById('form-login').style.display = show ? 'none' : (document.getElementById('form-cadastro').style.display === 'block' ? 'none' : 'block');
+  document.getElementById('form-cadastro').style.display = show ? 'none' : (document.getElementById('form-login').style.display === 'block' ? 'none' : document.getElementById('form-cadastro').style.display);
 }
 
-function esconderLoading() {
-  document.getElementById('loading').style.display = 'none';
-  document.querySelector('.form.active').style.display = 'block';
-}
-
-function mostrarErro(texto) {
-  const errorMsg = document.getElementById('error-msg');
-  errorMsg.textContent = texto;
-  errorMsg.style.display = 'block';
+function mostrarErro(msg) {
+  const erro = document.getElementById('error');
+  erro.textContent = msg;
+  erro.style.display = 'block';
 }
 
 function esconderErro() {
-  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('error').style.display = 'none';
 }
 
 </script>
