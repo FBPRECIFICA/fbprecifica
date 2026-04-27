@@ -2082,7 +2082,7 @@ window.enviarWhatsAppConsolidado = () => {
   const listaPecas = window._orcamentoAtual.pecas.length > 0 ? 
     window._orcamentoAtual.pecas.map(p => `• ${p.nome} (${p.qtd}x): R$ ${fmt(p.qtd * p.valor)}`).join('\n') : '';
   
-  // Criar mensagem WhatsApp
+  // Montar mensagem completa
   const mensagem = `🔧 *Orçamento ${perfil.oficina || 'Oficina'}*
 
 👤 *Cliente:* ${nomeCliente}
@@ -2094,23 +2094,31 @@ ${listaServicos}
 
 ${listaPecas ? `🔧 *Peças:*\n${listaPecas}\n*Subtotal Peças: R$ ${fmt(totalPecas)}*\n\n` : ''}💰 *VALOR TOTAL: R$ ${fmt(valorFinal)}*
 
-✅ *Aprovar orçamento:* ${linkAprovacao}
+✅ ${linkAprovacao}
+
+⚠️ *Importante:* Este orçamento foi elaborado com base no diagnóstico do veículo. A aprovação garante a reserva das peças e o agendamento do serviço. Valores sujeitos a alteração caso seja identificada outra necessidade durante a execução.
 
 _Orçamento válido por 30 dias_`;
 
-  // Abrir WhatsApp com número automático
   const whatsappUrl = `https://api.whatsapp.com/send?phone=55${telefone}&text=${encodeURIComponent(mensagem)}`;
-  window.open(whatsappUrl, '_blank');
-  
-  // Mostrar status
+
+  // Mostrar link copiável + botão de abrir
   document.getElementById('status-orcamento-final').innerHTML = `
-    <div style="background:#dcf3e1;border:1px solid #28a745;color:#155724;padding:12px;border-radius:8px;text-align:center">
-      ✅ Orçamento enviado! WhatsApp aberto automaticamente.<br>
-      <small>Status: Aguardando resposta do cliente | ID: #${orcamentoId}</small>
+    <div style="background:#dcf3e1;border:1px solid #28a745;color:#155724;padding:16px;border-radius:8px;margin-top:8px">
+      <div style="font-weight:700;margin-bottom:8px">✅ Orçamento pronto!</div>
+      <button onclick="window.open('${whatsappUrl}','_blank')" style="width:100%;padding:12px;background:#25d366;color:white;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">
+        📱 Abrir WhatsApp
+      </button>
+      <div style="font-size:12px;color:#555;margin-bottom:6px">Ou copie a mensagem abaixo e envie manualmente:</div>
+      <textarea id="msg-copia" readonly style="width:100%;height:120px;font-size:11px;border:1px solid #ccc;border-radius:6px;padding:8px;background:#f9f9f9;resize:none;box-sizing:border-box">${mensagem}</textarea>
+      <button onclick="navigator.clipboard.writeText(document.getElementById('msg-copia').value).then(()=>alert('✅ Mensagem copiada!'))" style="width:100%;padding:8px;background:#007bff;color:white;border:none;border-radius:6px;font-size:13px;cursor:pointer;margin-top:6px">
+        📋 Copiar mensagem
+      </button>
     </div>
   `;
-  
-  alert("✅ Orçamento enviado! WhatsApp aberto automaticamente.");
+
+  // Tentar abrir WhatsApp automaticamente
+  try { window.open(whatsappUrl, '_blank'); } catch(e) {}
 };
 
 
