@@ -836,7 +836,7 @@ window.avancarParaMO = async () => {
       nome, 
       cargo, 
       oficina,
-      logoBase64: window._logoBase64 || null
+      logoBase64: window._logoBase64 || configUsuario.perfil?.logoBase64 || null
     };
     
     // Salvar em chaves dedicadas — sobrevivem a qualquer novo login
