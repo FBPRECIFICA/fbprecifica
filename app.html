@@ -1229,8 +1229,8 @@ window.salvarModalSimples = async () => {
 };
 
 window.editarModoCompleto = () => {
-  // Implementar interface completa do modal (seria muito longo aqui)
-  alert("Funcionalidade em desenvolvimento. Use o modo 'Editar' por enquanto.");
+  fecharModalMO();
+  mostrarTela("s-mo");
 };
 
 async function salvarModalMO(maoDeObra) {
@@ -1565,6 +1565,7 @@ async function carregarHistorico(){
 
   // Tenta sincronizar com Firebase em segundo plano
   try{
+    if (!usuario?.uid) return;
     const histRef = collection(db, "usuarios", usuario.uid, "historico");
     const q = query(histRef, orderBy("timestamp", "desc"), limit(20));
     const snap = await getDocs(q);
