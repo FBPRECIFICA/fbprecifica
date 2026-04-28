@@ -1574,30 +1574,46 @@ async function carregarHistorico(){
   // Primeiro mostra local imediatamente
   renderHistoricoLocal(lista);
 
-  // Tenta sincronizar com Firebase em segundo plano
+  // Carregar do Firebase e salvar no localStorage para uso offline
   try{
     if (!usuario?.uid) return;
     const histRef = collection(db, "usuarios", usuario.uid, "historico");
     const q = query(histRef, orderBy("timestamp", "desc"), limit(20));
     const snap = await getDocs(q);
-    
-    if(snap.empty) return; // já mostrou local, não sobrescreve
-    
+    if(snap.empty) return;
+
+    // Salvar no localStorage para uso offline
+    const histArray = [];
+    snap.forEach(docSnap => histArray.push(docSnap.data()));
+    localStorage.setItem('fb_historico', JSON.stringify(histArray));
+
+    // Renderizar com clique e valor
+    const mo = configUsuario.maoDeObra || {};
     let html="";
-    snap.forEach(docSnap => {
-      const dt = docSnap.data();
-      const data = dt.criadoEm?.toDate ? dt.criadoEm.toDate() : new Date(dt.timestamp || Date.now());
-      html+=`<div class="hist-item">
-        <div class="hist-placa">${dt.placa||""}</div>
-        <div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div>
-        <div class="hist-servico">${dt.servico||""}</div>
-        <div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})} às ${data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
+    histArray.forEach((dt, idx) => {
+      const data = new Date(dt.timestamp || Date.now());
+      const horas = dt.resultado?.horas_estimadas || 0;
+      const valorHora = dt.valorHora || mo.valorHora || 0;
+      const margem = dt.margem || mo.margem || 0;
+      const preco = horas * valorHora * (1 + margem/100);
+      html+=`<div class="hist-item" onclick="gerarPDFHistorico(${idx})" style="cursor:pointer;transition:background 0.2s" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background=''">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="hist-placa">${dt.placa||""}</div>
+            <div class="hist-modelo">${dt.modelo||""} ${dt.ano||""}</div>
+            <div class="hist-servico">${dt.servico||""}</div>
+            <div class="hist-data">🕐 ${data.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"})} às ${data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
+          </div>
+          <div style="text-align:right;min-width:80px">
+            <div style="font-weight:700;color:#F97316;font-size:14px">${preco > 0 ? 'R$ '+fmt(preco) : ''}</div>
+            <div style="font-size:11px;color:#888;margin-top:4px">📄 ver PDF</div>
+          </div>
+        </div>
       </div>`;
     });
     lista.innerHTML=html;
   }catch(e){
     console.warn("Firebase histórico leitura falhou, usando local:", e.message);
-    // já está mostrando o local, não precisa fazer nada
   }
 }
 
