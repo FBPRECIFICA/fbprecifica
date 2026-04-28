@@ -145,6 +145,7 @@ input::placeholder{color:#aaa}
 .orcamentista-info{background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px}
 .orcamentista-nome{font-weight:600;color:var(--text)}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes carDrive{0%{left:-10%}100%{left:110%}}
 
 /* ADMIN PANEL */
 .admin-panel{background:var(--err);color:#fff;padding:10px 20px;font-size:12px;text-align:center}
@@ -537,7 +538,14 @@ input::placeholder{color:#aaa}
         <input class="pi" type="text" id="inp-placa" placeholder="ABC1D23" maxlength="8" oninput="formatarPlaca(this)" onkeydown="if(event.key==='Enter')buscarPlaca()"/>
         <div class="er" id="er-placa" style="display:none"></div>
         <button class="btn btn-p" id="btn-buscar" onclick="buscarPlaca()">Buscar veículo →</button>
-        <div class="load" id="load-placa" style="display:none"><div class="spin"></div><div class="lt">Consultando placa...</div></div>
+        <div id="load-placa" style="display:none;flex-direction:column;align-items:center;padding:28px 0">
+          <div style="position:relative;width:100%;overflow:hidden;height:60px;margin-bottom:12px">
+            <div id="car-placa" style="position:absolute;font-size:36px;animation:carDrive 1.8s linear infinite">🚗</div>
+            <div style="position:absolute;bottom:4px;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--acc),transparent);border-radius:2px"></div>
+          </div>
+          <div style="font-weight:700;color:var(--acc);font-size:14px">Buscando dados do veículo...</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">Consultando base de dados da placa</div>
+        </div>
       </div>
 
       <!-- MOTORIZAÇÃO -->
@@ -583,7 +591,14 @@ input::placeholder{color:#aaa}
           <span class="chip" onclick="setServ('Troca de bateria')">Bateria</span>
         </div>
         <button class="btn btn-p" id="btn-calcular" onclick="calcular()">Calcular preço →</button>
-        <div class="load" id="load-calc" style="display:none"><div class="spin"></div><div class="lt">Analisando com IA...</div></div>
+        <div id="load-calc" style="display:none;flex-direction:column;align-items:center;padding:28px 0">
+          <div style="position:relative;width:100%;overflow:hidden;height:60px;margin-bottom:12px">
+            <div id="car-calc" style="position:absolute;font-size:36px;animation:carDrive 1.4s linear infinite">🔧</div>
+            <div style="position:absolute;bottom:4px;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--acc),transparent);border-radius:2px"></div>
+          </div>
+          <div style="font-weight:700;color:var(--acc);font-size:14px" id="load-calc-msg">Calculando tempo médio de serviço...</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">IA analisando histórico do veículo</div>
+        </div>
       </div>
     </div>
 
@@ -826,6 +841,66 @@ onAuthStateChanged(auth, async (firebaseUser) => {
   }, 100);
 });
 window.togS = el => el.classList.toggle("active");
+
+// ── MODAL INPUT INLINE ──
+let _modalInputCallback = null;
+let _modalOpcoesSelecionada = null;
+
+window.abrirModalInput = ({titulo, desc, placeholder, tipo, valor, opcoes, confirmar}) => {
+  document.getElementById("modal-input-titulo").textContent = titulo || "";
+  document.getElementById("modal-input-desc").textContent = desc || "";
+  const campo = document.getElementById("modal-input-campo");
+  const opcoesDiv = document.getElementById("modal-input-opcoes");
+  _modalInputCallback = confirmar;
+  _modalOpcoesSelecionada = null;
+
+  if (opcoes && opcoes.length > 0) {
+    campo.style.display = "none";
+    opcoesDiv.style.display = "grid";
+    opcoesDiv.style.gridTemplateColumns = "1fr 1fr";
+    opcoesDiv.style.gap = "8px";
+    opcoesDiv.innerHTML = opcoes.map(op =>
+      `<button onclick="selecionarOpcaoModal('${op}',this)" style="padding:10px;border:1.5px solid var(--border);border-radius:10px;background:var(--surf);font-size:13px;cursor:pointer;font-weight:600;color:var(--txt)">${op}</button>`
+    ).join("");
+  } else {
+    campo.style.display = "block";
+    opcoesDiv.style.display = "none";
+    campo.type = tipo || "text";
+    campo.placeholder = placeholder || "";
+    campo.value = valor || "";
+    setTimeout(() => campo.focus(), 100);
+  }
+
+  const overlay = document.getElementById("modal-input-overlay");
+  overlay.style.display = "flex";
+};
+
+window.selecionarOpcaoModal = (val, btn) => {
+  _modalOpcoesSelecionada = val;
+  document.querySelectorAll("#modal-input-opcoes button").forEach(b => {
+    b.style.background = "var(--surf)";
+    b.style.borderColor = "var(--border)";
+    b.style.color = "var(--txt)";
+  });
+  btn.style.background = "var(--acc)";
+  btn.style.borderColor = "var(--acc)";
+  btn.style.color = "white";
+};
+
+window.fecharModalInput = () => {
+  document.getElementById("modal-input-overlay").style.display = "none";
+  _modalInputCallback = null;
+  _modalOpcoesSelecionada = null;
+};
+
+document.getElementById("modal-input-confirmar").onclick = () => {
+  const campo = document.getElementById("modal-input-campo");
+  const val = _modalOpcoesSelecionada || campo.value.trim();
+  if (!val) return;
+  fecharModalInput();
+  if (_modalInputCallback) _modalInputCallback(val);
+  _modalInputCallback = null;
+};
 
 // ── ADMIN FUNCTIONS ──
 window.exportarDados = async () => {
@@ -1424,6 +1499,13 @@ window.calcular=async()=>{
   
   document.getElementById("bloco-servico").style.display="none";
   document.getElementById("load-calc").style.display="flex";
+  const msgs = ["Calculando tempo médio de serviço...","Consultando histórico da IA...","Analisando complexidade do serviço...","Precificando com base no veículo..."];
+  let mi = 0;
+  window._loadCalcInterval = setInterval(() => {
+    mi = (mi+1) % msgs.length;
+    const el = document.getElementById("load-calc-msg");
+    if (el) el.textContent = msgs[mi];
+  }, 1800);
   document.getElementById("btn-nova-consulta").style.display="none";
   
   try{
@@ -1470,11 +1552,13 @@ window.calcular=async()=>{
     }
     
     document.getElementById("load-calc").style.display="none";
+    clearInterval(window._loadCalcInterval);
     renderizarResultado(dados,servico,valorHora,margem);
     trocarTab("res");
     document.getElementById("btn-nova-consulta").style.display="flex";
   }catch(e){
     document.getElementById("load-calc").style.display="none";
+    clearInterval(window._loadCalcInterval);
     document.getElementById("bloco-servico").style.display="block";
     mostrarErro("er-servico","Erro ao calcular. Tente novamente.");
   }
@@ -1688,11 +1772,19 @@ window.trocarTab=(tab)=>{
 
 window.definirMeta = () => {
   const atual = localStorage.getItem("fb_meta_mensal") || "";
-  const novo = prompt("Meta de faturamento mensal (R$):", atual);
-  if (novo !== null && !isNaN(parseFloat(novo))) {
-    localStorage.setItem("fb_meta_mensal", parseFloat(novo));
-    carregarGestao();
-  }
+  abrirModalInput({
+    titulo: "🏁 Meta Mensal",
+    desc: "Defina seu objetivo de faturamento para este mês",
+    placeholder: "Ex: 25000",
+    tipo: "number",
+    valor: atual,
+    confirmar: (val) => {
+      if (!isNaN(parseFloat(val))) {
+        localStorage.setItem("fb_meta_mensal", parseFloat(val));
+        carregarGestao();
+      }
+    }
+  });
 };
 
 window.atualizarStatusOrcamento = (idx, status, motivo) => {
@@ -1708,10 +1800,14 @@ window.atualizarStatusOrcamento = (idx, status, motivo) => {
 };
 
 window.perguntarMotivo = (idx) => {
-  const motivos = ["Achou caro","Vai pesquisar","Sem dinheiro agora","Outro"];
-  const escolha = prompt("Motivo da recusa:\n1 - Achou caro\n2 - Vai pesquisar\n3 - Sem dinheiro agora\n4 - Outro\n\nDigite o numero:");
-  const motivo = motivos[(parseInt(escolha)||1)-1] || "Outro";
-  atualizarStatusOrcamento(idx, "recusado", motivo);
+  abrirModalInput({
+    titulo: "❌ Motivo da recusa",
+    desc: "Por que o cliente não fechou?",
+    opcoes: ["Achou caro","Vai pesquisar","Sem dinheiro agora","Outro"],
+    confirmar: (motivo) => {
+      atualizarStatusOrcamento(idx, "recusado", motivo);
+    }
+  });
 };
 
 function carregarGestao() {
@@ -1927,6 +2023,20 @@ ${pecas.length > 0 ? `
   <p>Sistema de precificação automotiva com IA • fbprecifica.com.br</p>
   <p>Orçamento válido por 30 dias • Gerado em ${hoje.toLocaleDateString('pt-BR')} às ${hoje.toLocaleTimeString('pt-BR')}</p>
 </div>
+<!-- MODAL INPUT INLINE -->
+<div id="modal-input-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;padding:24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <div id="modal-input-titulo" style="font-family:'Barlow',sans-serif;font-size:18px;font-weight:900;margin-bottom:6px"></div>
+    <div id="modal-input-desc" style="font-size:13px;color:var(--muted);margin-bottom:16px"></div>
+    <div id="modal-input-opcoes" style="display:none;margin-bottom:12px"></div>
+    <input id="modal-input-campo" type="text" style="width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--surf);color:var(--txt);box-sizing:border-box" placeholder="">
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="fecharModalInput()" style="flex:1;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:transparent;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted)">Cancelar</button>
+      <button id="modal-input-confirmar" style="flex:2;padding:12px;border:none;border-radius:12px;background:var(--acc);color:white;font-size:14px;font-weight:700;cursor:pointer">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>`.trim();
   
@@ -2077,22 +2187,29 @@ window.usarServicoSozinho = () => {
 };
 
 window.adicionarServicoManual = () => {
-  const servico = prompt("Nome do serviço:");
-  if (!servico) return;
-  
-  const horas = parseFloat(prompt("Horas de mão de obra:") || "0");
-  const valorHora = configUsuario.maoDeObra?.valorHora || 50;
-  const preco = horas * valorHora;
-  
-  window._orcamentoAtual.servicos.push({
-    servico: servico,
-    horas: horas,
-    preco: preco,
-    detalhes: { justificativa: "Serviço adicionado manualmente" }
+  abrirModalInput({
+    titulo: "➕ Serviço Manual",
+    desc: "Nome do serviço a adicionar",
+    placeholder: "Ex: Troca de correia dentada",
+    confirmar: (servico) => {
+      abrirModalInput({
+        titulo: "⏱️ Horas de serviço",
+        desc: `Quantas horas para "${servico}"?`,
+        placeholder: "Ex: 1.5",
+        tipo: "number",
+        confirmar: (horasStr) => {
+          const horas = parseFloat(horasStr) || 0;
+          const valorHora = configUsuario.maoDeObra?.valorHora || 50;
+          const preco = horas * valorHora;
+          window._orcamentoAtual.servicos.push({
+            servico, horas, preco,
+            detalhes: { justificativa: "Serviço adicionado manualmente" }
+          });
+          mostrarOrcamentoConsolidado();
+        }
+      });
+    }
   });
-  
-  mostrarOrcamentoConsolidado();
-  alert(`✅ "${servico}" adicionado manualmente!`);
 };
 
 window.removerServicoOrcamento = (index) => {
@@ -2446,5 +2563,19 @@ _Orçamento válido por 30 dias_`;
 
 
 </script>
+<!-- MODAL INPUT INLINE -->
+<div id="modal-input-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;padding:24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <div id="modal-input-titulo" style="font-family:'Barlow',sans-serif;font-size:18px;font-weight:900;margin-bottom:6px"></div>
+    <div id="modal-input-desc" style="font-size:13px;color:var(--muted);margin-bottom:16px"></div>
+    <div id="modal-input-opcoes" style="display:none;margin-bottom:12px"></div>
+    <input id="modal-input-campo" type="text" style="width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--surf);color:var(--txt);box-sizing:border-box" placeholder="">
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="fecharModalInput()" style="flex:1;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:transparent;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted)">Cancelar</button>
+      <button id="modal-input-confirmar" style="flex:2;padding:12px;border:none;border-radius:12px;background:var(--acc);color:white;font-size:14px;font-weight:700;cursor:pointer">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
