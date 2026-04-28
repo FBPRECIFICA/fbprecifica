@@ -30,8 +30,8 @@ Considere obrigatoriamente:
 - Complexidade do motor: número de cilindros, tipo de distribuição, sistemas auxiliares
 - Desmontagens necessárias para acessar o componente
 
-2. CORREIA vs CORRENTE:
-Verifique se o motor usa correia ou corrente antes de qualquer menção. Motores com corrente não têm troca de correia dentada.
+2. DISTRIBUIÇÃO DO MOTOR:
+Se souber com certeza o tipo de distribuição deste motor, mencione. Se não souber com certeza, não mencione — omitir é melhor que errar.
 
 3. ESPECIFICIDADE TOTAL:
 Sua resposta deve refletir o tempo REAL que um mecânico experiente levaria neste veículo específico. Furgões diesel como Jumpy, Expert, Ducato, Sprinter, Master têm tempos significativamente maiores que carros de passeio para o mesmo tipo de serviço.
