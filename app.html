@@ -698,59 +698,70 @@ let _custoHoraCalculado = 0;
 let isAdmin = false;
 
 // EMAILS ADMIN
-const ADMINS = ['fabio@mmservicecar.com.br', 'contato@mmservicecar.com.br'];
-
-// Verificar se já está logado - USANDO LOCALSTORAGE
-const sessao = localStorage.getItem('fb_sessao');
-if (!sessao) {
-  window.location.href = "/login.html";
-} else {
-  try {
-    const dadosSessao = JSON.parse(sessao);
-    usuario = dadosSessao;
-    isAdmin = dadosSessao.isAdmin || false;
-
-    // Restaurar configUsuario — chaves dedicadas independentes do login
-    try {
-      const perfilSalvo = localStorage.getItem('fb_perfil');
-      const moSalvo = localStorage.getItem('fb_mo');
-      const setoresSalvo = localStorage.getItem('fb_setores');
-      if (perfilSalvo) configUsuario.perfil = JSON.parse(perfilSalvo);
-      if (moSalvo) configUsuario.maoDeObra = JSON.parse(moSalvo);
-      if (setoresSalvo) configUsuario.setores = JSON.parse(setoresSalvo);
-    } catch(e) { console.warn("Erro ao restaurar config:", e); }
-
-    if(isAdmin) {
-      document.getElementById("admin-panel").style.display = "block";
-    }
-
-    // Nome usa configUsuario já restaurado
-    const nomeExibir = configUsuario.perfil?.nome || dadosSessao.nome || dadosSessao.email;
-    document.getElementById("nav-nome").textContent = nomeExibir;
-
-    // Verificar usando configUsuario (já restaurado das chaves dedicadas)
-    const temPerfil = configUsuario.perfil?.nome;
-    const temMO = configUsuario.maoDeObra?.valorHora;
-
-    mostrarTela("s-main");
-    if (temPerfil && temMO) {
-      setTimeout(() => {
-        atualizarInfoOrcamentista();
-        atualizarBadgeCusto();
-      }, 100);
-    }
-  } catch(e) {
-    console.error("Sessão inválida:", e);
-    localStorage.removeItem('fb_sessao');
-    window.location.href = "/login.html";
-  }
-}
+const ADMINS = ['fabio@mmservicecar.com.br', 'contato@mmservicecar.com.br', 'fabio@sistemas3.com.br'];
 
 // ── FUNÇÕES GLOBAIS ──
-window.fazerLogout = () => {
+window.fazerLogout = async () => {
+  await signOut(auth);
   localStorage.removeItem('fb_sessao');
+  localStorage.removeItem('fb_perfil');
   window.location.href = "/login.html";
 };
+
+// Verificar login via Firebase Auth
+onAuthStateChanged(auth, async (firebaseUser) => {
+  if (!firebaseUser) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  // Usuário autenticado
+  usuario = {
+    uid: firebaseUser.uid,
+    email: firebaseUser.email,
+    nome: firebaseUser.displayName || firebaseUser.email
+  };
+
+  // Verificar admin
+  isAdmin = ADMINS.includes(firebaseUser.email);
+
+  // Carregar dados do Firestore
+  try {
+    const docSnap = await getDoc(doc(db, "usuarios", firebaseUser.uid));
+    if (docSnap.exists()) {
+      const dados = docSnap.data();
+      if (dados.isAdmin) isAdmin = true;
+      if (dados.perfil) configUsuario.perfil = dados.perfil;
+      if (dados.maoDeObra) configUsuario.maoDeObra = dados.maoDeObra;
+      if (dados.setores) configUsuario.setores = dados.setores;
+    }
+  } catch(e) {
+    console.warn("Erro ao carregar dados Firebase:", e.message);
+  }
+
+  // Fallback: localStorage para dados não migrados
+  try {
+    const perfilSalvo = localStorage.getItem('fb_perfil');
+    const moSalvo = localStorage.getItem('fb_mo');
+    const setoresSalvo = localStorage.getItem('fb_setores');
+    if (!configUsuario.perfil?.nome && perfilSalvo) configUsuario.perfil = JSON.parse(perfilSalvo);
+    if (!configUsuario.maoDeObra?.valorHora && moSalvo) configUsuario.maoDeObra = JSON.parse(moSalvo);
+    if (!configUsuario.setores?.length && setoresSalvo) configUsuario.setores = JSON.parse(setoresSalvo);
+  } catch(e) {}
+
+  if (isAdmin) {
+    document.getElementById("admin-panel").style.display = "block";
+  }
+
+  const nomeExibir = configUsuario.perfil?.nome || usuario.nome;
+  document.getElementById("nav-nome").textContent = nomeExibir;
+
+  mostrarTela("s-main");
+  setTimeout(() => {
+    atualizarInfoOrcamentista();
+    atualizarBadgeCusto();
+  }, 100);
+});
 window.togS = el => el.classList.toggle("active");
 
 // ── ADMIN FUNCTIONS ──
@@ -839,9 +850,15 @@ window.avancarParaMO = async () => {
       logoBase64: window._logoBase64 || configUsuario.perfil?.logoBase64 || null
     };
     
-    // Salvar em chaves dedicadas — sobrevivem a qualquer novo login
+    // Salvar localStorage (cache local)
     localStorage.setItem('fb_perfil', JSON.stringify(perfil));
     localStorage.setItem('fb_setores', JSON.stringify(setoresSelecionados));
+    // Salvar Firestore (banco permanente)
+    try {
+      if (usuario?.uid) {
+        await setDoc(doc(db,"usuarios",usuario.uid), { perfil, setores: setoresSelecionados }, {merge:true});
+      }
+    } catch(e) { console.warn("Firebase perfil sync falhou:", e.message); }
 
     configUsuario.setores = setoresSelecionados;
     configUsuario.perfil = perfil;
@@ -1111,25 +1128,17 @@ window.salvarModoCompleto = async () => {
 };
 
 async function salvarMO(maoDeObra) {
-  // Salvar em chave dedicada — sobrevive a qualquer novo login
+  // Salvar localStorage + Firestore
+  try { localStorage.setItem('fb_mo', JSON.stringify(maoDeObra)); } catch(e) {}
   try {
-    localStorage.setItem('fb_mo', JSON.stringify(maoDeObra));
-  } catch(e) {}
+    if (usuario?.uid) await setDoc(doc(db,"usuarios",usuario.uid), { maoDeObra }, {merge:true});
+  } catch(e) { console.warn("Firebase MO sync falhou:", e.message); }
 
   configUsuario.maoDeObra = maoDeObra;
   const navNome = document.getElementById("nav-nome");
-  if (navNome) navNome.textContent = configUsuario.perfil?.nome || usuario?.displayName || usuario?.email || '';
+  if (navNome) navNome.textContent = configUsuario.perfil?.nome || usuario?.nome || '';
   mostrarTela("s-main");
   atualizarInfoOrcamentista();
-
-  // Firebase em segundo plano, sem bloquear
-  try {
-    if (usuario?.uid) {
-      await setDoc(doc(db,"usuarios",usuario.uid), { maoDeObra }, {merge:true});
-    }
-  } catch(e) {
-    console.warn("Firebase sync M.O. falhou (dados salvos local):", e.message);
-  }
 }
 
 // ── MODAL M.O. ──
