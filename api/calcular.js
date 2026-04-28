@@ -19,38 +19,31 @@ VEÍCULO: ${veiculo}
 SERVIÇO SOLICITADO: ${servico}
 VALOR HORA M.O.: R$ ${valorHora}
 
-REGRAS CRÍTICAS — SIGA OBRIGATORIAMENTE:
+INSTRUÇÕES OBRIGATÓRIAS:
 
-REGRA 1 — TEMPO REAL DE BANCADA:
-Estime o tempo com base na realidade da bancada, não em teoria.
-Exemplos de tempos REAIS:
-- Troca de bieleta / barra estabilizadora: 20 a 40 minutos (serviço rápido, acesso fácil)
-- Troca de óleo: 20 a 30 minutos
-- Pastilhas de freio dianteiras: 30 a 45 minutos
-- Velas de ignição motor simples: 20 a 30 minutos
-- Amortecedor dianteiro: 45 a 60 minutos por lado
-- Embreagem carro compacto: 3 a 5 horas
-- Embreagem caminhão leve: 6 a 8 horas
-- Embreagem caminhão pesado: 8 a 14 horas
-- Correia dentada motor simples: 2 a 3 horas
-- Correia dentada motor complexo: 4 a 6 horas
-- Motor corrente de comando: NÃO tem correia dentada para trocar
-NUNCA arredonde para cima sem justificativa técnica real.
+1. TEMPO REAL DE BANCADA:
+Estime o tempo com base na realidade da bancada para ESTE veículo específico.
+Considere obrigatoriamente:
+- Categoria do veículo: carro de passeio, furgão, utilitário, caminhão leve, SUV, pickup
+- Combustível: flex/gasolina têm motores mais simples; diesel têm mais componentes, maior torque, sistemas adicionais (turbo, intercooler, common rail, bomba injetora)
+- Acesso ao componente neste motor específico: espaço restrito aumenta o tempo significativamente
+- Complexidade do motor: número de cilindros, tipo de distribuição, sistemas auxiliares
+- Desmontagens necessárias para acessar o componente
 
-REGRA 2 — CORREIA vs CORRENTE DE DISTRIBUIÇÃO:
-Antes de mencionar correia dentada, verifique se o motor usa CORREIA ou CORRENTE.
-Motores com CORRENTE de distribuição (exemplos): GM Ecotec, VW TSI, Ford EcoBoost, Fiat FireFly 1.0, Fiat 1.3/1.6 16v, Toyota 1NZ, Honda 1.5 VTEC, Renault 1.0/1.3 TCe, Hyundai/Kia 1.0 T-GDI.
-Se o veículo usa CORRENTE: NUNCA mencione troca de correia dentada. Correntes são projetadas para durar a vida útil do motor.
-Se o veículo usa CORREIA: informe o intervalo de troca recomendado pelo fabricante.
+2. CORREIA vs CORRENTE:
+Verifique se o motor usa correia ou corrente antes de qualquer menção. Motores com corrente não têm troca de correia dentada.
 
-REGRA 3 — ESPECIFICIDADE:
-Sua resposta deve ser específica para ESTE veículo e ESTE serviço. Não dê respostas genéricas.
+3. ESPECIFICIDADE TOTAL:
+Sua resposta deve refletir o tempo REAL que um mecânico experiente levaria neste veículo específico. Furgões diesel como Jumpy, Expert, Ducato, Sprinter, Master têm tempos significativamente maiores que carros de passeio para o mesmo tipo de serviço.
+
+4. JUSTIFICATIVA TÉCNICA:
+Explique na justificativa por que o tempo é esse — quais desmontagens são necessárias, qual a dificuldade de acesso, o que aumenta ou reduz o tempo.
 
 Responda APENAS com JSON válido:
 {
   "horas_estimadas": 0.5,
   "valor_servico": 50.00,
-  "justificativa": "explicação técnica específica e precisa para este veículo e serviço",
+  "justificativa": "explicação técnica específica e precisa para este veículo e serviço — inclua dificuldades de acesso, desmontagens necessárias e fatores que influenciam o tempo",
   "alertas_risco": ["alerta técnico real e específico 1", "alerta 2"],
   "verificar_junto": ["serviço relacionado com justificativa técnica", "serviço 2", "serviço 3"],
   "se_nao_trocar": "consequência real e concreta para este veículo específico"
