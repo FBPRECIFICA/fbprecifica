@@ -1513,7 +1513,9 @@ window.calcular=async()=>{
   document.getElementById("btn-nova-consulta").style.display="none";
   
   try{
-    const veiculoStr=`${veiculoAtual.modelo} ${veiculoAtual.ano}${veiculoAtual.motor?" "+veiculoAtual.motor:""} placa ${veiculoAtual.placa}`.trim();
+    const combustivelInfo = veiculoAtual.combustivel ? ` | Combustível: ${veiculoAtual.combustivel}` : "";
+    const motorInfo = veiculoAtual.motor ? ` | Motor: ${veiculoAtual.motor}` : "";
+    const veiculoStr = `${veiculoAtual.modelo} ${veiculoAtual.ano}${motorInfo}${combustivelInfo} | Placa: ${veiculoAtual.placa}`.trim();
     const r=await fetch("/api/calcular",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({veiculo:veiculoStr,servico,valorHora,margem})});
     const dados=await r.json();
     if(!dados||dados.error)throw new Error(dados?.error||"Erro");
