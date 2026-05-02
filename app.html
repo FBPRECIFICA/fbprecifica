@@ -911,9 +911,9 @@ document.getElementById("modal-input-confirmar").onclick = () => {
   const campo = document.getElementById("modal-input-campo");
   const val = _modalOpcoesSelecionada || campo.value.trim();
   if (!val) return;
+  const cb = _modalInputCallback; // guarda antes de fechar
   fecharModalInput();
-  if (_modalInputCallback) _modalInputCallback(val);
-  _modalInputCallback = null;
+  if (cb) cb(val);
 };
 
 // ── ADMIN FUNCTIONS ──
