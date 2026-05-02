@@ -995,12 +995,15 @@ window.avancarParaMO = async () => {
       logoBase64: window._logoBase64 || configUsuario.perfil?.logoBase64 || null
     };
     
-    // Salvar no Firestore
+    // Salvar no Firestore — garante token atualizado antes de salvar
     try {
       if (usuario?.uid) {
+        // Força refresh do token para garantir autenticação
+        const currentUser = auth.currentUser;
+        if (currentUser) await currentUser.getIdToken(true);
         await setDoc(doc(db,"usuarios",usuario.uid), { perfil, setores: setoresSelecionados }, {merge:true});
       }
-    } catch(e) { console.warn("Firebase perfil falhou:", e.message); alert("Erro ao salvar perfil. Verifique sua conexão."); return; }
+    } catch(e) { console.warn("Firebase perfil falhou:", e.message); alert("Erro ao salvar perfil. Verifique sua conexão.\nDetalhe: " + e.message); return; }
 
     configUsuario.setores = setoresSelecionados;
     configUsuario.perfil = perfil;
