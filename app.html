@@ -1633,8 +1633,8 @@ function renderizarResultado(dados,servico,valorHora,margem){
     document.getElementById("orcamento-actions").style.display="none";
     return;
   }
-  const custo=horas*valorHora;
-  const preco=custo*(1+margem/100);
+  const preco=horas*valorHora; // valorHora já é o preço final ao cliente com margem aplicada
+  const custo=preco;
   let html=`<div class="rb"><div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${servico}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${veiculoAtual?.modelo} ${veiculoAtual?.ano} • ${veiculoAtual?.placa}</div><div class="rv">R$ ${fmt(preco)}</div><div style="font-size:12px;color:var(--muted)">Preço sugerido ao cliente</div></div>`;
   html+=`<div class="hi"><div><div style="font-size:13px;font-weight:600">Mão de obra</div><div style="font-size:12px;color:var(--muted)">${horas}h estimadas</div></div></div>`;
   if(just)html+=`<div class="is"><div class="ih">Análise técnica</div><div class="ic rs">${just}</div></div>`;
