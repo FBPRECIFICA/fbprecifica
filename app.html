@@ -824,6 +824,7 @@ onAuthStateChanged(auth, async (firebaseUser) => {
       const dados = docSnap.data();
       if (dados.isAdmin) isAdmin = true;
       if (dados.perfil) configUsuario.perfil = dados.perfil;
+      if (dados.logoBase64) configUsuario.perfil = { ...configUsuario.perfil, logoBase64: dados.logoBase64 };
       if (dados.maoDeObra) configUsuario.maoDeObra = dados.maoDeObra;
       if (dados.setores) configUsuario.setores = dados.setores;
       if (dados.metaMensal) configUsuario.metaMensal = dados.metaMensal;
@@ -988,22 +989,22 @@ window.avancarParaMO = async () => {
   const oficina = document.getElementById("perfil-oficina").value.trim();
   
   try {
-    const perfil = { 
-      nome, 
-      cargo, 
-      oficina,
-      logoBase64: window._logoBase64 || configUsuario.perfil?.logoBase64 || null
-    };
-    
-    // Salvar no Firestore — garante token atualizado antes de salvar
+    const logoBase64 = window._logoBase64 || configUsuario.perfil?.logoBase64 || null;
+    const perfil = { nome, cargo, oficina };
+
+    // Salvar no Firestore — logo separado para não estourar limite
     try {
       if (usuario?.uid) {
-        // Força refresh do token para garantir autenticação
         const currentUser = auth.currentUser;
         if (currentUser) await currentUser.getIdToken(true);
-        await setDoc(doc(db,"usuarios",usuario.uid), { perfil, setores: setoresSelecionados }, {merge:true});
+        const dadosSalvar = { perfil, setores: setoresSelecionados };
+        if (logoBase64) dadosSalvar.logoBase64 = logoBase64;
+        await setDoc(doc(db,"usuarios",usuario.uid), dadosSalvar, {merge:true});
       }
     } catch(e) { console.warn("Firebase perfil falhou:", e.message); alert("Erro ao salvar perfil. Verifique sua conexão.\nDetalhe: " + e.message); return; }
+    
+    // Manter logo no configUsuario
+    if (logoBase64) perfil.logoBase64 = logoBase64;
 
     configUsuario.setores = setoresSelecionados;
     configUsuario.perfil = perfil;
