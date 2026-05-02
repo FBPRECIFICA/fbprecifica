@@ -760,7 +760,7 @@ input::placeholder{color:#aaa}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAFLxVIoPzCKiXcgZV_s7dyOr7N-HlUHEk",
@@ -782,6 +782,7 @@ let configUsuario = { setores: [], maoDeObra: {}, perfil: {} };
 let setoresSelecionados = [];
 let _veiculoTemp = null;
 let _custoHoraCalculado = 0;
+window._histArray = []; // histórico em memória (carregado do Firestore)
 let isAdmin = false;
 
 // EMAILS ADMIN
@@ -790,8 +791,7 @@ const ADMINS = ['fabio@mmservicecar.com.br', 'contato@mmservicecar.com.br', 'fab
 // ── FUNÇÕES GLOBAIS ──
 window.fazerLogout = async () => {
   await signOut(auth);
-  localStorage.removeItem('fb_sessao');
-  localStorage.removeItem('fb_perfil');
+  localStorage.clear();
   window.location.href = "/login.html";
 };
 
@@ -826,20 +826,13 @@ onAuthStateChanged(auth, async (firebaseUser) => {
       if (dados.perfil) configUsuario.perfil = dados.perfil;
       if (dados.maoDeObra) configUsuario.maoDeObra = dados.maoDeObra;
       if (dados.setores) configUsuario.setores = dados.setores;
+      if (dados.metaMensal) configUsuario.metaMensal = dados.metaMensal;
     }
   } catch(e) {
     console.warn("Erro ao carregar dados Firebase:", e.message);
   }
 
-  // Fallback: localStorage para dados não migrados
-  try {
-    const perfilSalvo = localStorage.getItem('fb_perfil');
-    const moSalvo = localStorage.getItem('fb_mo');
-    const setoresSalvo = localStorage.getItem('fb_setores');
-    if (!configUsuario.perfil?.nome && perfilSalvo) configUsuario.perfil = JSON.parse(perfilSalvo);
-    if (!configUsuario.maoDeObra?.valorHora && moSalvo) configUsuario.maoDeObra = JSON.parse(moSalvo);
-    if (!configUsuario.setores?.length && setoresSalvo) configUsuario.setores = JSON.parse(setoresSalvo);
-  } catch(e) {}
+  // Sem fallback localStorage — tudo vem do Firestore
 
   if (isAdmin) {
     document.getElementById("admin-panel").style.display = "block";
@@ -1002,15 +995,12 @@ window.avancarParaMO = async () => {
       logoBase64: window._logoBase64 || configUsuario.perfil?.logoBase64 || null
     };
     
-    // Salvar localStorage (cache local)
-    localStorage.setItem('fb_perfil', JSON.stringify(perfil));
-    localStorage.setItem('fb_setores', JSON.stringify(setoresSelecionados));
-    // Salvar Firestore (banco permanente)
+    // Salvar no Firestore
     try {
       if (usuario?.uid) {
         await setDoc(doc(db,"usuarios",usuario.uid), { perfil, setores: setoresSelecionados }, {merge:true});
       }
-    } catch(e) { console.warn("Firebase perfil sync falhou:", e.message); }
+    } catch(e) { console.warn("Firebase perfil falhou:", e.message); alert("Erro ao salvar perfil. Verifique sua conexão."); return; }
 
     configUsuario.setores = setoresSelecionados;
     configUsuario.perfil = perfil;
@@ -1280,11 +1270,10 @@ window.salvarModoCompleto = async () => {
 };
 
 async function salvarMO(maoDeObra) {
-  // Salvar localStorage + Firestore
-  try { localStorage.setItem('fb_mo', JSON.stringify(maoDeObra)); } catch(e) {}
+  // Salvar no Firestore
   try {
     if (usuario?.uid) await setDoc(doc(db,"usuarios",usuario.uid), { maoDeObra }, {merge:true});
-  } catch(e) { console.warn("Firebase MO sync falhou:", e.message); }
+  } catch(e) { console.warn("Firebase MO falhou:", e.message); }
 
   configUsuario.maoDeObra = maoDeObra;
   const navNome = document.getElementById("nav-nome");
@@ -1397,10 +1386,7 @@ window.editarModoCompleto = () => {
 };
 
 async function salvarModalMO(maoDeObra) {
-  // Salvar em chave dedicada
-  try {
-    localStorage.setItem('fb_mo', JSON.stringify(maoDeObra));
-  } catch(e) {}
+
 
   configUsuario.maoDeObra = maoDeObra;
   fecharModalMO();
@@ -1584,21 +1570,13 @@ window.calcular=async()=>{
       criadoEm: new Date()
     };
     
-    // Salvar histórico no localStorage (cache offline)
+    // Salvar histórico no Firestore
     try {
-      const hist = JSON.parse(localStorage.getItem('fb_historico') || '[]');
-      hist.unshift(histItem);
-      if (hist.length > 50) hist.length = 50;
-      localStorage.setItem('fb_historico', JSON.stringify(hist));
-    } catch(e) { console.warn("Erro salvar histórico local:", e); }
-
-    // Tentar Firebase em segundo plano
-    try {
-      const histRef = collection(db, "usuarios", usuario.uid, "historico");
-      await addDoc(histRef, histItem);
-    } catch(e) {
-      console.warn("Firebase histórico falhou (salvo local):", e.message);
-    }
+      if (usuario?.uid) {
+        const histRef = collection(db, "usuarios", usuario.uid, "historico");
+        await addDoc(histRef, histItem);
+      }
+    } catch(e) { console.warn("Firebase histórico falhou:", e.message); }
     
     // Cache da placa
     try {
@@ -1668,7 +1646,7 @@ window.novaConsultaCompleta=()=>{
 // ── HISTÓRICO ──
 function gerarPDFHistorico(idx) {
   try {
-    const hist = JSON.parse(localStorage.getItem('fb_historico') || '[]');
+    const hist = window._histArray || [];
     const dt = hist[idx];
     if (!dt) return;
     const perfil = configUsuario.perfil || {};
@@ -1733,7 +1711,7 @@ window.gerarPDFHistorico = gerarPDFHistorico;
 
 function renderHistoricoLocal(lista) {
   try {
-    const hist = JSON.parse(localStorage.getItem('fb_historico') || '[]');
+    const hist = window._histArray || [];
     if (hist.length === 0) {
       lista.innerHTML=`<div class="hist-vazio">📋 Nenhuma consulta ainda.<br>Faça sua primeira precificação!</div>`;
       return;
@@ -1782,10 +1760,9 @@ async function carregarHistorico(){
     const snap = await getDocs(q);
     if(snap.empty) return;
 
-    // Salvar no localStorage para uso offline
     const histArray = [];
-    snap.forEach(docSnap => histArray.push(docSnap.data()));
-    localStorage.setItem('fb_historico', JSON.stringify(histArray));
+    snap.forEach(docSnap => histArray.push({ ...docSnap.data(), _docId: docSnap.id }));
+    window._histArray = histArray; // disponível globalmente sem localStorage
 
     // Renderizar com clique e valor
     const mo = configUsuario.maoDeObra || {};
@@ -1827,32 +1804,40 @@ window.trocarTab=(tab)=>{
 };
 
 window.definirMeta = () => {
-  const atual = localStorage.getItem("fb_meta_mensal") || "";
+  const atual = configUsuario.metaMensal || "";
   abrirModalInput({
     titulo: "🏁 Meta Mensal",
     desc: "Defina seu objetivo de faturamento para este mês",
     placeholder: "Ex: 25000",
     tipo: "number",
     valor: atual,
-    confirmar: (val) => {
+    confirmar: async (val) => {
       if (!isNaN(parseFloat(val))) {
-        localStorage.setItem("fb_meta_mensal", parseFloat(val));
+        const meta = parseFloat(val);
+        configUsuario.metaMensal = meta;
+        try {
+          if (usuario?.uid) await setDoc(doc(db,"usuarios",usuario.uid), { metaMensal: meta }, {merge:true});
+        } catch(e) { console.warn("Firebase meta falhou:", e.message); }
         carregarGestao();
       }
     }
   });
 };
 
-window.atualizarStatusOrcamento = (idx, status, motivo) => {
+window.atualizarStatusOrcamento = async (idx, status, motivo) => {
   try {
-    const hist = JSON.parse(localStorage.getItem("fb_historico") || "[]");
-    if (hist[idx]) {
-      hist[idx].status = status;
-      if (motivo) hist[idx].motivoRecusa = motivo;
-      localStorage.setItem("fb_historico", JSON.stringify(hist));
-      carregarGestao();
-    }
-  } catch(e) {}
+    if (!usuario?.uid) return;
+    // Buscar no Firestore pelo índice — usa histArray em memória
+    const histRef = collection(db, "usuarios", usuario.uid, "historico");
+    const q = query(histRef, orderBy("timestamp", "desc"), limit(50));
+    const snap = await getDocs(q);
+    if (snap.empty) return;
+    const docSnap = snap.docs[idx];
+    if (!docSnap) return;
+    await updateDoc(docSnap.ref, { status, ...(motivo ? { motivoRecusa: motivo } : {}) });
+    carregarHistorico();
+    carregarGestao();
+  } catch(e) { console.warn("Firebase status falhou:", e.message); }
 };
 
 window.perguntarMotivo = (idx) => {
@@ -1868,8 +1853,8 @@ window.perguntarMotivo = (idx) => {
 
 function carregarGestao() {
   try {
-    const hist = JSON.parse(localStorage.getItem("fb_historico") || "[]");
-    const meta = parseFloat(localStorage.getItem("fb_meta_mensal") || "0");
+    const hist = window._histArray || [];
+    const meta = parseFloat(configUsuario.metaMensal || 0);
     const mo = configUsuario.maoDeObra || {};
     const agora = new Date();
     const mesAtual = hist.filter(h => {
@@ -2278,7 +2263,7 @@ window.removerPecaOrcamento = (index) => {
   mostrarOrcamentoConsolidado();
 };
 
-window.finalizarOrcamento = () => {
+window.finalizarOrcamento = async () => {
   if (window._orcamentoAtual.servicos.length === 0) {
     alert("Adicione pelo menos um serviço ao orçamento");
     return;
@@ -2314,7 +2299,7 @@ window.novoOrcamento = () => {
 };
 
 // ── ENVIO WHATSAPP E STATUS ──
-window.enviarWhatsApp = () => {
+window.enviarWhatsApp = async () => {
   const telefone = document.getElementById("inp-telefone")?.value.replace(/\D/g, '');
   
   if (!telefone || telefone.length < 10) {
@@ -2350,8 +2335,8 @@ window.enviarWhatsApp = () => {
   // Gerar ID único do orçamento
   const orcamentoId = Date.now().toString();
   
-  // Salvar orçamento no localStorage para aprovação
-  const orcamentos = JSON.parse(localStorage.getItem('fb_orcamentos') || '{}');
+  // Salvar orçamento no Firestore
+  const orcamentos = {};
   orcamentos[orcamentoId] = {
     id: orcamentoId,
     cliente: nomeCliente,
@@ -2367,7 +2352,13 @@ window.enviarWhatsApp = () => {
     oficina: perfil.oficina || 'Oficina',
     orçamentista: perfil.nome || 'Orçamentista'
   };
-  localStorage.setItem('fb_orcamentos', JSON.stringify(orcamentos));
+  // Salvar no Firestore
+  try {
+    if (usuario?.uid) {
+      const orcRef = collection(db, "usuarios", usuario.uid, "orcamentos");
+      await addDoc(orcRef, { ...orcamentos, criadoEm: new Date() });
+    }
+  } catch(e) { console.warn("Firebase orcamento falhou:", e.message); }
   
   // Link para aprovação
   const linkAprovacao = `Responda *SIM* para aprovar ou *NÃO* para recusar`;
@@ -2436,11 +2427,7 @@ function mostrarStatusOrcamento(id, status) {
   statusDiv.style.display = 'block';
 }
 
-// Verificar status dos orçamentos periodicamente
-setInterval(() => {
-  const orcamentos = JSON.parse(localStorage.getItem('fb_orcamentos') || '{}');
-  // Aqui você pode implementar verificação de status via API no futuro
-}, 30000); // Verifica a cada 30 segundos
+
 
 window.adicionarPecas = () => {
   renderizarListaPecas();
@@ -2521,7 +2508,7 @@ function renderizarListaPecas() {
   lista.innerHTML = html;
 }
 
-window.enviarWhatsAppConsolidado = () => {
+window.enviarWhatsAppConsolidado = async () => {
   const telefone = window._orcamentoAtual.telefone || document.getElementById("inp-telefone")?.value.replace(/\D/g, '');
   
   if (!telefone || telefone.length < 10) {
@@ -2546,8 +2533,8 @@ window.enviarWhatsAppConsolidado = () => {
   // Gerar ID único do orçamento
   const orcamentoId = Date.now().toString();
   
-  // Salvar orçamento no localStorage para aprovação
-  const orcamentos = JSON.parse(localStorage.getItem('fb_orcamentos') || '{}');
+  // Salvar orçamento no Firestore
+  const orcamentos = {};
   orcamentos[orcamentoId] = {
     id: orcamentoId,
     cliente: nomeCliente,
@@ -2563,7 +2550,13 @@ window.enviarWhatsAppConsolidado = () => {
     oficina: perfil.oficina || 'Oficina',
     orçamentista: perfil.nome || 'Orçamentista'
   };
-  localStorage.setItem('fb_orcamentos', JSON.stringify(orcamentos));
+  // Salvar no Firestore
+  try {
+    if (usuario?.uid) {
+      const orcRef = collection(db, "usuarios", usuario.uid, "orcamentos");
+      await addDoc(orcRef, { ...orcamentos, criadoEm: new Date() });
+    }
+  } catch(e) { console.warn("Firebase orcamento falhou:", e.message); }
   
   // Link para aprovação
   const linkAprovacao = `Responda *SIM* para aprovar ou *NÃO* para recusar`;
