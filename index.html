@@ -160,8 +160,60 @@ body{font-family:'Inter',sans-serif;line-height:1.6;color:var(--black);backgroun
       <div class="roi-label">ROI Médio/Ano</div>
     </div>
   </div>
+
+  <!-- CALCULADORA DE ROI -->
+  <div style="max-width:700px;margin:48px auto 40px;background:rgba(255,255,255,0.05);border:2px solid var(--orange);border-radius:20px;padding:36px 32px">
+    <div style="font-family:'Barlow',sans-serif;font-size:22px;font-weight:900;color:var(--orange);text-transform:uppercase;margin-bottom:8px;text-align:center">🧮 Calcule seu ganho extra</div>
+    <div style="font-size:14px;color:#aaa;text-align:center;margin-bottom:28px">Ajuste os valores para sua realidade</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+      <div>
+        <label style="font-size:13px;color:#aaa;text-transform:uppercase;font-weight:600;display:block;margin-bottom:8px">OS por mês</label>
+        <input type="range" id="calc-os" min="20" max="500" value="150" step="10"
+          style="width:100%;accent-color:var(--orange)" oninput="calcularROI()">
+        <div style="text-align:center;font-size:22px;font-weight:900;color:white;margin-top:6px"><span id="val-os">150</span> OS</div>
+      </div>
+      <div>
+        <label style="font-size:13px;color:#aaa;text-transform:uppercase;font-weight:600;display:block;margin-bottom:8px">Ticket extra por OS</label>
+        <input type="range" id="calc-ticket" min="20" max="300" value="50" step="10"
+          style="width:100%;accent-color:var(--orange)" oninput="calcularROI()">
+        <div style="text-align:center;font-size:22px;font-weight:900;color:white;margin-top:6px">R$ <span id="val-ticket">50</span></div>
+      </div>
+    </div>
+
+    <div style="background:var(--orange);border-radius:14px;padding:20px;text-align:center">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;margin-bottom:4px;opacity:0.9">Seu ganho extra estimado</div>
+      <div style="display:flex;justify-content:center;gap:32px;align-items:center;flex-wrap:wrap">
+        <div>
+          <div style="font-size:13px;opacity:0.85">Por mês</div>
+          <div style="font-size:32px;font-weight:900" id="res-mes">R$ 7.500</div>
+        </div>
+        <div style="font-size:24px;opacity:0.6">→</div>
+        <div>
+          <div style="font-size:13px;opacity:0.85">Por ano</div>
+          <div style="font-size:32px;font-weight:900" id="res-ano">R$ 90.000</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:13px;opacity:0.85">vs investimento de <span id="res-plano">R$ 99,90/mês</span> no FB Precifica</div>
+    </div>
+  </div>
+
   <a href="/login.html" class="btn btn-primary">🎯 QUERO ESSES RESULTADOS</a>
 </section>
+
+<script>
+function calcularROI() {
+  const os = parseInt(document.getElementById("calc-os").value);
+  const ticket = parseInt(document.getElementById("calc-ticket").value);
+  document.getElementById("val-os").textContent = os;
+  document.getElementById("val-ticket").textContent = ticket;
+  const mes = os * ticket;
+  const ano = mes * 12;
+  document.getElementById("res-mes").textContent = "R$ " + mes.toLocaleString("pt-BR");
+  document.getElementById("res-ano").textContent = "R$ " + ano.toLocaleString("pt-BR");
+}
+calcularROI();
+</script>
 
 <section class="plans">
   <div class="plans-title">Planos e Preços</div>
